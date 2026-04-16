@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dereck Méndez · Data Analyst</title>
+    <title>Dereck Mendez · Data Analyst</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -80,45 +80,61 @@
         left: -150px;
       }
 
-      /* NAV */
+      /* ── NAV ───────────────────────────────────── */
       nav {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 100;
-        padding: 1.25rem 2rem;
+        padding: 1.25rem 3rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: rgba(10, 10, 15, 0.7);
-        backdrop-filter: blur(16px);
+        background: rgba(10, 10, 15, 0.75);
+        backdrop-filter: blur(18px);
         border-bottom: 1px solid var(--border);
       }
       .nav-logo {
         font-family: var(--font-display);
         font-weight: 700;
-        font-size: 1.1rem;
-        letter-spacing: -0.02em;
+        font-size: 1.15rem;
+        letter-spacing: -0.01em;
       }
       .nav-logo span {
         color: var(--accent);
       }
       .nav-links {
         display: flex;
-        gap: 2rem;
+        gap: 2.2rem;
         list-style: none;
       }
       .nav-links a {
-        font-family: var(--font-mono);
-        font-size: 0.8rem;
+        font-family: var(--font-body);
+        font-size: 0.88rem;
         color: var(--muted);
         text-decoration: none;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.01em;
         transition: color 0.2s;
+        position: relative;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.25s ease;
       }
       .nav-links a:hover {
         color: var(--text);
+      }
+      .nav-links a:hover::after {
+        transform: scaleX(1);
       }
 
       section {
@@ -126,120 +142,37 @@
         z-index: 1;
       }
 
-      /* HERO */
+      /* ── HERO ──────────────────────────────────── */
       #hero {
         min-height: 100vh;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 6rem 2rem 4rem;
-        max-width: 1100px;
+        align-items: center;
+        padding: 6rem 3rem 4rem;
+        max-width: 1200px;
         margin: 0 auto;
       }
       .hero-inner {
         display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 3rem;
+        grid-template-columns: auto 1fr;
+        gap: 5rem;
         align-items: center;
-      }
-      .hero-label {
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        color: var(--accent);
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        margin-bottom: 1.5rem;
-        opacity: 0;
-        animation: fadeUp 0.6s 0.2s forwards;
-      }
-      .hero-title {
-        font-family: var(--font-display);
-        font-size: clamp(2.6rem, 6vw, 5.2rem);
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: -0.03em;
-        margin-bottom: 1.5rem;
-        opacity: 0;
-        animation: fadeUp 0.7s 0.35s forwards;
-      }
-      .hero-title .line2 {
-        color: var(--muted);
-      }
-      .hero-title .accent-word {
-        color: var(--accent);
-      }
-      .hero-desc {
-        font-size: 1rem;
-        color: var(--muted);
-        max-width: 500px;
-        line-height: 1.75;
-        margin-bottom: 2.5rem;
-        opacity: 0;
-        animation: fadeUp 0.7s 0.5s forwards;
-      }
-      .hero-desc strong {
-        color: var(--text);
-        font-weight: 400;
-      }
-      .hero-ctas {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        opacity: 0;
-        animation: fadeUp 0.7s 0.65s forwards;
-      }
-      .btn-primary {
-        background: var(--accent);
-        color: #0a0a0f;
-        font-family: var(--font-display);
-        font-weight: 600;
-        font-size: 0.9rem;
-        padding: 0.75rem 1.75rem;
-        border-radius: 4px;
-        text-decoration: none;
-        transition:
-          opacity 0.2s,
-          transform 0.2s;
-      }
-      .btn-primary:hover {
-        opacity: 0.85;
-        transform: translateY(-2px);
-      }
-      .btn-ghost {
-        border: 1px solid var(--border2);
-        color: var(--muted);
-        font-family: var(--font-display);
-        font-weight: 500;
-        font-size: 0.9rem;
-        padding: 0.75rem 1.75rem;
-        border-radius: 4px;
-        text-decoration: none;
-        transition:
-          border-color 0.2s,
-          color 0.2s;
-      }
-      .btn-ghost:hover {
-        border-color: var(--text);
-        color: var(--text);
+        width: 100%;
       }
 
-      /* PROFILE PHOTO */
+      /* Photo */
       .hero-photo-wrap {
         opacity: 0;
-        animation: fadeUp 0.8s 0.4s forwards;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
+        animation: fadeUp 0.8s 0.2s forwards;
       }
       .hero-photo {
-        width: 400px;
-        height: 400px;
-        border-radius: 200px;
-        border: 1px solid var(--border2);
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        border: 3px solid var(--border2);
         overflow: hidden;
         background: var(--bg3);
-        flex-shrink: 0;
+        position: relative;
+        box-shadow: 0 0 60px rgba(126, 242, 192, 0.08);
       }
       .hero-photo img {
         width: 100%;
@@ -254,10 +187,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: 0.6rem;
       }
       .photo-placeholder svg {
-        opacity: 0.2;
+        opacity: 0.18;
       }
       .photo-placeholder span {
         font-family: var(--font-mono);
@@ -266,69 +199,173 @@
         letter-spacing: 0.08em;
       }
 
-      /* STACK */
-      .hero-stack {
+      /* Hero text */
+      .hero-text {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
-        align-items: center;
-        width: 100%;
-      }
-      .stack-label {
-        font-family: var(--font-mono);
-        font-size: 0.7rem;
-        color: var(--muted);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        margin-bottom: 0.2rem;
-        align-self: flex-start;
-      }
-      .stack-chips {
-        display: flex;
-        gap: 0.45rem;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        font-family: var(--font-mono);
-        font-size: 0.7rem;
-        background: var(--bg3);
-        border: 1px solid var(--border2);
-        color: var(--muted);
-        padding: 0.3rem 0.65rem;
-        border-radius: 3px;
-        letter-spacing: 0.02em;
-      }
-      .chip svg {
-        width: 50px;
-        height: 50px;
-        flex-shrink: 0;
-      }
-      .chip.c-green {
-        border-color: rgba(126, 242, 192, 0.3);
-        color: var(--accent);
-        background: rgba(126, 242, 192, 0.05);
-      }
-      .chip.c-blue {
-        border-color: rgba(91, 191, 255, 0.3);
-        color: var(--accent2);
-        background: rgba(91, 191, 255, 0.05);
-      }
-      .chip.c-amber {
-        border-color: rgba(255, 185, 80, 0.3);
-        color: #ffb950;
-        background: rgba(255, 185, 80, 0.05);
-      }
-      .chip.c-lime {
-        border-color: rgba(100, 210, 100, 0.3);
-        color: #6dd36d;
-        background: rgba(100, 210, 100, 0.05);
+        gap: 0;
       }
 
-      /* DIVIDER */
+      .hero-greeting {
+        font-family: var(--font-display);
+        font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.3rem;
+        opacity: 0;
+        animation: fadeUp 0.6s 0.4s forwards;
+      }
+      .hero-greeting .name {
+        color: var(--accent);
+      }
+
+      .hero-role-line {
+        font-family: var(--font-display);
+        font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: -0.02em;
+        margin-bottom: 1.4rem;
+        opacity: 0;
+        animation: fadeUp 0.6s 0.55s forwards;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .role-prefix {
+        color: var(--muted);
+      }
+
+      /* Typing effect */
+      .typing-wrap {
+        display: inline-flex;
+        align-items: center;
+      }
+      #typing-text {
+        color: var(--accent2);
+      }
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        background: var(--accent2);
+        margin-left: 2px;
+        vertical-align: middle;
+        animation: blink 0.9s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .hero-desc {
+        font-size: 0.97rem;
+        color: var(--muted);
+        max-width: 520px;
+        line-height: 1.8;
+        margin-bottom: 1.8rem;
+        opacity: 0;
+        animation: fadeUp 0.6s 0.7s forwards;
+      }
+      .hero-desc strong {
+        color: var(--text);
+        font-weight: 400;
+      }
+
+      /* Social icons row — like the reference image */
+      .hero-socials {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1.8rem;
+        opacity: 0;
+        animation: fadeUp 0.6s 0.82s forwards;
+      }
+      .social-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        text-decoration: none;
+        transition:
+          border-color 0.2s,
+          color 0.2s,
+          transform 0.2s,
+          background 0.2s;
+      }
+      .social-btn svg {
+        width: 17px;
+        height: 17px;
+      }
+      .social-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        transform: translateY(-3px);
+        background: rgba(126, 242, 192, 0.06);
+      }
+
+      /* CTA buttons */
+      .hero-ctas {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        opacity: 0;
+        animation: fadeUp 0.6s 0.95s forwards;
+      }
+      .btn-primary {
+        background: transparent;
+        color: var(--text);
+        font-family: var(--font-display);
+        font-weight: 500;
+        font-size: 0.9rem;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        border: 1px solid var(--border2);
+        transition:
+          border-color 0.2s,
+          color 0.2s,
+          transform 0.2s,
+          background 0.2s;
+      }
+      .btn-primary:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        transform: translateY(-2px);
+        background: rgba(126, 242, 192, 0.04);
+      }
+      .btn-accent {
+        background: var(--accent);
+        color: #0a0a0f;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        border: none;
+        transition:
+          opacity 0.2s,
+          transform 0.2s;
+      }
+      .btn-accent:hover {
+        opacity: 0.85;
+        transform: translateY(-2px);
+      }
+
+      /* ── DIVIDER ───────────────────────────────── */
       .divider {
         height: 1px;
         background: linear-gradient(
@@ -337,14 +374,14 @@
           var(--border2),
           transparent
         );
-        margin: 0 2rem;
+        margin: 0 3rem;
       }
 
-      /* PROJECTS */
-      #proyectos {
-        max-width: 1100px;
+      /* ── SHARED SECTION STYLES ─────────────────── */
+      .section-wrap {
+        max-width: 1200px;
         margin: 0 auto;
-        padding: 5rem 2rem;
+        padding: 5rem 3rem;
       }
       .section-header {
         display: flex;
@@ -360,12 +397,76 @@
       }
       .section-title {
         font-family: var(--font-display);
-        font-size: 1.8rem;
+        font-size: 1.9rem;
         font-weight: 700;
         letter-spacing: -0.02em;
       }
 
-      /* Separated cards with gap */
+      /* ── SKILLS SECTION ────────────────────────── */
+      #skills {
+        background: transparent;
+      }
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+      .skill-card {
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: 12px;
+        padding: 1.75rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        transition:
+          transform 0.22s ease,
+          border-color 0.22s ease,
+          background 0.22s ease;
+      }
+      .skill-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255, 255, 255, 0.22);
+        background: var(--bg3);
+      }
+      .skill-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .skill-icon svg {
+        width: 26px;
+        height: 26px;
+      }
+      .skill-name {
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .skill-desc {
+        font-size: 0.8rem;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-top: -0.25rem;
+      }
+      .skill-level {
+        width: 100%;
+        height: 3px;
+        background: var(--border2);
+        border-radius: 2px;
+        margin-top: auto;
+      }
+      .skill-level-fill {
+        height: 100%;
+        border-radius: 2px;
+      }
+
+      /* ── PROJECTS ──────────────────────────────── */
       .projects-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -463,11 +564,8 @@
         border: 1px solid var(--border2);
       }
 
-      /* ABOUT */
-      #sobre-mi {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 5rem 2rem;
+      /* ── ABOUT ─────────────────────────────────── */
+      #sobre-mi .section-wrap {
         display: grid;
         grid-template-columns: 1fr 1.2fr;
         gap: 4rem;
@@ -482,7 +580,7 @@
       }
       .about-left h2 {
         font-family: var(--font-display);
-        font-size: 1.8rem;
+        font-size: 1.9rem;
         font-weight: 700;
         letter-spacing: -0.02em;
         line-height: 1.2;
@@ -526,16 +624,11 @@
         line-height: 1.4;
       }
 
-      /* CONTACT */
-      #contacto {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 5rem 2rem 7rem;
-      }
+      /* ── CONTACT ───────────────────────────────── */
       .contact-box {
         background: var(--bg2);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 3rem;
         display: flex;
         justify-content: space-between;
@@ -586,16 +679,16 @@
         flex-shrink: 0;
       }
 
-      /* FOOTER */
+      /* ── FOOTER ────────────────────────────────── */
       footer {
         position: relative;
         z-index: 1;
         border-top: 1px solid var(--border);
-        padding: 1.5rem 2rem;
+        padding: 1.5rem 3rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        max-width: 1100px;
+        max-width: 1200px;
         margin: 0 auto;
       }
       footer p {
@@ -604,10 +697,11 @@
         color: var(--muted);
       }
 
+      /* ── ANIMATIONS ────────────────────────────── */
       @keyframes fadeUp {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(18px);
         }
         to {
           opacity: 1;
@@ -615,41 +709,36 @@
         }
       }
 
-      @media (max-width: 860px) {
+      /* ── RESPONSIVE ────────────────────────────── */
+      @media (max-width: 900px) {
         .hero-inner {
           grid-template-columns: 1fr;
-        }
-        .hero-photo-wrap {
-          flex-direction: row;
-          align-items: flex-start;
-          gap: 1.5rem;
+          gap: 2.5rem;
         }
         .hero-photo {
-          width: 120px;
-          height: 120px;
+          width: 160px;
+          height: 160px;
         }
-        .stack-chips {
-          justify-content: flex-start;
+        #sobre-mi .section-wrap {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
         }
       }
       @media (max-width: 768px) {
         nav {
-          padding: 1rem 1.25rem;
+          padding: 1rem 1.5rem;
         }
         .nav-links {
           display: none;
         }
         #hero {
-          padding: 5rem 1.25rem 4rem;
+          padding: 5rem 1.5rem 4rem;
         }
-        #proyectos,
-        #contacto {
-          padding: 4rem 1.25rem;
+        .section-wrap {
+          padding: 4rem 1.5rem;
         }
-        #sobre-mi {
-          grid-template-columns: 1fr;
-          padding: 4rem 1.25rem;
-          gap: 2.5rem;
+        .divider {
+          margin: 0 1.5rem;
         }
         .contact-box {
           padding: 2rem;
@@ -659,10 +748,19 @@
         .projects-grid {
           grid-template-columns: 1fr;
         }
+        .skills-grid {
+          grid-template-columns: 1fr 1fr;
+        }
         footer {
           flex-direction: column;
           gap: 0.5rem;
           text-align: center;
+          padding: 1.5rem;
+        }
+      }
+      @media (max-width: 480px) {
+        .skills-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -673,8 +771,10 @@
 
     <!-- NAV -->
     <nav>
-      <div class="nav-logo"><span>Dereck</span>Méndez</div>
+      <div class="nav-logo">Dereck<span>Mendez</span></div>
       <ul class="nav-links">
+        <li><a href="#hero">Inicio</a></li>
+        <li><a href="#skills">Skills</a></li>
         <li><a href="#proyectos">Proyectos</a></li>
         <li><a href="#sobre-mi">Sobre mí</a></li>
         <li><a href="#contacto">Contacto</a></li>
@@ -684,72 +784,267 @@
     <!-- HERO -->
     <section id="hero">
       <div class="hero-inner">
-        <!-- Texto -->
-        <div>
-          <p class="hero-label">Data Analyst · People Analytics</p>
-          <h1 class="hero-title">
-            Dereck <span class="accent-word">Méndez</span><br />
-          </h1>
-          <p class="hero-desc">
-            Analista de datos con enfoque en
-            <strong>storytelling analítico</strong> y soluciones accionables.
-            Trabajo con Python, SQL, Power BI y Excel para encontrar el insight
-            que importa.
-          </p>
-          <div class="hero-ctas">
-            <a href="#proyectos" class="btn-primary">Ver proyectos →</a>
-            <a href="#contacto" class="btn-ghost">Hablemos</a>
+        <!-- Foto circular -->
+        <div class="hero-photo-wrap">
+          <div class="hero-photo">
+            <img src="images/dereck_mendez.png" alt="Dereck Mendez" />
+            <div class="photo-placeholder">
+              <svg
+                width="56"
+                height="56"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#7a7a90"
+                stroke-width="1.1"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+              </svg>
+              <span>tu foto aquí</span>
+            </div>
           </div>
         </div>
 
-        <!-- Foto + stack -->
-        <div class="hero-photo-wrap">
-          <div class="hero-photo">
-            <img src="images/dereck_mendez.png" alt="Dereck Méndez" />
+        <!-- Texto -->
+        <div class="hero-text">
+          <h1 class="hero-greeting">
+            Hola, soy <span class="name">Dereck</span>
+          </h1>
+
+          <p class="hero-role-line">
+            <span class="role-prefix">Soy</span>
+            <span class="typing-wrap"
+              ><span id="typing-text"></span><span class="cursor"></span
+            ></span>
+          </p>
+
+          <p class="hero-desc">
+            Analista de datos con enfoque en
+            <strong>storytelling analítico</strong> y soluciones accionables.
+            Transformo datos complejos en decisiones estratégicas usando Python,
+            SQL, Power BI y Excel.
+          </p>
+
+          <!-- Íconos sociales circulares -->
+          <div class="hero-socials">
+            <a
+              href="https://linkedin.com/in/dereckmendez"
+              target="_blank"
+              class="social-btn"
+              title="LinkedIn"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2V9zm2-5a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://github.com/ayorick23"
+              target="_blank"
+              class="social-btn"
+              title="GitHub"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"
+                />
+              </svg>
+            </a>
+            <a
+              href="mailto:mayorickhenry@gmail.com"
+              class="social-btn"
+              title="Email"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <polyline points="2,4 12,13 22,4" />
+              </svg>
+            </a>
+            <a
+              href="https://kaggle.com/dereckmendez"
+              target="_blank"
+              class="social-btn"
+              title="Kaggle"
+            >
+              <img
+                src="assets/kaggle.png"
+                alt="Kaggle"
+                style="width: 17px; height: 17px"
+              />
+            </a>
           </div>
 
-          <div class="hero-stack">
-            <p class="stack-label">Stack</p>
-            <div class="stack-chips">
-              <!-- Python -->
-              <span class="chip c-green">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M11.9 2C7.2 2 7.5 4 7.5 4v2h4.5v.5H5.5S2 6.1 2 11s3 4.8 3 4.8h1.8v-2.3S6.6 11 9 11h5.5s2.5.04 2.5-2.4V4.5S17.4 2 11.9 2zm-1.4 1.5a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8zM12.1 22c4.7 0 4.4-2 4.4-2v-2h-4.5v-.5h6.5S22 17.9 22 13s-3-4.8-3-4.8h-1.8v2.3s.2 2.5-2.2 2.5H9.5S7 13 7 15.4v4.1S6.6 22 12.1 22zm1.4-1.5a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8z"
-                  />
-                </svg>
-                Python
-              </span>
+          <!-- CTAs -->
+          <div class="hero-ctas">
+            <a href="#contacto" class="btn-accent">Contáctame</a>
+            <a href="#proyectos" class="btn-primary">Ver proyectos</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-              <!-- SQL -->
-              <span class="chip c-blue">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M12 2C6.48 2 2 4.02 2 6.5v11C2 19.98 6.48 22 12 22s10-2.02 10-4.5v-11C22 4.02 17.52 2 12 2zm0 2c4.41 0 8 1.57 8 3.5S16.41 11 12 11 4 9.43 4 7.5 7.59 4 12 4zm0 16c-4.41 0-8-1.57-8-3.5V15c1.69 1.28 4.7 2 8 2s6.31-.72 8-2v1.5c0 1.93-3.59 3.5-8 3.5zm0-5c-4.41 0-8-1.57-8-3.5V10c1.69 1.28 4.7 2 8 2s6.31-.72 8-2v1.5c0 1.93-3.59 3.5-8 3.5z"
-                  />
-                </svg>
-                SQL
-              </span>
+    <div class="divider"></div>
 
-              <!-- Power BI -->
-              <span class="chip c-amber">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M3 3h4v18H3V3zm5 5h4v13H8V8zm5 3h4v10h-4V11zm5-4h3v14h-3V7z"
-                  />
-                </svg>
-                Power BI
-              </span>
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="section-wrap">
+        <div class="section-header">
+          <span class="section-num">01 /</span>
+          <h2 class="section-title">Stack tecnológico</h2>
+        </div>
 
-              <!-- Excel -->
-              <span class="chip c-lime">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-4.5 5 2 3-2 3H10l1.5-3L10 14h1.5zm3 0 2 3-2 3H13l1.5-3L13 14h1.5z"
-                  />
-                </svg>
-                Excel
-              </span>
+        <div class="skills-grid">
+          <!-- Python -->
+          <div class="skill-card">
+            <div
+              class="skill-icon"
+              style="background: rgba(126, 242, 192, 0.1)"
+            >
+              <svg viewBox="0 0 24 24" fill="#7ef2c0">
+                <path
+                  d="M11.9 2C7.2 2 7.5 4 7.5 4v2h4.5v.5H5.5S2 6.1 2 11s3 4.8 3 4.8h1.8v-2.3S6.6 11 9 11h5.5s2.5.04 2.5-2.4V4.5S17.4 2 11.9 2zm-1.4 1.5a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8zM12.1 22c4.7 0 4.4-2 4.4-2v-2h-4.5v-.5h6.5S22 17.9 22 13s-3-4.8-3-4.8h-1.8v2.3s.2 2.5-2.2 2.5H9.5S7 13 7 15.4v4.1S6.6 22 12.1 22zm1.4-1.5a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p class="skill-name">Python</p>
+              <p class="skill-desc">
+                Pandas, NumPy, Matplotlib, scikit-learn, Prophet
+              </p>
+            </div>
+            <div class="skill-level">
+              <div
+                class="skill-level-fill"
+                style="width: 88%; background: var(--accent)"
+              ></div>
+            </div>
+          </div>
+
+          <!-- SQL -->
+          <div class="skill-card">
+            <div class="skill-icon" style="background: rgba(91, 191, 255, 0.1)">
+              <svg viewBox="0 0 24 24" fill="#5bbfff">
+                <path
+                  d="M12 2C6.48 2 2 4.02 2 6.5v11C2 19.98 6.48 22 12 22s10-2.02 10-4.5v-11C22 4.02 17.52 2 12 2zm0 2c4.41 0 8 1.57 8 3.5S16.41 11 12 11 4 9.43 4 7.5 7.59 4 12 4zm0 16c-4.41 0-8-1.57-8-3.5V15c1.69 1.28 4.7 2 8 2s6.31-.72 8-2v1.5c0 1.93-3.59 3.5-8 3.5zm0-5c-4.41 0-8-1.57-8-3.5V10c1.69 1.28 4.7 2 8 2s6.31-.72 8-2v1.5c0 1.93-3.59 3.5-8 3.5z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p class="skill-name">SQL</p>
+              <p class="skill-desc">
+                PostgreSQL, MySQL, BigQuery, consultas complejas y optimización
+              </p>
+            </div>
+            <div class="skill-level">
+              <div
+                class="skill-level-fill"
+                style="width: 92%; background: var(--accent2)"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Power BI -->
+          <div class="skill-card">
+            <div class="skill-icon" style="background: rgba(255, 185, 80, 0.1)">
+              <svg viewBox="0 0 24 24" fill="#ffb950">
+                <path
+                  d="M3 3h4v18H3V3zm5 5h4v13H8V8zm5 3h4v10h-4V11zm5-4h3v14h-3V7z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p class="skill-name">Power BI</p>
+              <p class="skill-desc">
+                DAX, Power Query, dashboards interactivos y reportes ejecutivos
+              </p>
+            </div>
+            <div class="skill-level">
+              <div
+                class="skill-level-fill"
+                style="width: 85%; background: #ffb950"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Excel -->
+          <div class="skill-card">
+            <div
+              class="skill-icon"
+              style="background: rgba(100, 210, 100, 0.1)"
+            >
+              <svg viewBox="0 0 24 24" fill="#6dd36d">
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-4.5 5 2 3-2 3H10l1.5-3L10 14h1.5zm3 0 2 3-2 3H13l1.5-3L13 14h1.5z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p class="skill-name">Excel</p>
+              <p class="skill-desc">
+                Tablas dinámicas, fórmulas avanzadas, VBA y análisis de datos
+              </p>
+            </div>
+            <div class="skill-level">
+              <div
+                class="skill-level-fill"
+                style="width: 90%; background: #6dd36d"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Estadística -->
+          <div class="skill-card">
+            <div
+              class="skill-icon"
+              style="background: rgba(255, 126, 179, 0.1)"
+            >
+              <svg viewBox="0 0 24 24" fill="#ff7eb3">
+                <path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+              </svg>
+            </div>
+            <div>
+              <p class="skill-name">Estadística</p>
+              <p class="skill-desc">
+                Análisis exploratorio, regresión, clustering, series de tiempo
+              </p>
+            </div>
+            <div class="skill-level">
+              <div
+                class="skill-level-fill"
+                style="width: 80%; background: var(--accent3)"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Storytelling -->
+          <div class="skill-card">
+            <div
+              class="skill-icon"
+              style="background: rgba(180, 130, 255, 0.1)"
+            >
+              <svg viewBox="0 0 24 24" fill="#b48cff">
+                <path
+                  d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2V3zm20 0h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7V3z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p class="skill-name">Data Storytelling</p>
+              <p class="skill-desc">
+                Visualización efectiva, narrativa de datos para stakeholders
+              </p>
+            </div>
+            <div class="skill-level">
+              <div
+                class="skill-level-fill"
+                style="width: 87%; background: #b48cff"
+              ></div>
             </div>
           </div>
         </div>
@@ -760,87 +1055,98 @@
 
     <!-- PROJECTS -->
     <section id="proyectos">
-      <div class="section-header">
-        <span class="section-num">01 /</span>
-        <h2 class="section-title">Proyectos destacados</h2>
-      </div>
+      <div class="section-wrap">
+        <div class="section-header">
+          <span class="section-num">02 /</span>
+          <h2 class="section-title">Proyectos destacados</h2>
+        </div>
 
-      <div class="projects-grid">
-        <a
-          class="project-card"
-          href="https://github.com/tu-usuario/proyecto-1"
-          target="_blank"
-        >
-          <div class="proj-top">
-            <div class="proj-icon" style="background: rgba(126, 242, 192, 0.1)">
-              📊
+        <div class="projects-grid">
+          <a
+            class="project-card"
+            href="https://github.com/tu-usuario/proyecto-1"
+            target="_blank"
+          >
+            <div class="proj-top">
+              <div
+                class="proj-icon"
+                style="background: rgba(126, 242, 192, 0.1)"
+              >
+                📊
+              </div>
+              <span class="proj-arrow">↗</span>
             </div>
-            <span class="proj-arrow">↗</span>
-          </div>
-          <h3 class="proj-title">Análisis de ventas y forecasting</h3>
-          <p class="proj-desc">
-            Pipeline de análisis de series de tiempo sobre datos históricos de
-            ventas. Modelo predictivo con Prophet que redujo el error de
-            estimación en un 18%. Dashboard interactivo para el equipo
-            comercial.
-          </p>
-          <div class="proj-tags">
-            <span class="tag tag-py">Python</span>
-            <span class="tag tag-sql">SQL</span>
-            <span class="tag tag-bi">Power BI</span>
-            <span class="tag tag-gen">Prophet</span>
-          </div>
-        </a>
+            <h3 class="proj-title">Análisis de ventas y forecasting</h3>
+            <p class="proj-desc">
+              Pipeline de análisis de series de tiempo sobre datos históricos de
+              ventas. Modelo predictivo con Prophet que redujo el error de
+              estimación en un 18%. Dashboard interactivo para el equipo
+              comercial.
+            </p>
+            <div class="proj-tags">
+              <span class="tag tag-py">Python</span>
+              <span class="tag tag-sql">SQL</span>
+              <span class="tag tag-bi">Power BI</span>
+              <span class="tag tag-gen">Prophet</span>
+            </div>
+          </a>
 
-        <a
-          class="project-card"
-          href="https://github.com/tu-usuario/proyecto-2"
-          target="_blank"
-        >
-          <div class="proj-top">
-            <div class="proj-icon" style="background: rgba(91, 191, 255, 0.1)">
-              🔍
+          <a
+            class="project-card"
+            href="https://github.com/tu-usuario/proyecto-2"
+            target="_blank"
+          >
+            <div class="proj-top">
+              <div
+                class="proj-icon"
+                style="background: rgba(91, 191, 255, 0.1)"
+              >
+                🔍
+              </div>
+              <span class="proj-arrow">↗</span>
             </div>
-            <span class="proj-arrow">↗</span>
-          </div>
-          <h3 class="proj-title">Segmentación de clientes con clustering</h3>
-          <p class="proj-desc">
-            Análisis RFM y clustering K-Means sobre base de datos de 500K+
-            registros. Identificación de 5 segmentos accionables que guiaron la
-            estrategia de marketing para Q3 y Q4.
-          </p>
-          <div class="proj-tags">
-            <span class="tag tag-py">Python</span>
-            <span class="tag tag-sql">SQL</span>
-            <span class="tag tag-gen">scikit-learn</span>
-            <span class="tag tag-gen">Pandas</span>
-          </div>
-        </a>
+            <h3 class="proj-title">Segmentación de clientes con clustering</h3>
+            <p class="proj-desc">
+              Análisis RFM y clustering K-Means sobre base de datos de 500K+
+              registros. Identificación de 5 segmentos accionables que guiaron
+              la estrategia de marketing para Q3 y Q4.
+            </p>
+            <div class="proj-tags">
+              <span class="tag tag-py">Python</span>
+              <span class="tag tag-sql">SQL</span>
+              <span class="tag tag-gen">scikit-learn</span>
+              <span class="tag tag-gen">Pandas</span>
+            </div>
+          </a>
 
-        <a
-          class="project-card"
-          href="https://github.com/tu-usuario/proyecto-3"
-          target="_blank"
-        >
-          <div class="proj-top">
-            <div class="proj-icon" style="background: rgba(255, 185, 80, 0.1)">
-              ⚡
+          <a
+            class="project-card"
+            href="https://github.com/tu-usuario/proyecto-3"
+            target="_blank"
+          >
+            <div class="proj-top">
+              <div
+                class="proj-icon"
+                style="background: rgba(255, 185, 80, 0.1)"
+              >
+                ⚡
+              </div>
+              <span class="proj-arrow">↗</span>
             </div>
-            <span class="proj-arrow">↗</span>
-          </div>
-          <h3 class="proj-title">Dashboard de KPIs operativos</h3>
-          <p class="proj-desc">
-            Diseño e implementación de un dashboard ejecutivo con métricas
-            operativas críticas. Integración con fuentes de datos múltiples y
-            actualización automatizada con Python y SQL.
-          </p>
-          <div class="proj-tags">
-            <span class="tag tag-bi">Power BI</span>
-            <span class="tag tag-sql">SQL</span>
-            <span class="tag tag-py">Python</span>
-            <span class="tag tag-gen">Excel</span>
-          </div>
-        </a>
+            <h3 class="proj-title">Dashboard de KPIs operativos</h3>
+            <p class="proj-desc">
+              Diseño e implementación de un dashboard ejecutivo con métricas
+              operativas críticas. Integración con fuentes de datos múltiples y
+              actualización automatizada con Python y SQL.
+            </p>
+            <div class="proj-tags">
+              <span class="tag tag-bi">Power BI</span>
+              <span class="tag tag-sql">SQL</span>
+              <span class="tag tag-py">Python</span>
+              <span class="tag tag-gen">Excel</span>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -848,42 +1154,45 @@
 
     <!-- ABOUT -->
     <section id="sobre-mi">
-      <div class="about-left">
-        <p class="about-num">02 /</p>
-        <h2>Sobre mí</h2>
-        <p>
-          Soy un analista de datos apasionado por transformar conjuntos de datos
-          complejos en
-          <strong>narrativas claras y decisiones estratégicas</strong>. Tengo
-          experiencia trabajando con equipos de negocio, producto y tecnología.
-        </p>
-        <p>
-          Mi enfoque combina rigor técnico con
-          <strong>pensamiento de negocio</strong>: no solo proceso datos, sino
-          que los contextualizo para que tengan impacto real en los resultados
-          de la organización.
-        </p>
-        <p>
-          Actualiza este texto con tu historia real — años de experiencia,
-          industrias en las que has trabajado, logros concretos.
-        </p>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-box">
-          <p class="stat-num">3+</p>
-          <p class="stat-label">años de experiencia en análisis de datos</p>
+      <div class="section-wrap">
+        <div class="about-left">
+          <p class="about-num">03 /</p>
+          <h2>Sobre mí</h2>
+          <p>
+            Soy un analista de datos apasionado por transformar conjuntos de
+            datos complejos en
+            <strong>narrativas claras y decisiones estratégicas</strong>. Tengo
+            experiencia trabajando con equipos de negocio, producto y
+            tecnología.
+          </p>
+          <p>
+            Mi enfoque combina rigor técnico con
+            <strong>pensamiento de negocio</strong>: no solo proceso datos, sino
+            que los contextualizo para que tengan impacto real en los resultados
+            de la organización.
+          </p>
+          <p>
+            Actualiza este texto con tu historia real — años de experiencia,
+            industrias en las que has trabajado, logros concretos.
+          </p>
         </div>
-        <div class="stat-box">
-          <p class="stat-num">10+</p>
-          <p class="stat-label">proyectos de análisis completados</p>
-        </div>
-        <div class="stat-box">
-          <p class="stat-num">4</p>
-          <p class="stat-label">herramientas de BI dominadas</p>
-        </div>
-        <div class="stat-box">
-          <p class="stat-num">∞</p>
-          <p class="stat-label">curiosidad por los datos</p>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <p class="stat-num">3+</p>
+            <p class="stat-label">años de experiencia en análisis de datos</p>
+          </div>
+          <div class="stat-box">
+            <p class="stat-num">10+</p>
+            <p class="stat-label">proyectos de análisis completados</p>
+          </div>
+          <div class="stat-box">
+            <p class="stat-num">4</p>
+            <p class="stat-label">herramientas de BI dominadas</p>
+          </div>
+          <div class="stat-box">
+            <p class="stat-num">∞</p>
+            <p class="stat-label">curiosidad por los datos</p>
+          </div>
         </div>
       </div>
     </section>
@@ -892,58 +1201,103 @@
 
     <!-- CONTACT -->
     <section id="contacto">
-      <div class="contact-box">
-        <div class="contact-left">
-          <h2>¿Hablamos?</h2>
-          <p>Abierto a nuevas oportunidades y proyectos interesantes.</p>
-        </div>
-        <div class="contact-links">
-          <a href="mailto:mayorickhenry@gmail.com" class="contact-link">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
+      <div class="section-wrap">
+        <div class="contact-box">
+          <div class="contact-left">
+            <h2>¿Hablamos?</h2>
+            <p>Abierto a nuevas oportunidades y proyectos interesantes.</p>
+          </div>
+          <div class="contact-links">
+            <a href="mailto:mayorickhenry@gmail.com" class="contact-link">
+              <img src="assets/gmail.png" alt="gmail" width="10" height="10" />
+
+              mayorickhenry@gmail.com
+            </a>
+
+            <a
+              href="https://linkedin.com/in/dereckmendez"
+              target="_blank"
+              class="contact-link"
             >
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <polyline points="2,4 12,13 22,4" />
-            </svg>
-            mayorickhenry@gmail.com
-          </a>
-
-          <a
-            href="https://linkedin.com/in/dereckmendez"
-            target="_blank"
-            class="contact-link"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2V9zm2-5a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"
+              <img
+                src="assets/linkedin.png"
+                alt="linkedin"
+                width="10"
+                height="10"
               />
-            </svg>
-            LinkedIn
-          </a>
+              LinkedIn
+            </a>
 
-          <a
-            href="https://github.com/ayorick23"
-            target="_blank"
-            class="contact-link"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"
+            <a
+              href="https://github.com/ayorick23"
+              target="_blank"
+              class="contact-link"
+            >
+              <img
+                src="assets/github.png"
+                alt="github"
+                width="10"
+                height="10"
               />
-            </svg>
-            GitHub
-          </a>
+              GitHub
+            </a>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-      <p>© 2026 Dereck Méndez</p>
+      <p>© 2026 Dereck Mendez</p>
       <p>Hecho con HTML · Publicado en GitHub Pages</p>
     </footer>
+
+    <!-- TYPING EFFECT SCRIPT -->
+    <script>
+      const roles = [
+        "Data Analyst",
+        "People Analytics Specialist",
+        "BI Developer",
+        "Python Analyst",
+      ];
+      let roleIndex = 0;
+      let charIndex = 0;
+      let deleting = false;
+      let pause = false;
+      const el = document.getElementById("typing-text");
+
+      function type() {
+        if (pause) {
+          setTimeout(type, 1400);
+          pause = false;
+          return;
+        }
+
+        const current = roles[roleIndex];
+        if (!deleting) {
+          el.textContent = current.slice(0, charIndex + 1);
+          charIndex++;
+          if (charIndex === current.length) {
+            pause = true;
+            deleting = true;
+            setTimeout(type, 60);
+            return;
+          }
+          setTimeout(type, 75);
+        } else {
+          el.textContent = current.slice(0, charIndex - 1);
+          charIndex--;
+          if (charIndex === 0) {
+            deleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+            setTimeout(type, 350);
+            return;
+          }
+          setTimeout(type, 38);
+        }
+      }
+
+      setTimeout(type, 1200);
+    </script>
   </body>
 </html>
