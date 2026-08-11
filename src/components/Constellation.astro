@@ -1,0 +1,76 @@
+---
+import { constellationNodes, constellationEdges } from "../data/constellation";
+import type { UICopy } from "../content/i18n/types";
+
+interface Props {
+  ui: UICopy;
+}
+
+const { ui } = Astro.props;
+const labels = ui.hero.constellation;
+---
+
+<div
+  data-constellation
+  data-edges={JSON.stringify(constellationEdges)}
+  class="relative aspect-[1/0.92] min-h-[380px] w-full"
+>
+  <canvas data-constellation-canvas class="absolute inset-0 h-full w-full"></canvas>
+  {
+    constellationNodes.map((node) => {
+      const copy = labels[node.id];
+      return (
+        <div
+          data-constellation-node
+          data-x={node.x}
+          data-y={node.y}
+          class="absolute h-0 w-0"
+          style={`left:${node.x}%;top:${node.y}%`}
+        >
+          <button
+            type="button"
+            data-constellation-hit
+            aria-label={`${copy.label} — ${copy.description}`}
+            class="absolute -top-6 -left-6 h-12 w-12 touch-none cursor-grab rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing"
+          />
+          <div
+            data-constellation-label
+            class="pointer-events-none absolute top-[-8px] w-[170px]"
+            style={
+              node.side === "l"
+                ? "right:14px;text-align:right"
+                : "left:14px;text-align:left"
+            }
+          >
+            <div data-label-title class="font-display text-[13px] leading-[1.2] font-semibold">
+              {copy.label}
+            </div>
+            <div data-label-desc class="mt-[5px] font-mono text-[10.5px] leading-[1.42] text-ink-3">
+              {copy.description}
+            </div>
+          </div>
+        </div>
+      );
+    })
+  }
+</div>
+
+<style>
+  [data-label-title] {
+    color: var(--ink-2);
+    transition:
+      color 0.25s ease,
+      letter-spacing 0.25s ease;
+  }
+  [data-constellation-node].is-active [data-label-title] {
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  [data-label-desc] {
+    opacity: 0.42;
+    transition: opacity 0.3s ease;
+  }
+  [data-constellation-node].is-active [data-label-desc] {
+    opacity: 1;
+  }
+</style>

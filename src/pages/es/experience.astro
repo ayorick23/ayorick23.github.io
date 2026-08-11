@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ExperienceView from "../../components/views/ExperienceView.astro";
+import { getUI } from "../../lib/i18n";
+
+const ui = getUI("es");
+---
+
+<BaseLayout pageTitle={ui.nav.experience}>
+  <ExperienceView />
+</BaseLayout>

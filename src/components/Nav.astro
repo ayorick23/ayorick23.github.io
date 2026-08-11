@@ -1,0 +1,105 @@
+---
+import { Icon } from "astro-icon/components";
+import ThemeToggle from "./ThemeToggle.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { navItems } from "../data/nav";
+import { getCvHref } from "../lib/cv";
+import { localizePath, type Locale } from "../lib/i18n";
+import type { UICopy } from "../content/i18n/types";
+
+interface Props {
+  ui: UICopy;
+  locale: Locale;
+}
+
+const { ui, locale } = Astro.props;
+const homeHref = localizePath("/", locale);
+const cvHref = getCvHref(locale);
+---
+
+<header class="fixed top-[18px] right-0 left-0 z-[60] flex justify-center px-[18px]">
+  <nav
+    class="shadow-elevated flex w-full max-w-[1180px] items-center gap-[18px] rounded-[999px] border border-line bg-veil py-[9px] pr-[10px] pl-5 backdrop-blur-[22px] backdrop-saturate-150"
+    style={`box-shadow: var(--shadow-elevated);`}
+  >
+    <a href={homeHref} class="pr-1 font-display text-[15px] font-bold tracking-[0.14em] text-ink">
+      DM
+    </a>
+
+    <div class="hidden flex-1 justify-center gap-1 md:flex">
+      {
+        navItems.map((item) => (
+          <a
+            href={`${homeHref}${item.href}`}
+            class="rounded-[999px] px-[13px] py-[9px] font-display text-[13.5px] font-medium text-ink-2 transition-colors duration-200 ease-out hover:bg-veil-2 hover:text-ink"
+          >
+            {ui.nav[item.id]}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="ml-auto flex items-center gap-2">
+      <LanguageSwitcher ui={ui} locale={locale} class="hidden sm:flex" />
+      {
+        cvHref ? (
+          <a
+            href={cvHref}
+            download
+            class="flex h-[34px] items-center rounded-[999px] bg-btn-bg px-4 font-display text-[12.5px] font-semibold text-btn-fg transition-all duration-200 ease-out hover:-translate-y-px hover:opacity-90"
+          >
+            {ui.nav.cv}
+          </a>
+        ) : (
+          <span
+            aria-disabled="true"
+            title={ui.nav.cv}
+            class="hidden h-[34px] items-center rounded-[999px] border border-dashed border-line-2 px-4 font-display text-[12.5px] font-semibold text-ink-3 sm:flex"
+          >
+            {ui.nav.cv}
+          </span>
+        )
+      }
+      <ThemeToggle ui={ui} />
+      <button
+        type="button"
+        data-nav-toggle
+        aria-expanded="false"
+        aria-controls="mobile-nav-panel"
+        aria-label={ui.nav.menu}
+        class="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-line text-ink-2 md:hidden"
+      >
+        <Icon name="lucide:menu" class="h-[16px] w-[16px]" />
+      </button>
+    </div>
+  </nav>
+
+  <div
+    id="mobile-nav-panel"
+    data-nav-panel
+    data-open="false"
+    class="shadow-elevated absolute top-[68px] left-[18px] w-[calc(100%-36px)] max-w-[420px] rounded-[20px] border border-line bg-veil p-2 opacity-0 backdrop-blur-[22px] transition-all duration-200 ease-out data-[open=false]:pointer-events-none data-[open=true]:opacity-100 md:hidden"
+    style="box-shadow: var(--shadow-elevated);"
+  >
+    {
+      navItems.map((item) => (
+        <a
+          href={`${homeHref}${item.href}`}
+          class="block rounded-2xl px-4 py-3 font-display text-[15px] font-medium text-ink-2 hover:bg-veil-2 hover:text-ink"
+        >
+          {ui.nav[item.id]}
+        </a>
+      ))
+    }
+    <div class="mt-1 flex items-center justify-between border-t border-line px-4 pt-3 pb-2">
+      <LanguageSwitcher ui={ui} locale={locale} />
+      {
+        cvHref && (
+          <a href={cvHref} download class="font-mono text-[12px] text-accent">
+            {ui.nav.cv}
+          </a>
+        )
+      }
+    </div>
+  </div>
+</header>

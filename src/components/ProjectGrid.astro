@@ -1,0 +1,18 @@
+---
+import ProjectCard from "./ProjectCard.astro";
+import type { ProjectEntry } from "../lib/projects";
+import type { UICopy } from "../content/i18n/types";
+import type { Locale } from "../lib/i18n";
+
+interface Props {
+  projects: ProjectEntry[];
+  ui: UICopy;
+  locale: Locale;
+}
+
+const { projects, ui, locale } = Astro.props;
+---
+
+<div class="grid grid-cols-[repeat(auto-fit,minmax(290px,1fr))] gap-5">
+  {projects.map((project, i) => <ProjectCard project={project} ui={ui} locale={locale} index={i} />)}
+</div>

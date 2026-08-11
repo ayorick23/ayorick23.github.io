@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import profilePhoto from "../../assets/images/dereck-mendez-cutout.png";
+import Button from "../Button.astro";
+import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
+import { getCvHref } from "../../lib/cv";
+
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+const homeHref = localizePath("/", locale);
+const cvHref = getCvHref(locale);
+---
+
+<section class="mx-auto max-w-[1100px] px-8 pt-[150px] pb-[80px]">
+  <a
+    href={homeHref}
+    class="mb-[38px] inline-flex items-center gap-2 font-mono text-[12px] text-ink-3 transition-colors duration-200 ease-out hover:text-ink"
+  >
+    ← {ui.common.backToHome}
+  </a>
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-start gap-12">
+    <div
+      class="shadow-elevated rounded-[22px] border border-line bg-[image:var(--gradient-card)] p-[14px]"
+      style="box-shadow: var(--shadow-elevated);"
+    >
+      <div class="relative aspect-[4/5] overflow-hidden rounded-[14px] bg-surface">
+        <Image
+          src={profilePhoto}
+          alt="Dereck Mendez"
+          width={640}
+          height={800}
+          class="h-full w-full object-cover"
+          style="filter: var(--photo-filter); object-position: 50% 22%"
+        />
+        <div
+          class="pointer-events-none absolute inset-0"
+          style="background: linear-gradient(190deg, transparent 40%, rgba(5,6,9,0.55)); mix-blend-mode: multiply"
+        >
+        </div>
+      </div>
+      <div class="flex items-center justify-between px-[6px] pt-[14px] pb-1">
+        <span class="font-mono text-[11px] tracking-[0.14em] text-ink-3">DERECK MENDEZ</span>
+        <span class="font-mono text-[11px] text-accent">{ui.about.photoCaption}</span>
+      </div>
+    </div>
+    <div>
+      <div class="mb-[18px] font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.about.kicker}</div>
+      <h1 class="mb-[26px] font-display text-[clamp(1.9rem,4vw,2.9rem)] leading-[1.1] font-light tracking-[-0.03em]">
+        {ui.about.headingLead} <span class="font-semibold">{ui.about.headingAccent}</span>
+      </h1>
+      {ui.about.full.behindDataParagraphs.map((p) => (
+        <p class="mb-4 font-display text-[15.5px] leading-[1.72] text-ink-2">{p}</p>
+      ))}
+      <div class="mt-8 flex flex-wrap gap-[10px]">
+        {cvHref && (
+          <Button href={cvHref} variant="primary">
+            {ui.nav.cv}
+          </Button>
+        )}
+        <Button href={`${homeHref}#contact`} variant="secondary">
+          {ui.contact.cta}
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-[70px] max-w-[720px] border-t border-line pt-[46px]">
+    <h2 class="mb-5 font-display text-[clamp(1.4rem,2.6vw,1.9rem)] leading-[1.2] font-light tracking-[-0.02em]">
+      {ui.about.full.beyondHeading}
+    </h2>
+    {ui.about.full.beyondParagraphs.map((p) => (
+      <p class="mb-4 font-display text-[15px] leading-[1.72] text-ink-2">{p}</p>
+    ))}
+  </div>
+</section>

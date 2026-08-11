@@ -1,0 +1,238 @@
+---
+import { Icon } from "astro-icon/components";
+import Constellation from "../Constellation.astro";
+import ProjectGrid from "../ProjectGrid.astro";
+import CapabilityCard from "../CapabilityCard.astro";
+import Timeline from "../Timeline.astro";
+import Button from "../Button.astro";
+import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
+import { getFeaturedProjects } from "../../lib/projects";
+import { coreTools, exploringTools } from "../../data/tools";
+import { socialLinks } from "../../data/social-links";
+
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+const featuredProjects = await getFeaturedProjects(locale, 3);
+
+const socialLabels: Record<string, string> = { github: "GitHub", linkedin: "LinkedIn", email: "Email" };
+---
+
+<section
+  class="mx-auto grid max-w-[1240px] grid-cols-[repeat(auto-fit,minmax(420px,1fr))] items-center gap-10 px-8 pt-[150px] pb-[70px] min-h-screen"
+>
+  <div class="max-w-[560px]">
+    <div class="mb-[26px] flex items-center gap-[10px]">
+      <span
+        class="h-[5px] w-[5px] rounded-full bg-accent"
+        style="box-shadow: 0 0 12px var(--accent)"
+      ></span>
+      <span class="font-mono text-[11px] tracking-[0.26em] text-ink-2">{ui.hero.kicker}</span>
+    </div>
+    <h1
+      class="mb-[26px] animate-[fade-up_0.6s_ease_0.15s_both] text-[clamp(2.4rem,5.4vw,4.1rem)] leading-[1.06] font-light tracking-[-0.03em] text-wrap-balance"
+    >
+      {ui.hero.titleLead} <span class="font-semibold">{ui.hero.titleAccent}</span>{" "}
+      <span class="font-semibold text-accent">{ui.hero.titleTail}</span>
+    </h1>
+    <p
+      class="mb-[38px] max-w-[430px] animate-[fade-up_0.6s_ease_0.3s_both] text-[16.5px] leading-[1.62] text-ink-2"
+    >
+      {ui.hero.subtitle}
+    </p>
+    <div class="flex flex-wrap gap-3 animate-[fade-up_0.6s_ease_0.45s_both]">
+      <Button href="#work" variant="primary">
+        {ui.hero.ctaPrimary} <span class="opacity-60">→</span>
+      </Button>
+      <Button href="#about" variant="secondary">{ui.hero.ctaSecondary}</Button>
+    </div>
+    <div class="mt-16 flex items-center gap-3 animate-[fade-up_0.6s_ease_0.6s_both]">
+      <span class="relative block h-[34px] w-px overflow-hidden bg-line-2">
+        <span
+          class="absolute inset-0"
+          style="background: linear-gradient(var(--accent), transparent); animation: dm-float 2.4s ease-in-out infinite"
+        ></span>
+      </span>
+      <span class="font-mono text-[11px] tracking-[0.16em] text-ink-3">{ui.hero.scrollHint}</span>
+    </div>
+  </div>
+
+  <Constellation ui={ui} />
+</section>
+
+<section id="work" data-reveal class="mx-auto max-w-[1240px] px-8 pt-[70px] pb-10 scroll-mt-[100px]">
+  <div class="mb-11 flex flex-wrap items-end justify-between gap-5">
+    <div>
+      <div class="mb-[18px] flex items-center gap-[9px]">
+        <span class="h-1 w-1 rounded-full bg-accent"></span>
+        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.work.kicker}</span>
+      </div>
+      <h2 class="max-w-xl font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
+        <span class="font-semibold">{ui.work.headingLead}</span> {ui.work.headingAccent}
+      </h2>
+      <p class="mt-3 max-w-lg font-display text-[14.5px] leading-[1.6] text-ink-2">{ui.work.description}</p>
+    </div>
+    <a
+      href={localizePath("/projects", locale)}
+      class="inline-flex items-center gap-2 border-b border-line-2 pb-1 font-display text-[13.5px] font-medium text-ink-2 transition-all duration-200 ease-out hover:gap-3 hover:text-ink"
+    >
+      {ui.work.viewAll} <span>→</span>
+    </a>
+  </div>
+  <ProjectGrid projects={featuredProjects} ui={ui} locale={locale} />
+</section>
+
+<section data-reveal class="mx-auto max-w-[1240px] px-8 pt-[22px] pb-[70px]">
+  <div class="rounded-[18px] border border-line bg-veil p-[28px_26px] backdrop-blur-[18px]">
+    <div class="mb-[14px] flex items-center gap-[9px]">
+      <span class="h-1 w-1 rounded-full bg-accent"></span>
+      <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.tools.kicker}</span>
+    </div>
+    <h2 class="mb-6 max-w-xl font-display text-[clamp(1.35rem,2.6vw,1.9rem)] leading-[1.2] font-light tracking-[-0.02em]">
+      {ui.tools.description}
+    </h2>
+    <div class="flex flex-wrap gap-4">
+      {
+        coreTools.map((tool) => (
+          <div class="group relative z-0 flex h-16 w-16 items-center justify-center rounded-xl border border-line bg-surface text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-line-2 hover:text-ink hover:z-20 focus-within:z-20">
+            <Icon name={tool.icon} class="h-8 w-8" />
+            <span
+              role="tooltip"
+              class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+            >
+              {tool.name}
+            </span>
+            <span class="sr-only">{tool.name}</span>
+          </div>
+        ))
+      }
+    </div>
+    {
+      exploringTools.length > 0 && (
+        <div class="mt-6 flex flex-wrap items-center gap-4 border-t border-line pt-5">
+          <span class="font-mono text-[10px] tracking-[0.2em] text-accent-2 uppercase">{ui.tools.exploringLabel}</span>
+          <div class="flex flex-wrap gap-4">
+            {exploringTools.map((tool) => (
+              <div class="group relative z-0 flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-line-2 text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:text-ink hover:z-20 focus-within:z-20">
+                <Icon name={tool.icon} class="h-6 w-6" />
+                <span
+                  role="tooltip"
+                  class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                >
+                  {tool.name}
+                </span>
+                <span class="sr-only">{tool.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<section id="about" data-reveal class="mx-auto max-w-[1240px] px-8 py-[60px] scroll-mt-[100px]">
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] items-center gap-11">
+    <div class="max-w-[520px]">
+      <div class="mb-[18px] flex items-center gap-[9px]">
+        <span class="h-1 w-1 rounded-full bg-accent-2"></span>
+        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.about.kicker}</span>
+      </div>
+      <h2 class="mb-6 font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
+        {ui.about.headingLead} <span class="font-semibold">{ui.about.headingAccent}</span>
+      </h2>
+      {ui.about.previewParagraphs.map((p) => (
+        <p class="mb-4 font-display text-[15.5px] leading-[1.68] text-ink-2">{p}</p>
+      ))}
+      <Button href={localizePath("/about", locale)} variant="secondary" class="mt-4">
+        {ui.about.moreLink} <span class="opacity-50">→</span>
+      </Button>
+    </div>
+    <div
+      class="shadow-elevated grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-px overflow-hidden rounded-[20px] border border-line bg-line"
+      style="box-shadow: var(--shadow-elevated);"
+    >
+      {ui.about.stats.map((stat) => (
+        <div class="flex flex-col items-center gap-[10px] bg-[image:var(--gradient-card)] p-[34px_18px] text-center backdrop-blur-[18px]">
+          <div class="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] border border-line-2 font-mono text-[14px] text-accent">
+            {stat.icon}
+          </div>
+          <div class="mt-[6px] font-display text-[26px] leading-none font-light tracking-[-0.02em]">{stat.value}</div>
+          <div class="font-display text-[11.5px] leading-[1.4] text-ink-3">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section id="experience" data-reveal class="mx-auto max-w-[1240px] px-8 py-[70px] scroll-mt-[100px]">
+  <div class="mb-[18px] flex items-center gap-[9px]">
+    <span class="h-1 w-1 rounded-full bg-accent"></span>
+    <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.experience.kicker}</span>
+  </div>
+  <div class="mb-3 flex flex-wrap items-end justify-between gap-4">
+    <h2 class="font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
+      {ui.experience.headingLead} <span class="font-semibold">{ui.experience.headingAccent}</span>{" "}
+      {ui.experience.headingTail}
+    </h2>
+    <a
+      href={localizePath("/experience", locale)}
+      class="inline-flex items-center gap-2 border-b border-line-2 pb-1 font-display text-[13.5px] font-medium text-ink-2 transition-all duration-200 ease-out hover:gap-3 hover:text-ink"
+    >
+      {ui.experience.viewFull} <span>→</span>
+    </a>
+  </div>
+  {ui.experience.note && <p class="mb-[46px] font-mono text-[12px] text-ink-3">{ui.experience.note}</p>}
+  <div class={ui.experience.note ? "" : "mt-[46px]"}>
+    <Timeline entries={ui.experience.timeline.slice(0, 2)} />
+  </div>
+</section>
+
+<section id="skills" data-reveal class="mx-auto max-w-[1240px] px-8 py-[60px] scroll-mt-[100px]">
+  <div class="mb-[18px] flex items-center gap-[9px]">
+    <span class="h-1 w-1 rounded-full bg-accent-2"></span>
+    <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.capabilities.kicker}</span>
+  </div>
+  <h2 class="mb-[46px] max-w-xl font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
+    {ui.capabilities.headingLead} <span class="font-semibold">{ui.capabilities.headingAccent}</span>
+  </h2>
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(270px,1fr))] gap-px overflow-hidden rounded-[20px] border border-line bg-line">
+    {ui.capabilities.items.map((cap, i) => (
+      <CapabilityCard index={i} title={cap.title} description={cap.description} />
+    ))}
+  </div>
+</section>
+
+<section id="contact" data-reveal class="mx-auto max-w-[1240px] px-8 pt-[60px] pb-10 scroll-mt-[100px]">
+  <div
+    class="shadow-elevated relative overflow-hidden rounded-[26px] border border-line bg-[image:var(--gradient-card)] p-[clamp(2.4rem,6vw,4.75rem)] backdrop-blur-[24px]"
+    style="box-shadow: var(--shadow-elevated);"
+  >
+    <div
+      class="pointer-events-none absolute -right-[16%] -bottom-[58%] aspect-square w-[78%] rounded-full blur-[6px]"
+      style="background: radial-gradient(circle at 32% 22%, rgba(91,140,255,.30), rgba(155,124,255,.12) 45%, transparent 68%)"
+    >
+    </div>
+    <div class="relative max-w-[560px]">
+      <h2 class="mb-5 font-display text-[clamp(1.9rem,4.2vw,3.1rem)] leading-[1.1] font-light tracking-[-0.03em]">
+        {ui.contact.headingLead} <span class="font-semibold text-accent">{ui.contact.headingAccent}</span>
+      </h2>
+      <p class="mb-3 max-w-[460px] font-display text-[15.5px] leading-[1.65] text-ink-2">{ui.contact.subtitle}</p>
+      <p class="mb-[34px] max-w-[460px] font-display text-[15.5px] leading-[1.65] text-ink-2">{ui.contact.description}</p>
+      <div class="flex flex-wrap gap-[10px]">
+        <Button href={`mailto:${socialLinks.find((s) => s.id === "email")?.href.replace("mailto:", "")}`} variant="primary">
+          {ui.contact.cta} <span class="opacity-55">→</span>
+        </Button>
+        {socialLinks.filter((s) => s.id !== "email").map((link) => (
+          <Button href={link.href} variant="secondary" target="_blank">
+            {socialLabels[link.id]} <span class="text-[11px] text-ink-3">↗</span>
+          </Button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initConstellation } from "../../scripts/constellation";
+  document.addEventListener("astro:page-load", initConstellation);
+</script>

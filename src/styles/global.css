@@ -1,0 +1,185 @@
+@import "tailwindcss";
+@import "@fontsource-variable/manrope";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+/*
+  Design tokens — dark is the primary mode (see :root), light is the same
+  system translated, not a different site (see [data-theme="light"]).
+  Kept as runtime CSS custom properties (not baked into Tailwind's build)
+  so the theme toggle can swap them instantly without a page reload.
+*/
+:root {
+  --bg: #050609;
+  --surface: #0a0c12;
+  --veil: rgba(255, 255, 255, 0.028);
+  --veil-2: rgba(255, 255, 255, 0.05);
+  --line: rgba(255, 255, 255, 0.075);
+  --line-2: rgba(255, 255, 255, 0.13);
+  --ink: #eef1f6;
+  --ink-2: #98a1b2;
+  --ink-3: #5c6575;
+  --accent: #5b8cff;
+  --accent-2: #9b7cff;
+  --accent-soft: rgba(91, 140, 255, 0.16);
+  --btn-fg: #07090d;
+  --btn-bg: #f2f4f8;
+  --shadow-elevated: 0 24px 60px -28px rgba(0, 0, 0, 0.85);
+  --gradient-card: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.012) 42%,
+    rgba(91, 140, 255, 0.035)
+  );
+  --gradient-ambient:
+    radial-gradient(60% 50% at 78% 18%, rgba(91, 140, 255, 0.16), transparent 70%),
+    radial-gradient(45% 40% at 12% 8%, rgba(155, 124, 255, 0.1), transparent 70%);
+  --photo-filter: grayscale(0.55) contrast(1.06) brightness(0.82);
+  --star: #dce6ff;
+  --edge: rgba(140, 175, 255, 0.3);
+}
+
+:root[data-theme="light"] {
+  --bg: #fcfcfd;
+  --surface: #f3f4f8;
+  --veil: rgba(255, 255, 255, 0.72);
+  --veil-2: rgba(255, 255, 255, 0.9);
+  --line: rgba(12, 17, 30, 0.075);
+  --line-2: rgba(12, 17, 30, 0.14);
+  --ink: #0a0d14;
+  --ink-2: #5b6373;
+  --ink-3: #8d94a1;
+  --accent: #3860e6;
+  --accent-2: #7a55ea;
+  --accent-soft: rgba(56, 96, 230, 0.1);
+  --btn-fg: #fbfbfd;
+  --btn-bg: #12151d;
+  --shadow-elevated: 0 22px 50px -26px rgba(20, 28, 50, 0.22);
+  --gradient-card: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.6) 45%,
+    rgba(122, 85, 234, 0.05)
+  );
+  --gradient-ambient:
+    radial-gradient(60% 50% at 78% 16%, rgba(122, 85, 234, 0.1), transparent 70%),
+    radial-gradient(48% 42% at 10% 6%, rgba(56, 96, 230, 0.07), transparent 70%);
+  --photo-filter: grayscale(0.25) contrast(1.02) brightness(1.02);
+  --star: #2b3a66;
+  --edge: rgba(60, 90, 190, 0.34);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-veil: var(--veil);
+  --color-veil-2: var(--veil-2);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-btn-fg: var(--btn-fg);
+  --color-btn-bg: var(--btn-bg);
+
+  --font-display: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-card: 20px;
+  --radius-pill: 999px;
+
+  --animate-twinkle: dm-twinkle 3.2s ease-in-out infinite;
+  --animate-float: dm-float 7s ease-in-out infinite;
+}
+
+@keyframes dm-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes dm-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+html:has([data-theme="light"]) {
+  color-scheme: light;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Ambient background wash used behind the page content on every route */
+.ambient-wash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: var(--gradient-ambient);
+  z-index: 0;
+}
+
+/* Reveal-on-scroll target state; JS flips this to visible via IntersectionObserver */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

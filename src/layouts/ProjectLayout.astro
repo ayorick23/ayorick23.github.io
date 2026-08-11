@@ -1,0 +1,134 @@
+---
+import { Icon } from "astro-icon/components";
+import BaseLayout from "./BaseLayout.astro";
+import type { ProjectEntry } from "../lib/projects";
+import { getUI, localizePath, resolveLocale } from "../lib/i18n";
+
+interface Props {
+  project: ProjectEntry;
+}
+
+const { project } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+const projectsHref = localizePath("/projects", locale);
+---
+
+<BaseLayout pageTitle={project.data.title} description={project.data.shortDescription}>
+  <section class="mx-auto max-w-[900px] px-8 pt-[150px] pb-[60px]">
+    <a
+      href={projectsHref}
+      class="mb-[34px] inline-flex items-center gap-2 font-mono text-[12px] text-ink-3 transition-colors duration-200 ease-out hover:text-ink"
+    >
+      ← {ui.projects.backLabel}
+    </a>
+
+    <div class="mb-5 flex items-center gap-3">
+      <span class="font-mono text-[11px] text-ink-3">{String(project.data.order).padStart(2, "0")}</span>
+      <span class="font-mono text-[10px] tracking-[0.18em] text-accent uppercase">{project.data.category}</span>
+      {
+        project.data.status === "placeholder" && (
+          <span class="rounded-full border border-dashed border-line-2 px-[10px] py-[3px] font-mono text-[10px] tracking-[0.08em] text-ink-3 uppercase">
+            {ui.common.placeholderBadge}
+          </span>
+        )
+      }
+    </div>
+    <h1 class="mb-5 font-display text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.08] font-light tracking-[-0.03em]">
+      {project.data.title}
+    </h1>
+    <p class="mb-10 max-w-[620px] font-display text-[17px] leading-[1.6] text-ink-2">
+      {project.data.description}
+    </p>
+
+    <div class="project-cover shadow-elevated relative mb-5 h-[300px] overflow-hidden rounded-[20px] border border-line" style="box-shadow: var(--shadow-elevated);">
+      <span class="absolute bottom-[14px] left-[18px] font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase">
+        {ui.common.coverPending} — 1440×720
+      </span>
+    </div>
+
+    {
+      project.data.metrics.length > 0 && (
+        <div class="mb-[52px] grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-px overflow-hidden rounded-2xl border border-line bg-line">
+          {project.data.metrics.map((metric) => (
+            <div class="bg-[image:var(--gradient-card)] px-5 py-6 backdrop-blur-[16px]">
+              <div class="font-display text-[27px] leading-none tracking-[-0.02em] text-ink">{metric.value}</div>
+              <div class="mt-[9px] font-mono text-[11px] text-ink-3">{metric.label}</div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="flex flex-col gap-11">
+      {
+        project.data.sections.map((block) => (
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] items-start gap-x-10 gap-y-[14px]">
+            <div class="pt-[6px] font-mono text-[11px] tracking-[0.18em] text-accent uppercase">{block.heading}</div>
+            <div class="col-span-2 min-w-0">
+              <p class="font-display text-[15.5px] leading-[1.72] text-ink-2">{block.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-[52px] flex flex-wrap gap-[10px] border-t border-line pt-8">
+      {
+        project.data.githubUrl ? (
+          <a
+            href={project.data.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-[9px] rounded-xl bg-btn-bg px-[22px] py-[14px] font-display text-[13.5px] font-semibold text-btn-fg transition-transform duration-200 ease-out hover:-translate-y-0.5"
+          >
+            <Icon name="lucide:github" class="h-[15px] w-[15px]" /> {ui.common.viewOnGithub}
+          </a>
+        ) : (
+          <span
+            aria-disabled="true"
+            class="inline-flex items-center gap-[9px] rounded-xl border border-dashed border-line-2 px-[22px] py-[14px] font-display text-[13.5px] font-semibold text-ink-3"
+          >
+            <Icon name="lucide:github" class="h-[15px] w-[15px]" /> {ui.common.viewOnGithub} — {ui.common.linkPending}
+          </span>
+        )
+      }
+      {
+        project.data.demoUrl && (
+          <a
+            href={project.data.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-[9px] rounded-xl border border-line-2 bg-veil px-[22px] py-[14px] font-display text-[13.5px] font-semibold text-ink backdrop-blur-md transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:bg-veil-2"
+          >
+            {ui.common.liveDemo}
+          </a>
+        )
+      }
+      <a
+        href={projectsHref}
+        class="inline-flex items-center rounded-xl border border-line-2 bg-veil px-[22px] py-[14px] font-display text-[13.5px] font-semibold text-ink backdrop-blur-md transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:bg-veil-2"
+      >
+        {ui.projects.otherLabel}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .project-cover {
+    background: linear-gradient(150deg, var(--surface), var(--bg));
+  }
+  .project-cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(115deg, var(--line) 0 1px, transparent 1px 12px);
+  }
+  .project-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 60% at 70% 30%, var(--accent-soft), transparent 70%);
+  }
+</style>

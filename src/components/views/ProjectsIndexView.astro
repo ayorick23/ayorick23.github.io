@@ -1,0 +1,93 @@
+---
+import { Icon } from "astro-icon/components";
+import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
+import { getProjects } from "../../lib/projects";
+
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+const projects = await getProjects(locale);
+const homeHref = localizePath("/", locale);
+---
+
+<section class="mx-auto max-w-[1240px] px-8 pt-[150px] pb-[60px]">
+  <a
+    href={homeHref}
+    class="mb-[34px] inline-flex items-center gap-2 font-mono text-[12px] text-ink-3 transition-colors duration-200 ease-out hover:text-ink"
+  >
+    ← {ui.common.backToHome}
+  </a>
+  <h1 class="mb-[18px] font-display text-[clamp(2.1rem,4.6vw,3.5rem)] leading-[1.08] font-light tracking-[-0.03em]">
+    {ui.projects.headingLead} <span class="font-semibold">{ui.projects.headingAccent}</span>
+  </h1>
+  <p class="mb-3 max-w-[520px] font-display text-[16px] leading-[1.6] text-ink-2">{ui.projects.subtitle}</p>
+  <p class="mb-12 font-mono text-[11.5px] text-ink-3">{ui.projects.note}</p>
+
+  <div class="flex flex-col gap-4">
+    {
+      projects.map((project, i) => (
+        <div
+          class="shadow-elevated group relative grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center gap-[26px] rounded-[20px] border border-line bg-[image:var(--gradient-card)] p-5 backdrop-blur-[18px] transition-transform duration-300 ease-[cubic-bezier(.2,.7,.3,1)] hover:-translate-y-1 hover:border-line-2"
+          style="box-shadow: var(--shadow-elevated);"
+        >
+          <a
+            href={localizePath(`/projects/${project.id}`, locale)}
+            class="absolute inset-0 z-0"
+            aria-label={project.data.title}
+          />
+          <div class="project-row-cover relative h-[150px] w-full max-w-[320px] overflow-hidden rounded-[14px] border border-line">
+            <span class="absolute bottom-[10px] left-3 font-mono text-[9.5px] tracking-[0.14em] text-ink-3 uppercase">
+              {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
+            </span>
+          </div>
+          <div class="flex flex-col gap-[11px]">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-[11px] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
+              <span class="font-mono text-[10px] tracking-[0.16em] text-accent uppercase">{project.data.category}</span>
+            </div>
+            <div class="font-display text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">{project.data.title}</div>
+            <div class="max-w-[520px] font-display text-[14px] leading-[1.58] text-ink-2">{project.data.shortDescription}</div>
+            <div class="mt-[2px] flex flex-wrap gap-[6px]">
+              {project.data.technologies.slice(0, 4).map((tech) => (
+                <span class="rounded-[7px] border border-line px-[9px] py-[6px] font-mono text-[10.5px] text-ink-2">{tech}</span>
+              ))}
+            </div>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="font-display text-[12.5px] font-medium text-ink">{ui.work.caseStudyCta} →</span>
+              {project.data.githubUrl && (
+                <a
+                  href={project.data.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={ui.common.viewOnGithub}
+                  title={ui.common.viewOnGithub}
+                  class="relative z-10 flex items-center gap-1 rounded-full border border-line-2 bg-veil px-[10px] py-[6px] text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+                >
+                  <Icon name="akar-icons--github-fill" class="h-[14px] w-[14px]" />
+                  <Icon name="lucide:arrow-up-right" class="h-[12px] w-[12px]" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .project-row-cover {
+    background: linear-gradient(150deg, var(--surface), var(--bg));
+  }
+  .project-row-cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(115deg, var(--line) 0 1px, transparent 1px 11px);
+  }
+  .project-row-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(70% 60% at 68% 32%, var(--accent-soft), transparent 70%);
+  }
+</style>

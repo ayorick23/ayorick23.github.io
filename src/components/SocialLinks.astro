@@ -1,0 +1,42 @@
+---
+import { Icon } from "astro-icon/components";
+import { socialLinks } from "../data/social-links";
+
+interface Props {
+  variant?: "row" | "footer";
+  class?: string;
+}
+
+const { variant = "row", class: className = "" } = Astro.props;
+
+const labels: Record<string, string> = {
+  github: "GitHub",
+  linkedin: "LinkedIn",
+  email: "Email",
+};
+
+const sizeClasses =
+  variant === "row"
+    ? "h-[42px] w-[42px] rounded-full border border-line-2 text-ink-2 hover:border-accent hover:text-accent hover:bg-accent-soft hover:-translate-y-0.5"
+    : "h-[38px] w-[38px] rounded-[11px] border border-line bg-veil text-ink-2 hover:text-ink hover:border-line-2 hover:-translate-y-0.5";
+---
+
+<div class:list={["flex items-center gap-[9px]", className]}>
+  {
+    socialLinks.map((link) => (
+      <a
+        href={link.href}
+        target={link.href.startsWith("http") ? "_blank" : undefined}
+        rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+        title={labels[link.id]}
+        aria-label={labels[link.id]}
+        class:list={[
+          "flex items-center justify-center transition-all duration-200 ease-out",
+          sizeClasses,
+        ]}
+      >
+        <Icon name={link.icon} class="h-[17px] w-[17px]" />
+      </a>
+    ))
+  }
+</div>

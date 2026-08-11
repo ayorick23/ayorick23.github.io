@@ -1,0 +1,33 @@
+---
+import { Icon } from "astro-icon/components";
+import type { UICopy } from "../content/i18n/types";
+
+interface Props {
+  ui: UICopy;
+  class?: string;
+}
+
+const { ui, class: className = "" } = Astro.props;
+---
+
+<button
+  type="button"
+  role="switch"
+  data-theme-toggle
+  aria-checked="false"
+  data-label-dark={ui.theme.toDark}
+  data-label-light={ui.theme.toLight}
+  aria-label={ui.theme.toLight}
+  title={ui.theme.toLight}
+  class:list={[
+    "relative inline-flex h-[26px] w-[50px] shrink-0 cursor-pointer items-center rounded-full border border-line bg-veil px-[3px] transition-colors duration-200 ease-out hover:border-line-2",
+    className,
+  ]}
+>
+  <Icon name="lucide:moon" class="pointer-events-none absolute left-[6px] h-[11px] w-[11px] text-ink-3" />
+  <Icon name="lucide:sun" class="pointer-events-none absolute right-[6px] h-[11px] w-[11px] text-ink-3" />
+  <span
+    data-theme-thumb
+    class="relative z-[1] h-[20px] w-[20px] rounded-full bg-btn-bg shadow-[0_2px_6px_rgba(0,0,0,0.35)] transition-transform duration-200 ease-out [html[data-theme='light']_&]:translate-x-[24px]"
+  ></span>
+</button>

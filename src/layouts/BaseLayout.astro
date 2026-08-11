@@ -1,0 +1,139 @@
+---
+import "../styles/global.css";
+import { getImage } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+import profilePhoto from "../assets/images/dereck-mendez.png";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { getUI, getAlternatePath, localizePath, resolveLocale } from "../lib/i18n";
+import { socialLinks } from "../data/social-links";
+
+interface Props {
+  /** Page-specific title segment, e.g. "About". Omit for the homepage. */
+  pageTitle?: string;
+  description?: string;
+}
+
+const { pageTitle, description } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+
+const title = pageTitle
+  ? `${pageTitle} · Dereck Mendez — ${ui.meta.titleSuffix}`
+  : `Dereck Mendez — ${ui.meta.titleSuffix}`;
+const metaDescription = description ?? ui.meta.description;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const alternatePath = getAlternatePath(Astro.url.pathname, locale);
+const alternateLocale = locale === "en" ? "es" : "en";
+
+const ogImage = await getImage({ src: profilePhoto, width: 1200, height: 630, fit: "cover" });
+const ogImageURL = new URL(ogImage.src, Astro.site).toString();
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Dereck Mendez",
+  url: Astro.site?.toString(),
+  description: ui.meta.description,
+  sameAs: socialLinks
+    .filter((link) => link.href.startsWith("http"))
+    .map((link) => link.href),
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" hreflang={locale} href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="alternate" hreflang={alternateLocale} href={new URL(alternatePath, Astro.site)} />
+    <link rel="alternate" hreflang="x-default" href={new URL(localizePath("/", "en"), Astro.site)} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:locale" content={locale === "es" ? "es_ES" : "en_US"} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImageURL} />
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} is:inline />
+    <ClientRouter />
+
+    <script is:inline>
+      (function () {
+        function applyStoredTheme() {
+          try {
+            var stored = localStorage.getItem("theme");
+            var theme =
+              stored === "light" || stored === "dark"
+                ? stored
+                : window.matchMedia("(prefers-color-scheme: light)").matches
+                  ? "light"
+                  : "dark";
+            if (theme === "light") {
+              document.documentElement.setAttribute("data-theme", "light");
+            } else {
+              document.documentElement.removeAttribute("data-theme");
+            }
+          } catch (e) {}
+        }
+        // Re-apply on every client-side transition too — the server-rendered
+        // <html> tag never carries data-theme, so without this a page swap
+        // would flash back to dark regardless of the stored preference.
+        applyStoredTheme();
+        document.addEventListener("astro:after-swap", applyStoredTheme);
+      })();
+    </script>
+    {
+      locale === "en" && Astro.url.pathname === "/" && (
+        <script is:inline>
+          (function () {
+            try {
+              var stored = localStorage.getItem("lang");
+              var preferred = stored || (navigator.language || "").slice(0, 2);
+              if (preferred === "es") {
+                window.location.replace("/es/");
+              }
+            } catch (e) {}
+          })();
+        </script>
+      )
+    }
+  </head>
+  <body>
+    <div class="ambient-wash"></div>
+    <Nav ui={ui} locale={locale} transition:persist />
+    <main id="top" class="relative z-[1]" transition:animate="fade">
+      <slot />
+    </main>
+    <Footer ui={ui} locale={locale} transition:persist />
+
+    <script>
+      import { initThemeToggle } from "../scripts/theme";
+      import { initScrollReveal } from "../scripts/reveal";
+      import { initMobileNav } from "../scripts/nav";
+      import { rememberLanguage, initLanguageSwitchLinks } from "../scripts/language";
+
+      // astro:page-load fires on the initial load AND after every client-side
+      // transition, so this alone covers both cases — no separate direct call.
+      document.addEventListener("astro:page-load", () => {
+        initThemeToggle();
+        initScrollReveal();
+        initMobileNav();
+        initLanguageSwitchLinks();
+        rememberLanguage(document.documentElement.lang === "es" ? "es" : "en");
+      });
+    </script>
+  </body>
+</html>
