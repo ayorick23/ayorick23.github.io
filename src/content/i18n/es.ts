@@ -152,7 +152,7 @@ export const es: UICopy = {
         role: "Consultor de Ingeniería",
         org: "ACF Technologies LATAM",
         description:
-          "Trabajo en la intersección entre analítica, software y soluciones basadas en datos, mientras continúo desarrollando mi especialización en Machine Learning y MLOps. Mi posición actual me permite comprender problemas reales de negocio y conectarlos con soluciones técnicas, al mismo tiempo que sigo ampliando mi experiencia en flujos de datos, analítica e ingeniería.",
+          "Actualmente trabajo en la intersección entre analítica, software y soluciones basadas en datos, mientras continúo desarrollando mi especialización en Machine Learning y MLOps. Mi posición actual me permite comprender problemas reales de negocio y conectarlos con soluciones técnicas, al mismo tiempo que sigo ampliando mi experiencia en flujos de datos, analítica e ingeniería.",
         tags: [],
       },
       {
@@ -160,23 +160,39 @@ export const es: UICopy = {
         role: "Coordinador de Formación y Desarrollo",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "Construí varios años de experiencia profesional en un entorno empresarial, incluyendo tres años en una posición de coordinación enfocada en formación y desarrollo. Esta experiencia fortaleció mis habilidades de comunicación, gestión de procesos, interacción con diferentes áreas y comprensión de cómo las necesidades del negocio se convierten en soluciones prácticas.",
+          "Consolidé mi transición hacia una visión analítica del negocio, combinando la gestión de personas con People Analytics, automatización y Business Intelligence. Desarrollé automatizaciones de reportes con Python y dashboards en Power BI y Looker Studio para transformar datos en insights y KPIs que apoyaran la mejora de procesos y la toma de decisiones. La experiencia trabajando con información y necesidades de negocio de Guatemala, Costa Rica y El Salvador amplió mi perspectiva regional y fortaleció mi capacidad para conectar datos de personas con objetivos reales del negocio.",
         tags: [],
       },
       {
         period: "AGO 2022 - JUL 2023",
-        role: "Capacitador",
+        role: "Capacitador de Operaciones e Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "Encargado de las capacitaciones en el área de inventarios, evaluaciones y seguimiento del personal capacitado en conjunto con el departamento de Formación y Desarrollo Organizacional dentro de Recursos Humanos. Creación de materiales de apoyo para capacitaciones tales como Políticas, manuales, procedimientos, entre otros.",
+          "Profundicé mi comprensión de la operación y de Recursos Humanos mientras capacitaba al personal de nuevo ingreso del área de inventarios. Comencé a desarrollar mis propios indicadores y dashboards en Excel para dar seguimiento a la gestión, además de crear formatos y herramientas para estandarizar procesos. El contacto constante con reportes, inventarios y la operación de las sucursales fortaleció mi capacidad para interpretar información y conectar los datos con las necesidades del negocio.",
         tags: [],
       },
       {
-        period: "FEB 2021 - JUL 2022",
-        role: "Encargado de Inventarios",
+        period: "NOV 2021 - JUL 2022",
+        role: "Encargado de Control de Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "Encargado de la gestión del área de inventarios y bodega de toda la tienda, asignación y programación de actividades y conteos físicos al equipo de contadores cíclicos, así como la investigación y resolución de inconsistencias generadas dentro de sucursales y Centros de Distribución.",
+          "Evolucioné hacia una posición con mayor responsabilidad sobre los procesos de control de inventarios y la coordinación del equipo encargado de ejecutarlos. Además de continuar trabajando con información operativa y análisis en Excel, supervisaba conteos, inconsistencias, ajustes y seguimiento de resultados, tomando decisiones basadas en datos para mantener la confiabilidad del inventario. Esta etapa fortaleció tanto mis capacidades analíticas como mi experiencia en coordinación y gestión de personas.",
+        tags: [],
+      },
+      {
+        period: "FEB 2021 - OCT 2021",
+        role: "Analista de Inventarios",
+        org: "Almacenes Vidrí S.A. de C.V.",
+        description:
+          "Di mis primeros pasos en el análisis de datos desde el control de inventarios, utilizando Excel para realizar conteos cíclicos, identificar faltantes y sobrantes, analizar inconsistencias e investigar sus posibles causas. El seguimiento sistemático de estos datos me permitió desarrollar una visión analítica de la operación y comprender cómo la información puede utilizarse para detectar problemas, respaldar decisiones y mejorar los procesos del negocio.",
+        tags: [],
+      },
+      {
+        period: "OCT 2019 - FEB 2021",
+        role: "Vendedor de Pinturas",
+        org: "Almacenes Vidrí S.A. de C.V.",
+        description:
+          "Mi experiencia profesional comenzó desde la operación y el contacto directo con el negocio, desarrollando conocimiento sobre productos, clientes y dinámica comercial dentro de una empresa de ferretería. Esta etapa me permitió comprender de primera mano cómo funcionan las operaciones de una sucursal y sentó las bases para posteriormente involucrarme en procesos de control, análisis y gestión de inventarios.",
         tags: [],
       },
     ],

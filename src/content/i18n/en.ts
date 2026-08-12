@@ -143,11 +143,11 @@ export const en: UICopy = {
     viewFull: "Full experience",
     timeline: [
       {
-        period: "JUN 2026 - ACTUALIDAD",
+        period: "JUN 2026 - PRESENT",
         role: "Engineering Consultant",
         org: "ACF Technologies LATAM",
         description:
-          "Working at the intersection of analytics, software and data-driven solutions, while continuing to develop my expertise in Machine Learning and MLOps. My current work gives me the opportunity to understand real business problems and connect them with technical solutions, while expanding my experience in data workflows, analytics and engineering.",
+          "Currently working at the intersection of analytics, software and data-driven solutions, while continuing to develop my expertise in Machine Learning and MLOps. My current role lets me understand real business problems and connect them with technical solutions, while further expanding my experience in data workflows, analytics and engineering.",
         tags: [],
       },
       {
@@ -155,23 +155,39 @@ export const en: UICopy = {
         role: "Training & Development Coordinator",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "Built several years of professional experience in a business environment, including three years in a coordination role focused on training and development. This experience strengthened my communication, process management, stakeholder interaction and understanding of how business needs translate into practical solutions.",
+          "Consolidated my transition toward a more analytical view of the business, combining people management with People Analytics, automation and Business Intelligence. I built report automations with Python and dashboards in Power BI and Looker Studio to turn data into insights and KPIs that supported process improvement and decision-making. Working with data and business needs across Guatemala, Costa Rica and El Salvador broadened my regional perspective and strengthened my ability to connect people data with real business goals.",
         tags: [],
       },
       {
-        period: "AGO 2022 - JUL 2023",
-        role: "Trainer",
+        period: "AUG 2022 - JUL 2023",
+        role: "Operations & Inventory Trainer",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "PENDIENTE DE TRADUCIR Y DE MEJORAR REDACCIÓN ENFOCADA EN DATOS Y ML",
+          "Deepened my understanding of operations and Human Resources while training new hires in the inventory area. I began building my own indicators and dashboards in Excel to track performance, along with formats and tools to standardize processes. Constant exposure to reports, inventory data and branch operations strengthened my ability to interpret information and connect data with real business needs.",
         tags: [],
       },
       {
-        period: "FEB 2021 - JUL 2022",
-        role: "Inventory Manager",
+        period: "NOV 2021 - JUL 2022",
+        role: "Inventory Control Supervisor",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "PENDIENTE DE TRADUCIR Y DE MEJORAR REDACCIÓN ENFOCADA EN DATOS Y ML.",
+          "Took on a role with greater responsibility over inventory control processes and coordination of the team executing them. Alongside continued work with operational data and Excel-based analysis, I oversaw counts, discrepancies, adjustments and results tracking, making data-driven decisions to maintain inventory reliability. This stage strengthened both my analytical skills and my experience in team coordination and people management.",
+        tags: [],
+      },
+      {
+        period: "FEB 2021 - OCT 2021",
+        role: "Inventory Analyst",
+        org: "Almacenes Vidrí S.A. de C.V.",
+        description:
+          "Took my first steps in data analysis through inventory control, using Excel to run cycle counts, identify shortages and surpluses, and analyze discrepancies and their root causes. Systematically tracking this data helped me develop an analytical view of operations and understand how information can be used to detect problems, support decisions and improve business processes.",
+        tags: [],
+      },
+      {
+        period: "OCT 2019 - FEB 2021",
+        role: "Paint Sales Associate",
+        org: "Almacenes Vidrí S.A. de C.V.",
+        description:
+          "My professional journey began on the operations side, in direct contact with the business, building knowledge of products, customers and commercial dynamics within a hardware retail company. This stage gave me firsthand understanding of how branch operations work and laid the foundation for later moving into inventory control, analysis and management.",
         tags: [],
       },
     ],
