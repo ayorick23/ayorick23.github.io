@@ -175,6 +175,20 @@
   }
 }
 
+/* Timeline connecting lines — created at runtime via createElementNS in
+   scripts/timeline.ts, so they never get Astro's scoped data-astro-cid
+   attribute; must live here, not in Timeline.astro's <style>. */
+.dm-timeline-edge {
+  stroke: var(--line-2);
+  stroke-width: 1;
+  transition: stroke 0.25s ease;
+}
+.dm-timeline-edge.is-lit {
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 4px var(--accent-soft));
+}
+
 /* Hero scroll cue — mouse outline with a dot that travels down and fades */
 @keyframes dm-scroll-dot {
   0% {

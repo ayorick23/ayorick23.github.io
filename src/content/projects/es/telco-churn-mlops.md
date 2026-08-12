@@ -7,22 +7,18 @@ technologies:
   ["Python", "Pandas", "Scikit-learn", "MLflow", "DVC", "Pandera", "Pytest", "Docker", "GitHub Actions"]
 githubUrl: "https://github.com/ayorick23/telco-churn-mlops"
 featured: true
-status: "in-progress"
+status: "draft"
 date: 2026-08-12
 order: 1
-metrics: [
-  label: "ROC-AUC"
-  value: "0.XX"
-  description: "Rendimiento del modelo final"
-  label: "F1-Score"
-  value: "0.XX"
-  description: "Balance entre precisión y recall"
-  label: "Churn Recall"
-  value: "XX%"
-  description: "Clientes con churn identificados"
-  label: "Clientes"
-  value: "7,043"
-  description: "Registros del dataset utilizado"]
+metrics:
+  - label: "ROC-AUC"
+    value: "0.XX"
+  - label: "F1-Score"
+    value: "0.XX"
+  - label: "Churn Recall"
+    value: "XX%"
+  - label: "Clientes"
+    value: "7,043"
 sections:
   - heading: "Contexto"
     body: "El abandono de clientes representa un problema de negocio que va más allá de predecir una variable binaria. Identificar qué clientes presentan mayor riesgo permite priorizar esfuerzos de retención y comprender qué factores están asociados con la pérdida de clientes. Este proyecto utiliza un dataset de telecomunicaciones basado en el conjunto ficticio de IBM, con información demográfica, contractual, de servicios, facturación y comportamiento de aproximadamente 7,043 clientes."
