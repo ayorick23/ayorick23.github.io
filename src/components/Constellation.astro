@@ -13,7 +13,7 @@ const labels = ui.hero.constellation;
 <div
   data-constellation
   data-edges={JSON.stringify(constellationEdges)}
-  class="relative aspect-[1/0.92] min-h-[380px] w-full"
+  class="relative aspect-[1/0.92] min-h-[380px] w-full overflow-hidden"
 >
   <canvas data-constellation-canvas class="absolute inset-0 h-full w-full"></canvas>
   {
@@ -35,17 +35,15 @@ const labels = ui.hero.constellation;
           />
           <div
             data-constellation-label
-            class="pointer-events-none absolute top-[-8px] w-[170px]"
-            style={
-              node.side === "l"
-                ? "right:14px;text-align:right"
-                : "left:14px;text-align:left"
-            }
+            class:list={[
+              "pointer-events-none absolute top-[-8px] w-[112px] sm:w-[170px]",
+              node.side === "l" ? "right-2 text-right sm:right-[14px]" : "left-2 text-left sm:left-[14px]",
+            ]}
           >
             <div data-label-title class="font-display text-[13px] leading-[1.2] font-semibold">
               {copy.label}
             </div>
-            <div data-label-desc class="mt-[5px] font-mono text-[10.5px] leading-[1.42] text-ink-3">
+            <div data-label-desc class="mt-[5px] hidden font-mono text-[10.5px] leading-[1.42] text-ink-3 sm:block">
               {copy.description}
             </div>
           </div>

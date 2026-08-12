@@ -123,5 +123,6 @@ export interface UICopy {
     tagline: string;
     subtitle: string;
     rights: string;
+    backToTop: string;
   };
 }

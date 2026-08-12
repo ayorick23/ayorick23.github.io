@@ -250,5 +250,6 @@ export const en: UICopy = {
     tagline: "Data · Machine Learning · MLOps",
     subtitle: "Building, learning and improving — one project at a time.",
     rights: "All rights reserved.",
+    backToTop: "Back to top",
   },
 };

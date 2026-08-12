@@ -27,7 +27,7 @@ function rasterSrc(filename: string) {
 ---
 
 <section
-  class="mx-auto grid max-w-[1240px] grid-cols-[repeat(auto-fit,minmax(420px,1fr))] items-center gap-10 px-8 pt-[150px] pb-[70px] min-h-screen"
+  class="mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-10 px-8 pt-[150px] pb-[70px] min-h-screen md:grid-cols-[repeat(auto-fit,minmax(420px,1fr))]"
 >
   <div class="max-w-[560px]">
     <div class="mb-[26px] flex items-center gap-[10px]">
@@ -262,12 +262,12 @@ function rasterSrc(filename: string) {
       </h2>
       <p class="mb-3 max-w-[460px] font-display text-[15.5px] leading-[1.65] text-ink-2">{ui.contact.subtitle}</p>
       <p class="mb-[34px] max-w-[460px] font-display text-[15.5px] leading-[1.65] text-ink-2">{ui.contact.description}</p>
-      <div class="flex flex-wrap gap-[10px]">
-        <Button href={`mailto:${socialLinks.find((s) => s.id === "email")?.href.replace("mailto:", "")}`} variant="primary">
+      <div class="grid w-fit gap-[10px] sm:grid-flow-col sm:auto-cols-fr">
+        <Button href={`mailto:${socialLinks.find((s) => s.id === "email")?.href.replace("mailto:", "")}`} variant="primary" class="justify-center">
           {ui.contact.cta} <span class="opacity-55">→</span>
         </Button>
         {socialLinks.filter((s) => s.id !== "email").map((link) => (
-          <Button href={link.href} variant="secondary" target="_blank">
+          <Button href={link.href} variant="secondary" target="_blank" class="justify-center">
             <Icon name={link.icon} class="h-[15px] w-[15px]" />
             {socialLabels[link.id]} <span class="text-[11px] text-ink-3">↗</span>
           </Button>
