@@ -22,16 +22,18 @@ const cvHref = getCvHref(locale);
     class="shadow-elevated flex w-full max-w-[1180px] items-center gap-[18px] rounded-[999px] border border-line bg-veil py-[9px] pr-[10px] pl-5 backdrop-blur-[22px] backdrop-saturate-150"
     style={`box-shadow: var(--shadow-elevated);`}
   >
-    <a href={homeHref} class="pr-1 font-display text-[15px] font-bold tracking-[0.14em] text-ink">
-      DM
-    </a>
+    <div class="flex flex-1 items-center">
+      <a href={homeHref} class="pr-1 font-display text-[15px] font-bold tracking-[0.14em] text-ink">
+        DM
+      </a>
+    </div>
 
-    <div class="hidden flex-1 justify-center gap-1 md:flex">
+    <div class="hidden shrink-0 gap-1 md:flex">
       {
         navItems.map((item) => (
           <a
             href={`${homeHref}${item.href}`}
-            class="rounded-[999px] px-[13px] py-[9px] font-display text-[13.5px] font-medium text-ink-2 transition-colors duration-200 ease-out hover:bg-veil-2 hover:text-ink"
+            class="rounded-[999px] px-[13px] py-[9px] font-display text-[13.5px] font-medium text-ink-2 transition-colors duration-200 ease-out hover:bg-accent-soft hover:text-ink"
           >
             {ui.nav[item.id]}
           </a>
@@ -39,23 +41,25 @@ const cvHref = getCvHref(locale);
       }
     </div>
 
-    <div class="ml-auto flex items-center gap-2">
+    <div class="flex flex-1 items-center justify-end gap-2">
       <LanguageSwitcher ui={ui} locale={locale} class="hidden sm:flex" />
       {
         cvHref ? (
           <a
             href={cvHref}
             download
-            class="flex h-[34px] items-center rounded-[999px] bg-btn-bg px-4 font-display text-[12.5px] font-semibold text-btn-fg transition-all duration-200 ease-out hover:-translate-y-px hover:opacity-90"
+            class="flex h-[30px] items-center gap-[6px] rounded-[999px] bg-btn-bg px-[13px] font-display text-[12.5px] font-semibold text-btn-fg transition-all duration-200 ease-out hover:-translate-y-px hover:opacity-90"
           >
+            <Icon name="lucide:download" class="h-[12px] w-[12px]" />
             {ui.nav.cv}
           </a>
         ) : (
           <span
             aria-disabled="true"
             title={ui.nav.cv}
-            class="hidden h-[34px] items-center rounded-[999px] border border-dashed border-line-2 px-4 font-display text-[12.5px] font-semibold text-ink-3 sm:flex"
+            class="hidden h-[30px] items-center gap-[6px] rounded-[999px] border border-dashed border-line-2 px-[13px] font-display text-[12.5px] font-semibold text-ink-3 sm:flex"
           >
+            <Icon name="lucide:download" class="h-[12px] w-[12px]" />
             {ui.nav.cv}
           </span>
         )
@@ -85,7 +89,7 @@ const cvHref = getCvHref(locale);
       navItems.map((item) => (
         <a
           href={`${homeHref}${item.href}`}
-          class="block rounded-2xl px-4 py-3 font-display text-[15px] font-medium text-ink-2 hover:bg-veil-2 hover:text-ink"
+          class="block rounded-2xl px-4 py-3 font-display text-[15px] font-medium text-ink-2 hover:bg-accent-soft hover:text-ink"
         >
           {ui.nav[item.id]}
         </a>
@@ -95,7 +99,8 @@ const cvHref = getCvHref(locale);
       <LanguageSwitcher ui={ui} locale={locale} />
       {
         cvHref && (
-          <a href={cvHref} download class="font-mono text-[12px] text-accent">
+          <a href={cvHref} download class="flex items-center gap-[6px] font-mono text-[12px] text-accent">
+            <Icon name="lucide:download" class="h-[12px] w-[12px]" />
             {ui.nav.cv}
           </a>
         )

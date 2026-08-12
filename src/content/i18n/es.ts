@@ -12,7 +12,7 @@ export const es: UICopy = {
     experience: "Experiencia",
     skills: "Capacidades",
     contact: "Contacto",
-    cv: "Descargar CV",
+    cv: "CV",
     menu: "Menú",
   },
   common: {
@@ -30,7 +30,7 @@ export const es: UICopy = {
     toLight: "Cambiar a modo claro",
   },
   language: {
-    switchTo: "English",
+    switchTo: "EN",
   },
   hero: {
     kicker: "DATA · MACHINE LEARNING · MLOPS",
@@ -148,15 +148,15 @@ export const es: UICopy = {
     viewFull: "Experiencia completa",
     timeline: [
       {
-        period: "Actual",
+        period: "JUN 2026 - ACTUALIDAD",
         role: "Consultor de Ingeniería",
-        org: "",
+        org: "ACF Technologies LATAM",
         description:
           "Trabajo en la intersección entre analítica, software y soluciones basadas en datos, mientras continúo desarrollando mi especialización en Machine Learning y MLOps. Mi posición actual me permite comprender problemas reales de negocio y conectarlos con soluciones técnicas, al mismo tiempo que sigo ampliando mi experiencia en flujos de datos, analítica e ingeniería.",
         tags: [],
       },
       {
-        period: "Anterior",
+        period: "JUL 2023 - JUN 2026",
         role: "Coordinador de Formación y Desarrollo",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
@@ -164,19 +164,19 @@ export const es: UICopy = {
         tags: [],
       },
       {
-        period: "Experiencia previa",
-        role: "Negocio y operaciones",
-        org: "",
+        period: "AGO 2022 - JUL 2023",
+        role: "Capacitador",
+        org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "Mis experiencias anteriores en distintas organizaciones me permitieron conocer procesos operativos, entornos orientados al cliente y la realidad que existe detrás de los datos que posteriormente necesitan ser analizados.",
+          "Encargado de las capacitaciones en el área de inventarios, evaluaciones y seguimiento del personal capacitado en conjunto con el departamento de Formación y Desarrollo Organizacional dentro de Recursos Humanos. Creación de materiales de apoyo para capacitaciones tales como Políticas, manuales, procedimientos, entre otros.",
         tags: [],
       },
       {
-        period: "Actualmente",
-        role: "Data · Machine Learning · MLOps",
-        org: "",
+        period: "FEB 2021 - JUL 2022",
+        role: "Encargado de Inventarios",
+        org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "Mi carrera se está orientando hacia la intersección de estas disciplinas, combinando la perspectiva de negocio que he desarrollado profesionalmente con los fundamentos técnicos que continúo construyendo en software, datos y Machine Learning.",
+          "Encargado de la gestión del área de inventarios y bodega de toda la tienda, asignación y programación de actividades y conteos físicos al equipo de contadores cíclicos, así como la investigación y resolución de inconsistencias generadas dentro de sucursales y Centros de Distribución.",
         tags: [],
       },
     ],

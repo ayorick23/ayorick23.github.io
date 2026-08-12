@@ -124,11 +124,81 @@
   }
 }
 
+@keyframes dm-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.dm-marquee-track {
+  animation: dm-marquee 36s linear infinite;
+  /* One of the tool logos is an auto-traced SVG with a very heavy path — without
+     forcing its own GPU layer, re-rasterizing it every frame causes a visible
+     stutter right as it scrolls into view. */
+  will-change: transform;
+}
+.dm-tools-marquee:hover .dm-marquee-track,
+.dm-tools-marquee:focus-within .dm-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dm-marquee-track {
+    animation: none;
+  }
+  .dm-marquee-track [aria-hidden="true"] {
+    display: none;
+  }
+}
+.dm-tool-tile:hover,
+.dm-tool-tile:focus-within {
+  box-shadow: 0 0 14px -5px var(--accent-soft);
+}
+
+/* Hero GitHub/LinkedIn icons — same pulsing-glow language as the constellation stars */
+@keyframes dm-star-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--accent-soft);
+  }
+  50% {
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+}
+.dm-hero-social {
+  animation: dm-star-glow 3.2s ease-in-out infinite;
+}
+.dm-hero-social:nth-child(2) {
+  animation-delay: 0.6s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dm-hero-social {
+    animation: none;
+  }
+}
+
+/* Hero scroll cue — mouse outline with a dot that travels down and fades */
+@keyframes dm-scroll-dot {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+  30% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+    transform: translate(-50%, 15px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+}
+
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
 }
-html:has([data-theme="light"]) {
+:root[data-theme="light"] {
   color-scheme: light;
 }
 

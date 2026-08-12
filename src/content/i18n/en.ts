@@ -12,7 +12,7 @@ export const en: UICopy = {
     experience: "Experience",
     skills: "Skills",
     contact: "Contact",
-    cv: "Download CV",
+    cv: "CV",
     menu: "Menu",
   },
   common: {
@@ -30,7 +30,7 @@ export const en: UICopy = {
     toLight: "Switch to light mode",
   },
   language: {
-    switchTo: "Español",
+    switchTo: "ES",
   },
   hero: {
     kicker: "DATA · MACHINE LEARNING · MLOPS",
@@ -143,15 +143,15 @@ export const en: UICopy = {
     viewFull: "Full experience",
     timeline: [
       {
-        period: "Current",
+        period: "JUN 2026 - ACTUALIDAD",
         role: "Engineering Consultant",
-        org: "",
+        org: "ACF Technologies LATAM",
         description:
           "Working at the intersection of analytics, software and data-driven solutions, while continuing to develop my expertise in Machine Learning and MLOps. My current work gives me the opportunity to understand real business problems and connect them with technical solutions, while expanding my experience in data workflows, analytics and engineering.",
         tags: [],
       },
       {
-        period: "Previous",
+        period: "JUL 2023 - JUN 2026",
         role: "Training & Development Coordinator",
         org: "Almacenes Vidrí S.A. de C.V.",
         description:
@@ -159,19 +159,19 @@ export const en: UICopy = {
         tags: [],
       },
       {
-        period: "Earlier experience",
-        role: "Business & Operations",
-        org: "",
+        period: "AGO 2022 - JUL 2023",
+        role: "Trainer",
+        org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "Previous roles across different organizations gave me exposure to operational processes, customer-facing environments and the realities behind the data that organizations eventually need to analyse.",
+          "PENDIENTE DE TRADUCIR Y DE MEJORAR REDACCIÓN ENFOCADA EN DATOS Y ML",
         tags: [],
       },
       {
-        period: "Today",
-        role: "Data · Machine Learning · MLOps",
-        org: "",
+        period: "FEB 2021 - JUL 2022",
+        role: "Inventory Manager",
+        org: "Almacenes Vidrí S.A. de C.V.",
         description:
-          "My career is now moving toward the intersection of these disciplines, combining the business perspective I developed through experience with the technical foundations I continue to build through software, data and Machine Learning.",
+          "PENDIENTE DE TRADUCIR Y DE MEJORAR REDACCIÓN ENFOCADA EN DATOS Y ML.",
         tags: [],
       },
     ],

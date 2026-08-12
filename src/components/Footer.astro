@@ -1,5 +1,4 @@
 ---
-import SocialLinks from "./SocialLinks.astro";
 import { navItems } from "../data/nav";
 import { localizePath, type Locale } from "../lib/i18n";
 import type { UICopy } from "../content/i18n/types";
@@ -26,7 +25,7 @@ const year = new Date().getFullYear();
         © {year} Dereck Mendez. {ui.footer.rights}
       </p>
     </div>
-    <div class="flex flex-wrap justify-center gap-x-5 gap-y-1.5">
+    <div class="flex flex-wrap justify-end gap-x-5 gap-y-1.5">
       {
         navItems.map((item) => (
           <a
@@ -38,6 +37,5 @@ const year = new Date().getFullYear();
         ))
       }
     </div>
-    <SocialLinks variant="footer" class="justify-end" />
   </div>
 </footer>

@@ -15,6 +15,15 @@ const ui = getUI(locale);
 const featuredProjects = await getFeaturedProjects(locale, 3);
 
 const socialLabels: Record<string, string> = { github: "GitHub", linkedin: "LinkedIn", email: "Email" };
+const heroSocials = socialLinks.filter((s) => s.id === "github" || s.id === "linkedin");
+
+const rasterIcons = import.meta.glob<{ default: { src: string } }>("../../assets/icons/*.png", {
+  eager: true,
+});
+function rasterSrc(filename: string) {
+  const entry = Object.entries(rasterIcons).find(([path]) => path.endsWith(`/${filename}`));
+  return entry?.[1].default.src ?? "";
+}
 ---
 
 <section
@@ -39,20 +48,33 @@ const socialLabels: Record<string, string> = { github: "GitHub", linkedin: "Link
     >
       {ui.hero.subtitle}
     </p>
-    <div class="flex flex-wrap gap-3 animate-[fade-up_0.6s_ease_0.45s_both]">
+    <div class="flex flex-wrap items-center gap-3 animate-[fade-up_0.6s_ease_0.45s_both]">
       <Button href="#work" variant="primary">
         {ui.hero.ctaPrimary} <span class="opacity-60">→</span>
       </Button>
       <Button href="#about" variant="secondary">{ui.hero.ctaSecondary}</Button>
+      <div class="ml-1 flex items-center gap-[10px]">
+        {
+          heroSocials.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={socialLabels[link.id]}
+              aria-label={socialLabels[link.id]}
+              class="dm-hero-social flex h-11 w-11 items-center justify-center rounded-full border border-line-2 text-ink-2 transition-colors duration-200 ease-out hover:border-accent hover:text-accent"
+            >
+              <Icon name={link.icon} class="h-[19px] w-[19px]" />
+            </a>
+          ))
+        }
+      </div>
     </div>
     <div class="mt-16 flex items-center gap-3 animate-[fade-up_0.6s_ease_0.6s_both]">
-      <span class="relative block h-[34px] w-px overflow-hidden bg-line-2">
-        <span
-          class="absolute inset-0"
-          style="background: linear-gradient(var(--accent), transparent); animation: dm-float 2.4s ease-in-out infinite"
-        ></span>
+      <span class="dm-scroll-mouse relative block h-[40px] w-[25px] shrink-0 rounded-full border border-line-2">
+        <span class="absolute top-[7px] left-1/2 h-[8px] w-[4px] -translate-x-1/2 rounded-full bg-accent" style="animation: dm-scroll-dot 1.8s ease-in-out infinite"></span>
       </span>
-      <span class="font-mono text-[11px] tracking-[0.16em] text-ink-3">{ui.hero.scrollHint}</span>
+      <span class="font-mono text-[12px] tracking-[0.16em] text-ink-3">{ui.hero.scrollHint}</span>
     </div>
   </div>
 
@@ -90,21 +112,36 @@ const socialLabels: Record<string, string> = { github: "GitHub", linkedin: "Link
     <h2 class="mb-6 max-w-xl font-display text-[clamp(1.35rem,2.6vw,1.9rem)] leading-[1.2] font-light tracking-[-0.02em]">
       {ui.tools.description}
     </h2>
-    <div class="flex flex-wrap gap-4">
-      {
-        coreTools.map((tool) => (
-          <div class="group relative z-0 flex h-16 w-16 items-center justify-center rounded-xl border border-line bg-surface text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-line-2 hover:text-ink hover:z-20 focus-within:z-20">
-            <Icon name={tool.icon} class="h-8 w-8" />
-            <span
-              role="tooltip"
-              class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-            >
-              {tool.name}
-            </span>
-            <span class="sr-only">{tool.name}</span>
-          </div>
-        ))
-      }
+    <div class="dm-tools-marquee relative -mx-[26px] overflow-x-hidden pt-3 pb-12 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+      <div class="dm-marquee-track flex w-max items-center gap-5 px-[26px]">
+        {
+          [...coreTools, ...coreTools].map((tool, i) => {
+            const duplicate = i >= coreTools.length;
+            return (
+              <div
+                aria-hidden={duplicate ? "true" : undefined}
+                class="dm-tool-tile group relative z-0 flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-line-2 hover:text-ink hover:z-20 focus-within:z-20"
+              >
+                {tool.raster ? (
+                  <span
+                    class="h-10 w-10 bg-current"
+                    style={`mask-image:url(${rasterSrc(tool.icon)});mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url(${rasterSrc(tool.icon)});-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center`}
+                  />
+                ) : (
+                  <Icon name={tool.icon} class="h-10 w-10" />
+                )}
+                <span
+                  role="tooltip"
+                  class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] italic whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                >
+                  {tool.name}
+                </span>
+                <span class="sr-only">{tool.name}</span>
+              </div>
+            );
+          })
+        }
+      </div>
     </div>
     {
       exploringTools.length > 0 && (
@@ -113,10 +150,17 @@ const socialLabels: Record<string, string> = { github: "GitHub", linkedin: "Link
           <div class="flex flex-wrap gap-4">
             {exploringTools.map((tool) => (
               <div class="group relative z-0 flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-line-2 text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:text-ink hover:z-20 focus-within:z-20">
-                <Icon name={tool.icon} class="h-6 w-6" />
+                {tool.raster ? (
+                  <span
+                    class="h-6 w-6 bg-current"
+                    style={`mask-image:url(${rasterSrc(tool.icon)});mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url(${rasterSrc(tool.icon)});-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center`}
+                  />
+                ) : (
+                  <Icon name={tool.icon} class="h-6 w-6" />
+                )}
                 <span
                   role="tooltip"
-                  class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                  class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] italic whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                 >
                   {tool.name}
                 </span>
@@ -224,6 +268,7 @@ const socialLabels: Record<string, string> = { github: "GitHub", linkedin: "Link
         </Button>
         {socialLinks.filter((s) => s.id !== "email").map((link) => (
           <Button href={link.href} variant="secondary" target="_blank">
+            <Icon name={link.icon} class="h-[15px] w-[15px]" />
             {socialLabels[link.id]} <span class="text-[11px] text-ink-3">↗</span>
           </Button>
         ))}

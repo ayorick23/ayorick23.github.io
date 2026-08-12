@@ -3,8 +3,8 @@
  * never hardcode a profile URL inside a component.
  */
 export const socialLinks = [
-  { id: "github", href: "https://github.com/ayorick23", icon: "lucide:github" },
-  { id: "linkedin", href: "https://linkedin.com/in/dereckmendez", icon: "lucide:linkedin" },
+  { id: "github", href: "https://github.com/ayorick23", icon: "iconoir--github-social" },
+  { id: "linkedin", href: "https://linkedin.com/in/dereckmendez", icon: "simple-line-icons--linkedin-social" },
   { id: "email", href: "mailto:mayorickhenry@gmail.com", icon: "lucide:mail" },
 ] as const;
 

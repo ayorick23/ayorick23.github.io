@@ -4,10 +4,12 @@ import { socialLinks } from "../data/social-links";
 
 interface Props {
   variant?: "row" | "footer";
+  exclude?: string[];
   class?: string;
 }
 
-const { variant = "row", class: className = "" } = Astro.props;
+const { variant = "row", exclude = [], class: className = "" } = Astro.props;
+const links = socialLinks.filter((link) => !exclude.includes(link.id));
 
 const labels: Record<string, string> = {
   github: "GitHub",
@@ -23,7 +25,7 @@ const sizeClasses =
 
 <div class:list={["flex items-center gap-[9px]", className]}>
   {
-    socialLinks.map((link) => (
+    links.map((link) => (
       <a
         href={link.href}
         target={link.href.startsWith("http") ? "_blank" : undefined}

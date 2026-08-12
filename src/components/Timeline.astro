@@ -6,23 +6,36 @@ interface Props {
 }
 
 const { entries } = Astro.props;
+
+/* The line sits at the boundary of the 37%/1fr grid columns below, offset by
+   half the 56px (gap-x-14) gutter so it lands exactly in the middle of it. */
+const linePosition = "md:left-[calc(37%+28px)]";
 ---
 
-<div class="relative pl-[26px]">
-  <div
-    class="absolute top-[6px] bottom-[6px] left-[3px] w-px"
-    style="background: linear-gradient(var(--line-2), var(--line), transparent)"
-  >
-  </div>
+<div data-timeline-root class="relative pl-[26px] md:pl-0">
+  <svg data-timeline-svg class="pointer-events-none absolute inset-0 h-full w-full overflow-visible"></svg>
   {
     entries.map((entry) => (
-      <div class="relative pb-10">
-        <span
-          class="absolute top-[6px] -left-[26px] h-[7px] w-[7px] rounded-full border border-accent bg-bg"
-          style="box-shadow: 0 0 0 4px var(--accent-soft)"
-        />
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] items-start gap-x-8 gap-y-2">
-          <div>
+      // The whole row is the draggable "node" — dragging the dot carries its
+      // label along, and the connecting lines follow it, same as a
+      // constellation node carries its label and lit edges in the Hero.
+      <div data-timeline-node class="relative pb-10">
+        <div class:list={["absolute top-[6px] -left-[26px] h-0 w-0", linePosition]}>
+          <button
+            type="button"
+            data-timeline-hit
+            aria-hidden="true"
+            tabindex="-1"
+            class="absolute -top-4 -left-4 h-8 w-8 touch-none cursor-grab rounded-full outline-none active:cursor-grabbing"
+          />
+          <span
+            data-timeline-dot
+            class="pointer-events-none absolute -top-[3.5px] -left-[3.5px] block h-[7px] w-[7px] rounded-full border border-accent bg-bg transition-[box-shadow,background-color] duration-200"
+            style="box-shadow: 0 0 0 4px var(--accent-soft)"
+          />
+        </div>
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] items-start gap-x-8 gap-y-2 md:grid-cols-[37%_1fr] md:gap-x-14">
+          <div class="md:text-right">
             <div class="mb-[9px] font-mono text-[11.5px] tracking-[0.1em] text-accent">
               {entry.period}
             </div>
@@ -46,3 +59,27 @@ const { entries } = Astro.props;
     ))
   }
 </div>
+
+<style>
+  [data-timeline-node].is-active [data-timeline-dot] {
+    background-color: var(--accent);
+    box-shadow:
+      0 0 0 6px var(--accent-soft),
+      0 0 16px 1px var(--accent);
+  }
+  .dm-timeline-edge {
+    stroke: var(--line-2);
+    stroke-width: 1;
+    transition: stroke 0.25s ease;
+  }
+  .dm-timeline-edge.is-lit {
+    stroke: var(--accent);
+    stroke-width: 1.4;
+    filter: drop-shadow(0 0 4px var(--accent-soft));
+  }
+</style>
+
+<script>
+  import { initTimelineDots } from "../scripts/timeline";
+  document.addEventListener("astro:page-load", initTimelineDots);
+</script>
