@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import BaseLayout from "./BaseLayout.astro";
+import ProjectCover from "../components/ProjectCover.astro";
 import type { ProjectEntry } from "../lib/projects";
 import { getUI, localizePath, resolveLocale } from "../lib/i18n";
 
@@ -41,10 +42,19 @@ const projectsHref = localizePath("/projects", locale);
       {project.data.description}
     </p>
 
-    <div class="project-cover shadow-elevated relative mb-5 h-[300px] overflow-hidden rounded-[20px] border border-line" style="box-shadow: var(--shadow-elevated);">
-      <span class="absolute bottom-[14px] left-[18px] font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase">
-        {ui.common.coverPending} — 1440×720
-      </span>
+    <div
+      data-cover-hover-scope
+      class:list={["project-cover shadow-elevated relative mb-5 h-[300px] overflow-hidden rounded-[20px] border border-line", !project.data.coverKind && "project-cover--empty"]}
+      style="box-shadow: var(--shadow-elevated);"
+    >
+      {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
+      {
+        !project.data.coverKind && (
+          <span class="absolute bottom-[14px] left-[18px] font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase">
+            {ui.common.coverPending} — 1440×720
+          </span>
+        )
+      }
     </div>
 
     {
@@ -117,15 +127,15 @@ const projectsHref = localizePath("/projects", locale);
 
 <style>
   .project-cover {
-    background: linear-gradient(150deg, var(--surface), var(--bg));
+    background: radial-gradient(120% 100% at 50% 0%, var(--surface), var(--bg));
   }
-  .project-cover::before {
+  .project-cover--empty::before {
     content: "";
     position: absolute;
     inset: 0;
     background-image: repeating-linear-gradient(115deg, var(--line) 0 1px, transparent 1px 12px);
   }
-  .project-cover::after {
+  .project-cover--empty::after {
     content: "";
     position: absolute;
     inset: 0;

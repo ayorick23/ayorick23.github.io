@@ -1,0 +1,16 @@
+---
+import type { CoverKind } from "../lib/project-cover-kinds";
+
+interface Props {
+  kind: CoverKind;
+}
+
+const { kind } = Astro.props;
+---
+
+<canvas data-project-cover={kind} aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
+
+<script>
+  import { initProjectCovers } from "../scripts/project-covers";
+  document.addEventListener("astro:page-load", initProjectCovers);
+</script>

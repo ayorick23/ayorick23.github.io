@@ -31,6 +31,7 @@ const projectSchema = z.object({
   date: z.coerce.date(),
   order: z.number().default(0),
   coverImage: z.string().optional(),
+  coverKind: z.enum(["churn", "forecast", "clusters", "pipeline", "lifecycle", "semantic"]).optional(),
 });
 
 const projectsEn = defineCollection({

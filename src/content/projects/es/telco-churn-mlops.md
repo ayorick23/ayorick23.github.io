@@ -10,6 +10,7 @@ featured: true
 status: "draft"
 date: 2026-08-12
 order: 1
+coverKind: "churn"
 metrics:
   - label: "ROC-AUC"
     value: "0.XX"

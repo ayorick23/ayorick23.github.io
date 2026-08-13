@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import ProjectCover from "../ProjectCover.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 import { getProjects } from "../../lib/projects";
 
@@ -26,6 +27,7 @@ const homeHref = localizePath("/", locale);
     {
       projects.map((project, i) => (
         <div
+          data-cover-hover-scope
           class="shadow-elevated group relative grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center gap-[26px] rounded-[20px] border border-line bg-[image:var(--gradient-card)] p-5 backdrop-blur-[18px] transition-transform duration-300 ease-[cubic-bezier(.2,.7,.3,1)] hover:-translate-y-1 hover:border-line-2"
           style="box-shadow: var(--shadow-elevated);"
         >
@@ -34,15 +36,27 @@ const homeHref = localizePath("/", locale);
             class="absolute inset-0 z-0"
             aria-label={project.data.title}
           />
-          <div class="project-row-cover relative h-[150px] w-full max-w-[320px] overflow-hidden rounded-[14px] border border-line">
-            <span class="absolute bottom-[10px] left-3 font-mono text-[9.5px] tracking-[0.14em] text-ink-3 uppercase">
-              {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
-            </span>
+          <div class:list={["project-row-cover relative h-[150px] w-full max-w-[320px] overflow-hidden rounded-[14px] border border-line", !project.data.coverKind && "project-row-cover--empty"]}>
+            {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
+            {
+              !project.data.coverKind && (
+                <span class="absolute bottom-[10px] left-3 font-mono text-[9.5px] tracking-[0.14em] text-ink-3 uppercase">
+                  {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
+                </span>
+              )
+            }
           </div>
           <div class="flex flex-col gap-[11px]">
             <div class="flex items-center gap-3">
               <span class="font-mono text-[11px] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
               <span class="font-mono text-[10px] tracking-[0.16em] text-accent uppercase">{project.data.category}</span>
+              {
+                project.data.status === "placeholder" && (
+                  <span class="rounded-full border border-dashed border-line-2 px-[10px] py-[3px] font-mono text-[10px] tracking-[0.08em] text-ink-3 uppercase">
+                    {ui.common.placeholderBadge}
+                  </span>
+                )
+              }
             </div>
             <div class="font-display text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">{project.data.title}</div>
             <div class="max-w-[520px] font-display text-[14px] leading-[1.58] text-ink-2">{project.data.shortDescription}</div>
@@ -76,15 +90,15 @@ const homeHref = localizePath("/", locale);
 
 <style>
   .project-row-cover {
-    background: linear-gradient(150deg, var(--surface), var(--bg));
+    background: radial-gradient(120% 100% at 50% 0%, var(--surface), var(--bg));
   }
-  .project-row-cover::before {
+  .project-row-cover--empty::before {
     content: "";
     position: absolute;
     inset: 0;
     background-image: repeating-linear-gradient(115deg, var(--line) 0 1px, transparent 1px 11px);
   }
-  .project-row-cover::after {
+  .project-row-cover--empty::after {
     content: "";
     position: absolute;
     inset: 0;

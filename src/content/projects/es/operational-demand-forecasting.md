@@ -8,6 +8,7 @@ featured: true
 status: "published"
 date: 2026-01-01
 order: 2
+coverKind: "forecast"
 metrics: []
 sections:
   - heading: "Contexto"

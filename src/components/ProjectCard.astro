@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import ProjectCover from "./ProjectCover.astro";
 import type { ProjectEntry } from "../lib/projects";
 import { localizePath, type Locale } from "../lib/i18n";
 import type { UICopy } from "../content/i18n/types";
@@ -17,25 +18,36 @@ const num = String(index + 1).padStart(2, "0");
 ---
 
 <div
+  data-cover-hover-scope
   class="shadow-elevated group relative flex flex-col overflow-hidden rounded-[20px] border border-line bg-[image:var(--gradient-card)] backdrop-blur-[20px] transition-transform duration-300 ease-[cubic-bezier(.2,.7,.3,1)] hover:-translate-y-1.5 hover:border-line-2"
   style="box-shadow: var(--shadow-elevated);"
 >
   <a href={href} class="absolute inset-0 z-0" aria-label={project.data.title}></a>
-  <div class="project-cover relative h-[172px] border-b border-line">
+  <div class:list={["project-cover relative h-[172px] border-b border-line", !project.data.coverKind && "project-cover--empty"]}>
+    {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
     <span
       class="absolute right-[14px] top-[13px] font-mono text-[10px] tracking-[0.1em] text-ink-3"
     >
       {num}
     </span>
-    <span
-      class="absolute bottom-3 left-[14px] font-mono text-[9.5px] tracking-[0.14em] text-ink-3 uppercase"
-    >
-      {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
-    </span>
+    {
+      !project.data.coverKind && (
+        <span class="absolute bottom-3 left-[14px] font-mono text-[9.5px] tracking-[0.14em] text-ink-3 uppercase">
+          {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
+        </span>
+      )
+    }
   </div>
   <div class="flex flex-1 flex-col gap-3 p-[22px]">
-    <div class="font-mono text-[10px] tracking-[0.18em] text-accent uppercase">
-      {project.data.category}
+    <div class="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] text-accent uppercase">
+      <span>{project.data.category}</span>
+      {
+        project.data.status === "placeholder" && (
+          <span class="rounded-full border border-dashed border-line-2 px-[8px] py-[2px] text-ink-3 normal-case tracking-[0.08em]">
+            {ui.common.placeholderBadge}
+          </span>
+        )
+      }
     </div>
     <div class="font-display text-[19px] leading-[1.25] font-semibold tracking-[-0.015em]">
       {project.data.title}
@@ -75,16 +87,16 @@ const num = String(index + 1).padStart(2, "0");
 
 <style>
   .project-cover {
-    background: linear-gradient(150deg, var(--surface), var(--bg));
+    background: radial-gradient(120% 100% at 50% 0%, var(--surface), var(--bg));
   }
-  .project-cover::before {
+  .project-cover--empty::before {
     content: "";
     position: absolute;
     inset: 0;
     background-image: repeating-linear-gradient(115deg, var(--line) 0 1px, transparent 1px 11px);
     opacity: 0.9;
   }
-  .project-cover::after {
+  .project-cover--empty::after {
     content: "";
     position: absolute;
     inset: 0;
