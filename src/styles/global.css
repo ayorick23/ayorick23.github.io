@@ -37,6 +37,10 @@
   --photo-filter: grayscale(0.55) contrast(1.06) brightness(0.82);
   --star: #dce6ff;
   --edge: rgba(140, 175, 255, 0.3);
+  --nebula-cloud-1: rgba(91, 140, 255, 0.5);
+  --nebula-cloud-2: rgba(155, 124, 255, 0.42);
+  --nebula-cloud-3: rgba(91, 140, 255, 0.3);
+  --nebula-cloud-4: rgba(155, 124, 255, 0.24);
 }
 
 :root[data-theme="light"] {
@@ -67,6 +71,15 @@
   --photo-filter: grayscale(0.25) contrast(1.02) brightness(1.02);
   --star: #2b3a66;
   --edge: rgba(60, 90, 190, 0.34);
+  --nebula-cloud-1: rgba(255, 165, 110, 0.5);
+  --nebula-cloud-2: rgba(255, 110, 165, 0.42);
+  --nebula-cloud-3: rgba(122, 85, 234, 0.4);
+  --nebula-cloud-4: rgba(56, 96, 230, 0.32);
+  --gradient-aurora:
+    radial-gradient(38% 42% at 82% 18%, rgba(255, 165, 110, 0.32), transparent 70%),
+    radial-gradient(34% 38% at 58% 46%, rgba(255, 110, 165, 0.22), transparent 70%),
+    radial-gradient(40% 44% at 22% 30%, rgba(122, 85, 234, 0.2), transparent 70%),
+    radial-gradient(36% 40% at 12% 78%, rgba(56, 96, 230, 0.16), transparent 70%);
 }
 
 @theme inline {

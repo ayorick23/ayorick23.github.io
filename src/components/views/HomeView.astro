@@ -27,8 +27,9 @@ function rasterSrc(filename: string) {
 ---
 
 <section
-  class="mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-10 px-8 pt-[150px] pb-[70px] min-h-screen md:grid-cols-[repeat(auto-fit,minmax(420px,1fr))]"
+  class="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-10 px-8 pt-[150px] pb-[70px] min-h-screen md:grid-cols-[repeat(auto-fit,minmax(420px,1fr))]"
 >
+  <div class="hero-aurora pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="max-w-[560px]">
     <div class="mb-[26px] flex items-center gap-[10px]">
       <span
@@ -251,10 +252,8 @@ function rasterSrc(filename: string) {
     class="shadow-elevated relative overflow-hidden rounded-[26px] border border-line bg-[image:var(--gradient-card)] p-[clamp(2.4rem,6vw,4.75rem)] backdrop-blur-[24px]"
     style="box-shadow: var(--shadow-elevated);"
   >
-    <div
-      class="pointer-events-none absolute -right-[16%] -bottom-[58%] aspect-square w-[78%] rounded-full blur-[6px]"
-      style="background: radial-gradient(circle at 32% 22%, rgba(91,140,255,.30), rgba(155,124,255,.12) 45%, transparent 68%)"
-    >
+    <div data-nebula class="pointer-events-auto absolute inset-0">
+      <canvas data-nebula-canvas aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
     </div>
     <div class="relative max-w-[560px]">
       <h2 class="mb-5 font-display text-[clamp(1.9rem,4.2vw,3.1rem)] leading-[1.1] font-light tracking-[-0.03em]">
@@ -279,5 +278,15 @@ function rasterSrc(filename: string) {
 
 <script>
   import { initConstellation } from "../../scripts/constellation";
+  import { initNebula } from "../../scripts/nebula";
   document.addEventListener("astro:page-load", initConstellation);
+  document.addEventListener("astro:page-load", initNebula);
 </script>
+
+<style>
+  /* Only defined under [data-theme="light"] in global.css — stays invisible in dark mode. */
+  .hero-aurora {
+    background: var(--gradient-aurora, none);
+    filter: blur(50px);
+  }
+</style>

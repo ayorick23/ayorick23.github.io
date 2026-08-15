@@ -28,7 +28,7 @@ const homeHref = localizePath("/", locale);
       projects.map((project, i) => (
         <div
           data-cover-hover-scope
-          class="shadow-elevated group relative grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center gap-[26px] rounded-[20px] border border-line bg-[image:var(--gradient-card)] p-5 backdrop-blur-[18px] transition-transform duration-300 ease-[cubic-bezier(.2,.7,.3,1)] hover:-translate-y-1 hover:border-line-2"
+          class="shadow-elevated group relative grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-stretch gap-[26px] rounded-[20px] border border-line bg-[image:var(--gradient-card)] p-5 backdrop-blur-[18px] transition-transform duration-300 ease-[cubic-bezier(.2,.7,.3,1)] hover:-translate-y-1 hover:border-line-2"
           style="box-shadow: var(--shadow-elevated);"
         >
           <a
@@ -36,7 +36,7 @@ const homeHref = localizePath("/", locale);
             class="absolute inset-0 z-0"
             aria-label={project.data.title}
           />
-          <div class:list={["project-row-cover relative h-[150px] w-full max-w-[320px] overflow-hidden rounded-[14px] border border-line", !project.data.coverKind && "project-row-cover--empty"]}>
+          <div class:list={["project-row-cover relative h-full min-h-[150px] w-full overflow-hidden rounded-[14px] border border-line", !project.data.coverKind && "project-row-cover--empty"]}>
             {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
             {
               !project.data.coverKind && (
