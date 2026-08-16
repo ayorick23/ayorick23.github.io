@@ -41,10 +41,15 @@ const labels = ui.hero.constellation;
             ]}
           >
             <div data-label-title class="font-display text-[13px] leading-[1.2] font-semibold">
-              {copy.label}
-            </div>
-            <div data-label-desc class="mt-[5px] hidden font-mono text-[10.5px] leading-[1.42] text-ink-3 sm:block">
-              {copy.description}
+              {node.id === "dataAnalytics" ? (
+                <>
+                  {copy.label.split(" ")[0]}
+                  <br />
+                  {copy.label.split(" ").slice(1).join(" ")}
+                </>
+              ) : (
+                copy.label
+              )}
             </div>
           </div>
         </div>
@@ -63,12 +68,5 @@ const labels = ui.hero.constellation;
   [data-constellation-node].is-active [data-label-title] {
     color: var(--ink);
     letter-spacing: 0.01em;
-  }
-  [data-label-desc] {
-    opacity: 0.42;
-    transition: opacity 0.3s ease;
-  }
-  [data-constellation-node].is-active [data-label-desc] {
-    opacity: 1;
   }
 </style>

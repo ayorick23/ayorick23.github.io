@@ -66,7 +66,26 @@ export function initConstellation() {
   let dust: DustParticle[] = [];
   let hovered = -1;
   let raf = 0;
+  let running = false;
+  let inView = false;
   const startTime = performance.now();
+
+  // Colors only change on theme toggle, not every frame — reading them via
+  // getComputedStyle inside the draw loop forces a style recalc 60x/sec for no reason.
+  let star = "#dce6ff";
+  let edgeColor = "rgba(140,175,255,.3)";
+  let accent = "#5b8cff";
+
+  function readThemeColors() {
+    const styles = getComputedStyle(document.documentElement);
+    star = styles.getPropertyValue("--star").trim() || "#dce6ff";
+    edgeColor = styles.getPropertyValue("--edge").trim() || "rgba(140,175,255,.3)";
+    accent = styles.getPropertyValue("--accent").trim() || "#5b8cff";
+  }
+  readThemeColors();
+
+  const themeObserver = new MutationObserver(readThemeColors);
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
   function resize() {
     const rect = container!.getBoundingClientRect();
@@ -96,11 +115,6 @@ export function initConstellation() {
   }
 
   function draw(elapsed: number, progress: number) {
-    const styles = getComputedStyle(document.documentElement);
-    const star = styles.getPropertyValue("--star").trim() || "#dce6ff";
-    const edgeColor = styles.getPropertyValue("--edge").trim() || "rgba(140,175,255,.3)";
-    const accent = styles.getPropertyValue("--accent").trim() || "#5b8cff";
-
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx!.clearRect(0, 0, width, height);
 
@@ -256,21 +270,33 @@ export function initConstellation() {
     raf = requestAnimationFrame(loop);
   };
 
+  function sync() {
+    const shouldRun = inView && !document.hidden;
+    if (shouldRun && !running) {
+      running = true;
+      raf = requestAnimationFrame(loop);
+    } else if (!shouldRun && running) {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+  }
+
+  let io: IntersectionObserver | undefined;
+
   if (reduceMotion) {
     draw(0, 1);
   } else {
-    raf = requestAnimationFrame(loop);
-    document.addEventListener(
-      "visibilitychange",
-      () => {
-        if (document.hidden) {
-          cancelAnimationFrame(raf);
-        } else {
-          raf = requestAnimationFrame(loop);
-        }
+    // Once the visitor scrolls past the Hero this canvas has nothing left to show, but
+    // without this it kept redrawing 60x/sec for the rest of the visit regardless.
+    io = new IntersectionObserver(
+      (entries) => {
+        inView = entries.some((entry) => entry.isIntersecting);
+        sync();
       },
-      { signal },
+      { rootMargin: "200px" },
     );
+    io.observe(container);
+    document.addEventListener("visibilitychange", sync, { signal });
   }
 
   document.addEventListener(
@@ -278,6 +304,9 @@ export function initConstellation() {
     () => {
       controller.abort();
       ro.disconnect();
+      io?.disconnect();
+      themeObserver.disconnect();
+      running = false;
       cancelAnimationFrame(raf);
     },
     { once: true },
