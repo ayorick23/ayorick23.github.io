@@ -34,7 +34,10 @@
   --gradient-ambient:
     radial-gradient(60% 50% at 78% 18%, rgba(91, 140, 255, 0.16), transparent 70%),
     radial-gradient(45% 40% at 12% 8%, rgba(155, 124, 255, 0.1), transparent 70%);
-  --photo-filter: grayscale(0.55) contrast(1.06) brightness(0.82);
+  /* Deliberately NOT redefined under [data-theme="light"] — Dereck wants the photo's
+     own color rendering identical in both themes; only the page background around it
+     should change. */
+  --photo-filter: grayscale(0.4) contrast(1.05) brightness(0.92);
   --star: #dce6ff;
   --edge: rgba(140, 175, 255, 0.3);
   --nebula-cloud-1: rgba(91, 140, 255, 0.5);
@@ -68,7 +71,6 @@
   --gradient-ambient:
     radial-gradient(60% 50% at 78% 16%, rgba(122, 85, 234, 0.1), transparent 70%),
     radial-gradient(48% 42% at 10% 6%, rgba(56, 96, 230, 0.07), transparent 70%);
-  --photo-filter: grayscale(0.25) contrast(1.02) brightness(1.02);
   --star: #2b3a66;
   --edge: rgba(60, 90, 190, 0.34);
   --nebula-cloud-1: rgba(255, 165, 110, 0.5);
