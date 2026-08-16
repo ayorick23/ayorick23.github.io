@@ -203,6 +203,11 @@ export const en: UICopy = {
           "Turn business questions into structured analyses, using data to understand what is happening and why.",
       },
       {
+        title: "Data Visualization",
+        description:
+          "Communicate analytical results through clear dashboards and visualizations designed for decision-making.",
+      },
+      {
         title: "Machine Learning",
         description:
           "Build and evaluate predictive models with strong baselines, appropriate validation and metrics aligned with the problem.",
@@ -216,11 +221,6 @@ export const en: UICopy = {
         title: "MLOps",
         description:
           "Build reproducible ML workflows around experiment tracking, versioning, testing, packaging and automated retraining.",
-      },
-      {
-        title: "Data Visualization",
-        description:
-          "Communicate analytical results through clear dashboards and visualizations designed for decision-making.",
       },
       {
         title: "Software Engineering for ML",

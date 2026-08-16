@@ -148,11 +148,13 @@ export function initNebula() {
       ctx!.arc(x, y, glowR, 0, Math.PI * 2);
       ctx!.fill();
 
-      ctx!.globalAlpha = 0.85;
+      ctx!.globalAlpha = 0.6;
       ctx!.fillStyle = star;
+      ctx!.filter = "blur(2px)";
       ctx!.beginPath();
       ctx!.arc(x, y, p.r, 0, Math.PI * 2);
       ctx!.fill();
+      ctx!.filter = "none";
     });
 
     ctx!.globalAlpha = 1;

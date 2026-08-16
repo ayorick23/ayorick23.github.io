@@ -208,6 +208,11 @@ export const es: UICopy = {
           "Convertir preguntas de negocio en análisis estructurados utilizando datos para entender qué está ocurriendo y por qué.",
       },
       {
+        title: "Visualización de datos",
+        description:
+          "Comunicar resultados analíticos mediante dashboards y visualizaciones claras orientadas a la toma de decisiones.",
+      },
+      {
         title: "Machine Learning",
         description:
           "Construir y evaluar modelos predictivos utilizando buenos baselines, validaciones apropiadas y métricas alineadas con el problema.",
@@ -221,11 +226,6 @@ export const es: UICopy = {
         title: "MLOps",
         description:
           "Construir flujos reproducibles de Machine Learning alrededor del seguimiento de experimentos, versionado, testing, empaquetado y reentrenamiento automatizado.",
-      },
-      {
-        title: "Visualización de datos",
-        description:
-          "Comunicar resultados analíticos mediante dashboards y visualizaciones claras orientadas a la toma de decisiones.",
       },
       {
         title: "Ingeniería de software para ML",
