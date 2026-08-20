@@ -7,7 +7,7 @@ technologies: ["Python", "Pandas", "XGBoost", "MLflow", "SQL"]
 featured: true
 status: "published"
 date: 2026-01-01
-order: 2
+order: 3
 coverKind: "forecast"
 metrics: []
 sections:

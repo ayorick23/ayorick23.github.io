@@ -250,6 +250,7 @@ export const es: UICopy = {
     note: "",
     backLabel: "Todos los proyectos",
     otherLabel: "Otros proyectos",
+    technologiesLabel: "Tecnologías utilizadas",
   },
   footer: {
     tagline: "Datos · Machine Learning · MLOps",

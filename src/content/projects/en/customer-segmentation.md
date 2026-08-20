@@ -7,7 +7,7 @@ technologies: ["Python", "Scikit-learn", "Seaborn", "Pandas", "Streamlit"]
 featured: false
 status: "placeholder"
 date: 2026-01-01
-order: 4
+order: 5
 coverKind: "clusters"
 metrics: []
 sections:

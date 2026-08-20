@@ -7,7 +7,7 @@ technologies: ["MLflow", "DVC", "Docker", "Evidently"]
 featured: false
 status: "placeholder"
 date: 2026-01-01
-order: 5
+order: 6
 coverKind: "lifecycle"
 metrics: []
 sections:

@@ -8,7 +8,7 @@
  * comet trails) per Dereck's request for more visible particle travel/grouping.
  */
 
-export type CoverKind = "churn" | "forecast" | "clusters" | "pipeline" | "lifecycle" | "semantic";
+export type CoverKind = "churn" | "forecast" | "clusters" | "pipeline" | "lifecycle" | "semantic" | "benchmark";
 
 export interface CoverColors {
   ink: string;
@@ -229,9 +229,9 @@ const churnKind: CoverKindDef<ChurnState> = {
     ctx.strokeStyle = C.line2;
     ctx.lineWidth = 1;
     ctx.stroke();
-    txt(ctx, "customer #8421", bx + 11, by + 17, 9.5, C.ink2);
-    txt(ctx, "risk 78%", bx + 11, by + 36, 11, C.risk, "left", 600);
-    txt(ctx, "tenure 8m", bx + 11, by + 53, 9, C.ink3);
+    txt(ctx, "customer #10218", bx + 11, by + 17, 9.5, C.ink2);
+    txt(ctx, "risk 84%", bx + 11, by + 36, 11, C.risk, "left", 600);
+    txt(ctx, "tenure 4m", bx + 11, by + 53, 9, C.ink3);
     ctx.globalAlpha = 0.85;
     txt(ctx, "AT RISK · 6", w * 0.045, h - 14, 9.5, C.risk, "left", 600);
     txt(ctx, "CUSTOMERS → RISK → CHURN", w * 0.045, 15, 9, C.ink3);
@@ -731,6 +731,209 @@ const semanticKind: CoverKindDef<SemanticState> = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// benchmark — salary boxplot by experience level, Junior → Senior highlighted
+// ---------------------------------------------------------------------------
+
+interface BoxCategory {
+  label: string;
+  median: number;
+  q1: number;
+  q3: number;
+  whiskerLow: number;
+  whiskerHigh: number;
+  outliers: number[];
+  highlight?: "start" | "end";
+}
+interface BenchmarkState {
+  categories: BoxCategory[];
+}
+
+const BENCHMARK_DOMAIN_MAX = 500000;
+
+const benchmarkKind: CoverKindDef<BenchmarkState> = {
+  init() {
+    const r = seeded(71);
+    const mkOutliers = (from: number, count: number, spread: number) =>
+      Array.from({ length: count }, () => from + spread * Math.pow(r(), 1.6));
+    const categories: BoxCategory[] = [
+      {
+        label: "JUNIOR",
+        median: 85000,
+        q1: 62000,
+        q3: 122000,
+        whiskerLow: 15000,
+        whiskerHigh: 210000,
+        outliers: mkOutliers(210000, 5, 220000),
+        highlight: "start",
+      },
+      {
+        label: "MID",
+        median: 121600,
+        q1: 90000,
+        q3: 165000,
+        whiskerLow: 15000,
+        whiskerHigh: 285000,
+        outliers: mkOutliers(285000, 6, 210000),
+      },
+      {
+        label: "SENIOR",
+        median: 156400,
+        q1: 120000,
+        q3: 197000,
+        whiskerLow: 15000,
+        whiskerHigh: 325000,
+        outliers: mkOutliers(325000, 7, 160000),
+        highlight: "end",
+      },
+      {
+        label: "EXECUTIVE",
+        median: 188400,
+        q1: 148000,
+        q3: 238000,
+        whiskerLow: 15000,
+        whiskerHigh: 375000,
+        outliers: mkOutliers(375000, 4, 110000),
+      },
+    ];
+    return { categories };
+  },
+  draw(ctx, st, w, h, t, prog, hov, C) {
+    const top = 68;
+    const bot = h - 26;
+    const H = bot - top;
+    const Y = (v: number) => bot - Math.min(1, v / BENCHMARK_DOMAIN_MAX) * H;
+    const xs = [0.14, 0.39, 0.64, 0.89];
+    const bw = Math.min(58, w * 0.09);
+
+    st.categories.forEach((cat, i) => {
+      const cx = xs[i] * w;
+      const grow = ease(clamp01((prog - i * 0.08) / 0.5));
+      if (grow <= 0) return;
+      const detail = clamp01((prog - i * 0.08 - 0.32) / 0.35);
+
+      const q1Y = Y(cat.q1);
+      const q3Y = Y(cat.q3);
+      const curQ3Y = q1Y + (q3Y - q1Y) * grow;
+      const medY = Y(cat.median);
+      const isHi = !!cat.highlight;
+      const boxCol = cat.highlight === "start" ? C.accent : cat.highlight === "end" ? C.green : C.ink3;
+
+      if (detail > 0) {
+        const whHighY = Y(cat.whiskerHigh);
+        const whLowY = Y(cat.whiskerLow);
+        ctx.globalAlpha = detail * 0.55;
+        ctx.strokeStyle = C.line2;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx, whHighY);
+        ctx.lineTo(cx, q3Y);
+        ctx.moveTo(cx, q1Y);
+        ctx.lineTo(cx, whLowY);
+        const capW = bw * 0.4;
+        ctx.moveTo(cx - capW / 2, whHighY);
+        ctx.lineTo(cx + capW / 2, whHighY);
+        ctx.moveTo(cx - capW / 2, whLowY);
+        ctx.lineTo(cx + capW / 2, whLowY);
+        ctx.stroke();
+
+        cat.outliers.forEach((v, oi) => {
+          const oa = clamp01(detail - oi * 0.05);
+          if (oa <= 0) return;
+          const amp = hov ? 2.6 : 0.7;
+          const floatY = Math.sin(t * (hov ? 1.15 : 0.5) + i * 1.7 + oi * 0.9) * amp;
+          const dx = (oi % 2 === 0 ? -1 : 1) * bw * 0.22;
+          ctx.globalAlpha = oa * (hov ? 0.75 : 0.4);
+          ctx.fillStyle = C.ink3;
+          ctx.beginPath();
+          ctx.arc(cx + dx, Y(v) + floatY, 1.6, 0, TAU);
+          ctx.fill();
+        });
+      }
+
+      if (isHi && hov) {
+        const gcy = (curQ3Y + q1Y) / 2;
+        const gr = bw * 2.1;
+        const g = ctx.createRadialGradient(cx, gcy, 0, cx, gcy, gr);
+        g.addColorStop(0, boxCol);
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.globalAlpha = C.glow * 0.4 * grow;
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(cx, gcy, gr, 0, TAU);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = grow * (isHi ? 0.24 : 0.85);
+      ctx.fillStyle = isHi ? boxCol : C.panel;
+      roundRect(ctx, cx - bw / 2, curQ3Y, bw, Math.max(1, q1Y - curQ3Y), 5);
+      ctx.fill();
+      ctx.globalAlpha = grow * (hov && isHi ? 1 : 0.75);
+      ctx.strokeStyle = isHi ? boxCol : C.line2;
+      ctx.lineWidth = isHi && hov ? 1.7 : 1;
+      roundRect(ctx, cx - bw / 2, curQ3Y, bw, Math.max(1, q1Y - curQ3Y), 5);
+      ctx.stroke();
+
+      if (grow > 0.55) {
+        const medAlpha = clamp01((grow - 0.55) / 0.45);
+        const pulse = hov && isHi ? 0.7 + 0.3 * Math.sin(t * 3 + i) : 1;
+        ctx.globalAlpha = medAlpha * pulse;
+        ctx.strokeStyle = isHi ? boxCol : C.ink2;
+        ctx.lineWidth = isHi ? 2.2 : 1.4;
+        ctx.beginPath();
+        ctx.moveTo(cx - bw / 2, medY);
+        ctx.lineTo(cx + bw / 2, medY);
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = grow * 0.85;
+      txt(ctx, cat.label, cx, bot + 13, 8.6, isHi ? boxCol : C.ink3, "center", isHi ? 600 : 500);
+    });
+
+    const startI = st.categories.findIndex((c) => c.highlight === "start");
+    const endI = st.categories.findIndex((c) => c.highlight === "end");
+    if (startI >= 0 && endI >= 0) {
+      const reveal = ease(clamp01((prog - 0.55) / 0.4));
+      if (reveal > 0) {
+        const x0 = xs[startI] * w;
+        const x1 = xs[endI] * w;
+        const bracketY = top - 12;
+        ctx.globalAlpha = reveal * (hov ? 0.95 : 0.5);
+        ctx.strokeStyle = C.green;
+        ctx.lineWidth = hov ? 1.4 : 1;
+        ctx.setLineDash([3, 3]);
+        ctx.lineDashOffset = -((t * (hov ? 46 : 16)) % 6);
+        ctx.beginPath();
+        ctx.moveTo(x0, bracketY + 10);
+        ctx.lineTo(x0, bracketY);
+        ctx.lineTo(x1, bracketY);
+        ctx.lineTo(x1, bracketY + 10);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.lineDashOffset = 0;
+
+        const pbw = Math.min(150, w * 0.4);
+        const pbh = 40;
+        const pbx = (x0 + x1) / 2 - pbw / 2;
+        const pby = 14;
+        ctx.globalAlpha = reveal * (hov ? 1 : 0.85);
+        ctx.fillStyle = C.panel;
+        roundRect(ctx, pbx, pby, pbw, pbh, 8);
+        ctx.fill();
+        ctx.strokeStyle = C.line2;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        txt(ctx, "JUNIOR → SENIOR", pbx + pbw / 2, pby + 14, 8.3, C.ink2, "center");
+        txt(ctx, "+84% median", pbx + pbw / 2, pby + 29, 11, C.green, "center", 700);
+      }
+    }
+
+    ctx.globalAlpha = 0.7;
+    txt(ctx, "SALARY BY EXPERIENCE", w * 0.045, 14, 9, C.ink3, "left");
+    ctx.globalAlpha = 1;
+  },
+};
+
 export const COVER_KINDS: Record<CoverKind, CoverKindDef<any>> = {
   churn: churnKind,
   forecast: forecastKind,
@@ -738,4 +941,5 @@ export const COVER_KINDS: Record<CoverKind, CoverKindDef<any>> = {
   pipeline: pipelineKind,
   lifecycle: lifecycleKind,
   semantic: semanticKind,
+  benchmark: benchmarkKind,
 };

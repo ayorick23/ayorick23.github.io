@@ -7,7 +7,7 @@ technologies: ["Python", "Transformers", "LangChain", "FastAPI"]
 featured: false
 status: "placeholder"
 date: 2026-01-01
-order: 6
+order: 7
 coverKind: "semantic"
 metrics: []
 sections:

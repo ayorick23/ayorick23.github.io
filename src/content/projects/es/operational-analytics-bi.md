@@ -6,10 +6,10 @@ description: "Proyecto de analítica operativa que transforma datos de atención
 technologies:
   ["Python", "Pandas", "NumPy", "Matplotlib", "Seaborn", "Power BI", "DAX"]
 githubUrl: "https://github.com/ayorick23/data-science-salaries-analysis"
-featured: true
+featured: false
 status: "published"
 date: 2026-01-01
-order: 3
+order: 4
 coverKind: "pipeline"
 metrics: []
 sections:

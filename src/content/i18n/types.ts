@@ -118,6 +118,7 @@ export interface UICopy {
     note: string;
     backLabel: string;
     otherLabel: string;
+    technologiesLabel: string;
   };
   footer: {
     tagline: string;

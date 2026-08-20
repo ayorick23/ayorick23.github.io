@@ -9,7 +9,7 @@ githubUrl: "https://github.com/ayorick23/telco-churn-mlops"
 featured: true
 status: "published"
 date: 2026-01-01
-order: 1
+order: 2
 coverKind: "churn"
 metrics: []
 sections:

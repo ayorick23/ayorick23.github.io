@@ -9,7 +9,7 @@ githubUrl: "https://github.com/ayorick23/data-science-salaries-analysis"
 featured: true
 status: "published"
 date: 2026-01-01
-order: 3
+order: 4
 coverKind: "pipeline"
 metrics: []
 sections:

@@ -1,0 +1,86 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+const { src, alt, caption } = Astro.props;
+---
+
+<figure class="mac-frame">
+  <div class="mac-frame__bar">
+    <span class="mac-frame__dot mac-frame__dot--red"></span>
+    <span class="mac-frame__dot mac-frame__dot--amber"></span>
+    <span class="mac-frame__dot mac-frame__dot--green"></span>
+  </div>
+  <button type="button" class="mac-frame__trigger" data-lightbox-trigger data-lightbox-src={src} data-lightbox-alt={alt} aria-label={alt}>
+    <img src={src} alt={alt} loading="lazy" class="mac-frame__img" />
+  </button>
+  {caption && <figcaption class="mac-frame__caption">{caption}</figcaption>}
+</figure>
+
+<script>
+  import { initLightbox } from "../scripts/lightbox";
+  document.addEventListener("astro:page-load", initLightbox);
+</script>
+
+<style>
+  .mac-frame {
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    box-shadow: var(--shadow-elevated);
+  }
+  .mac-frame__bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    background: var(--veil);
+  }
+  .mac-frame__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .mac-frame__dot--red {
+    background: #ff5f57;
+  }
+  .mac-frame__dot--amber {
+    background: #febc2e;
+  }
+  .mac-frame__dot--green {
+    background: #28c840;
+  }
+  .mac-frame__trigger {
+    display: block;
+    width: 100%;
+    cursor: zoom-in;
+    border: none;
+    padding: 0;
+    background: none;
+  }
+  .mac-frame__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+      filter 0.35s ease-out;
+  }
+  .mac-frame__trigger:hover .mac-frame__img,
+  .mac-frame__trigger:focus-visible .mac-frame__img {
+    transform: scale(1.025);
+    filter: brightness(1.04);
+  }
+  .mac-frame__caption {
+    padding: 10px 16px 14px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--ink-3);
+  }
+</style>
