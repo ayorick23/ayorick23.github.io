@@ -303,6 +303,24 @@ body {
   font-style: italic;
   color: var(--ink);
 }
+.section-body p + p,
+.section-body ul,
+.section-body ol {
+  margin-top: 0.9em;
+}
+.section-body ul,
+.section-body ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding-left: 1.3em;
+}
+.section-body ul li {
+  list-style: disc;
+}
+.section-body ol li {
+  list-style: decimal;
+}
 
 /* Image lightbox — overlay is created dynamically by lightbox.ts, so it lives
    outside any component's scoped styles. */

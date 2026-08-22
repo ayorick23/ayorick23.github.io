@@ -41,7 +41,11 @@ export interface UICopy {
     coverPending: string;
     caseStudyLabel: string;
     linkPending: string;
-    placeholderBadge: string;
+    statusLabel: {
+      placeholder: string;
+      draft: string;
+      published: string;
+    };
   };
   theme: {
     toDark: string;

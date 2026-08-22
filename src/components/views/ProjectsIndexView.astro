@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import ProjectCover from "../ProjectCover.astro";
+import StatusBadge from "../StatusBadge.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 import { getProjects } from "../../lib/projects";
 
@@ -50,13 +51,7 @@ const homeHref = localizePath("/", locale);
             <div class="flex items-center gap-3">
               <span class="font-mono text-[11px] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
               <span class="font-mono text-[10px] tracking-[0.16em] text-accent uppercase">{project.data.category}</span>
-              {
-                project.data.status === "placeholder" && (
-                  <span class="rounded-full border border-dashed border-line-2 px-[10px] py-[3px] font-mono text-[10px] tracking-[0.08em] text-ink-3 uppercase">
-                    {ui.common.placeholderBadge}
-                  </span>
-                )
-              }
+              <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
             </div>
             <div class="font-display text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">{project.data.title}</div>
             <div class="max-w-[520px] font-display text-[14px] leading-[1.58] text-ink-2">{project.data.shortDescription}</div>

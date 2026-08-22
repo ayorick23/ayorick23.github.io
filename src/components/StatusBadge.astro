@@ -1,0 +1,56 @@
+---
+import type { UICopy } from "../content/i18n/types";
+
+interface Props {
+  status: "placeholder" | "draft" | "published";
+  ui: UICopy;
+  class?: string;
+}
+
+const { status, ui, class: className } = Astro.props;
+const label = ui.common.statusLabel[status];
+---
+
+<span class:list={["status-badge", `status-badge--${status}`, className]}>
+  <span class="status-badge__dot"></span>
+  {label}
+</span>
+
+<style>
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    padding: 2px 9px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .status-badge__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+  .status-badge--draft {
+    color: var(--ink-2);
+  }
+  .status-badge--draft .status-badge__dot {
+    background: var(--ink-2);
+  }
+  .status-badge--published {
+    color: var(--ink-2);
+    background: var(--accent-soft);
+  }
+  .status-badge--published .status-badge__dot {
+    background: var(--accent);
+  }
+  .status-badge--placeholder {
+    border-style: dashed;
+  }
+</style>

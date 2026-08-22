@@ -23,7 +23,11 @@ export const en: UICopy = {
     coverPending: "Cover pending",
     caseStudyLabel: "Case study",
     linkPending: "TBD",
-    placeholderBadge: "Placeholder",
+    statusLabel: {
+      placeholder: "Upcoming",
+      draft: "In progress",
+      published: "Completed",
+    },
   },
   theme: {
     toDark: "Switch to dark mode",

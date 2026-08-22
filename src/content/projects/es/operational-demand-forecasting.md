@@ -5,7 +5,7 @@ shortDescription: "Sistema de pronóstico orientado a predecir demanda y métric
 description: "Sistema de pronóstico orientado a predecir demanda y métricas relacionadas con la atención y el servicio, combinando patrones históricos, efectos de calendario y Machine Learning para apoyar la planificación y asignación de recursos."
 technologies: ["Python", "Pandas", "XGBoost", "MLflow", "SQL"]
 featured: true
-status: "published"
+status: "draft"
 date: 2026-01-01
 order: 3
 coverKind: "forecast"

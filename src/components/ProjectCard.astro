@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import ProjectCover from "./ProjectCover.astro";
+import StatusBadge from "./StatusBadge.astro";
 import type { ProjectEntry } from "../lib/projects";
 import { localizePath, type Locale } from "../lib/i18n";
 import type { UICopy } from "../content/i18n/types";
@@ -41,13 +42,7 @@ const num = String(index + 1).padStart(2, "0");
   <div class="flex flex-1 flex-col gap-3 p-[22px]">
     <div class="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] text-accent uppercase">
       <span>{project.data.category}</span>
-      {
-        project.data.status === "placeholder" && (
-          <span class="rounded-full border border-dashed border-line-2 px-[8px] py-[2px] text-ink-3 normal-case tracking-[0.08em]">
-            {ui.common.placeholderBadge}
-          </span>
-        )
-      }
+      <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
     </div>
     <div class="font-display text-[19px] leading-[1.25] font-semibold tracking-[-0.015em]">
       {project.data.title}
