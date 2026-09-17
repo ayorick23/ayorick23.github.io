@@ -26,6 +26,7 @@ status: "published"
 date: 2026-08-19
 order: 1
 coverKind: "benchmark"
+ogImage: "/og/data-ai-compensation-benchmark-es.png"
 metrics:
   - label: "Filas analizadas"
     value: "85,088"

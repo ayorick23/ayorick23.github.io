@@ -38,11 +38,21 @@ Node no viene preinstalado en esta máquina por defecto — si `node`/`npm` no e
 
 ## Content collection de proyectos
 
-Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shortDescription`, `description`, `technologies[]`, `githubUrl?`, `demoUrl?`, `metrics[]`, `sections[]` (bloques tipo Contexto/Enfoque/Resultado), `featured`, `status` (`placeholder | draft | published`), `coverImage?`.
+Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shortDescription`, `description`, `technologies[]`, `githubUrl?`, `demoUrl?`, `metrics[]`, `sections[]` (bloques tipo Contexto/Enfoque/Resultado), `featured`, `status` (`placeholder | draft | published`), `coverImage?`, `ogImage?`.
 
 - Si `githubUrl` no está definido, el botón de GitHub de la tarjeta simplemente no se renderiza (no hay estado "roto"). Mismo patrón para `demoUrl`.
 - Si `coverImage` no está definido, la tarjeta muestra el placeholder con el patrón diagonal y el texto "portada pendiente" en vez de asumir que hay imagen.
 - `status: "placeholder"` solo controla el badge "Ejemplo/Placeholder" en la página del caso de estudio — no lo uses para decidir si mostrar la portada (eso es cosa de `coverImage`).
+- `ogImage?` es la portada social (og:image / twitter:image) de ese caso de estudio específico — independiente de `coverImage`. Si no se define, `BaseLayout.astro` usa la tarjeta de marca por defecto en `public/og/site-{locale}.png`. Los 3 proyectos actuales ya tienen `ogImage` propio, uno por idioma (`public/og/{slug}-{locale}.png`).
+
+### Portadas para redes sociales (og:image)
+
+- `scripts/generate-og-images.mjs` es un generador de assets *manual*, no parte del build de Astro — se corre a mano con `npm run generate:og` cada vez que cambie la bio, la foto, el texto de un proyecto o sus métricas, y el resultado (`public/og/*.png`) se commitea como asset estático.
+- La tarjeta de marca por defecto (`site-en.png` / `site-es.png`) se dibuja con `@napi-rs/canvas` (Manrope real vía `@fontsource/manrope`, no la variable — los pesos de una fuente variable no se aplican bien vía `ctx.font` en canvas) más el recorte circular de `src/assets/images/dereck-mendez-cutout.png` (tiene canal alfa real, no es solo fondo blanco) y una mini-constelación decorativa inspirada en `src/data/constellation.ts`.
+- **Las portadas por proyecto siguen la misma estética de marca, no son screenshots.** El panel de la derecha renderiza en frío (`prog=1`, sin animación) la misma función `draw()` de `src/lib/project-cover-kinds.ts` que ya anima la portada del proyecto en vivo en la web — es decir, la portada social y la portada on-page son literalmente el mismo dibujo, solo que una se congela en un frame. La izquierda repite el patrón de la tarjeta de marca: categoría, título, tagline (recortada del `shortDescription` real, nunca reescrita), y abajo las primeras 3 métricas reales del proyecto (o los chips de tecnologías + badge "en desarrollo" si todavía no hay métricas).
+- Node 24 puede importar `project-cover-kinds.ts` directamente (`import { COVER_KINDS } from "../src/lib/project-cover-kinds.ts"`) sin transpilar — el archivo no tiene imports externos ni sintaxis TS no borrable, así que el "type stripping" nativo de Node alcanza. No dupliques esa lógica de dibujo a mano en el script.
+- **Gotcha ya resuelto**: mi propio `roundRectPath(ctx, x, y, w, h, r)` (a diferencia del `roundRect` nativo del canvas) no clampea `r` — pasarle un radio mayor a `w/2`/`h/2` (como hice para simular una píldora con `r: 999`) hace que la curva se salga del cuadro y cruce todo el canvas. La función ya clampea `r = Math.min(r, w/2, h/2)` al inicio; no lo quites.
+- Para agregar una portada nueva (proyecto nuevo o `coverKind` nuevo): agregar la entrada al `CoverKind` union + `COVER_KINDS` en `project-cover-kinds.ts`, al enum de `coverKind` en `content.config.ts`, y una llamada a `renderProjectCard()` en el script — no hace falta ninguna captura real.
 
 ## Diseño / interacciones no obvias
 
@@ -63,12 +73,11 @@ Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shor
 
 ## Pendientes / contenido por completar
 
-- `public/cv/Dereck-Mendez-CV-EN.pdf` no existe todavía — el botón "Download CV" en inglés se oculta automáticamente hasta que se agregue (ver `src/lib/cv.ts`). El de español (`Dereck-Mendez-CV-ES.pdf`) ya está.
-- `operational-demand-forecasting` (en/es) es el único de los 3 proyectos sin `githubUrl` todavía. Los otros dos (`telco-churn-mlops`, `operational-analytics-bi`) ya lo tienen.
-- Ningún proyecto tiene `coverImage` real todavía — todas las tarjetas muestran el placeholder de portada.
+- Hay 3 proyectos reales: `data-ai-compensation-benchmark` y `telco-churn-mlops` (`status: "published"`, en/es en paridad completa) y `ecommerce-medallion-pipeline` (`status: "draft"`, todavía en desarrollo — arquitectura Medallion Bronze/Silver/Gold con Polars, DuckDB y Airflow, sin contenido detallado todavía porque el desarrollo no ha llegado ahí). Los proyectos plantilla/de ejemplo (`customer-segmentation`, `mlops-platform`, `nlp-llm-projects`) y los duplicados/genéricos obsoletos (`operational-analytics-bi`, `operational-demand-forecasting`) se eliminaron de la content collection — ya no deben reaparecer.
+- `ecommerce-medallion-pipeline` estrenó el `coverKind: "medallion"` (nodos SOURCES → BRONZE → SILVER → GOLD, con GOLD dibujado punteado/deshabilitado a propósito porque el proyecto no ha llegado ahí, más una mini tira de nodos arriba que evoca el DAG de Airflow). Cuando el proyecto avance, actualizar `status`, agregar `githubUrl`'s contenido real y quitar el estado "wip" de GOLD en `project-cover-kinds.ts` si ya aplica.
+- Ningún proyecto tiene `coverImage` real todavía (la tarjeta sigue mostrando el placeholder de portada) — no confundir con `ogImage`, que sí está seteado en los 3 proyectos (ver sección de portadas para redes sociales arriba).
 - `exploringTools` en `src/data/tools.ts` está vacío a propósito ("Explorando ahora" no se muestra hasta que haya algo que poner ahí).
 - `simple-icons--n8n.svg` está en `src/assets/icons/` pero **intencionalmente sin usar** — Dereck pidió no agregarlo a la lista de herramientas todavía.
-- **`experience.timeline` en `src/content/i18n/es.ts` ya tiene datos reales** (fechas, roles y empresas de Dereck). **`en.ts` todavía tiene los placeholders viejos** ("Current"/"Previous"/"Earlier experience"/"Today" con descripciones genéricas) — falta traducir la versión en inglés para que coincida con la española.
 
 ## Convenciones
 

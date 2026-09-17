@@ -8,7 +8,15 @@
  * comet trails) per Dereck's request for more visible particle travel/grouping.
  */
 
-export type CoverKind = "churn" | "forecast" | "clusters" | "pipeline" | "lifecycle" | "semantic" | "benchmark";
+export type CoverKind =
+  | "churn"
+  | "forecast"
+  | "clusters"
+  | "pipeline"
+  | "lifecycle"
+  | "semantic"
+  | "benchmark"
+  | "medallion";
 
 export interface CoverColors {
   ink: string;
@@ -934,6 +942,132 @@ const benchmarkKind: CoverKindDef<BenchmarkState> = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// medallion — Bronze → Silver → Gold lakehouse pipeline, orchestrated with
+// Airflow (a small DAG strip nods to Airflow's graph view). Gold renders as
+// an unfinished, dashed stage since the project is still in development.
+// ---------------------------------------------------------------------------
+
+interface MedallionModule {
+  x: number;
+  y: number;
+  label: string;
+  sub: string;
+  col: "accent" | "accent2" | "amber" | "green";
+  wip?: boolean;
+}
+interface MedallionState {
+  mods: MedallionModule[];
+  links: [number, number][];
+  parts: { l: number; p: number }[];
+  dag: number[];
+}
+
+const medallionKind: CoverKindDef<MedallionState> = {
+  init() {
+    const mods: MedallionModule[] = [
+      { x: 0.09, y: 0.58, label: "SOURCES", sub: "raw files", col: "accent" },
+      { x: 0.35, y: 0.58, label: "BRONZE", sub: "landing", col: "amber" },
+      { x: 0.61, y: 0.58, label: "SILVER", sub: "cleaned", col: "accent2" },
+      { x: 0.89, y: 0.58, label: "GOLD", sub: "soon", col: "green", wip: true },
+    ];
+    const links: [number, number][] = [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+    ];
+    const parts = Array.from({ length: 12 }, (_, i) => ({ l: i % 2, p: i / 12 }));
+    const dag = [0.14, 0.28, 0.42, 0.56, 0.7];
+    return { mods, links, parts, dag };
+  },
+  draw(ctx, st, w, h, t, prog, hov, C) {
+    const P = (m: MedallionModule) => ({ x: m.x * w, y: m.y * h });
+    st.links.forEach((l, i) => {
+      const a = P(st.mods[l[0]]);
+      const b = P(st.mods[l[1]]);
+      const wip = !!st.mods[l[1]].wip;
+      const seg = clamp01((prog - i * 0.14) / 0.3);
+      if (seg <= 0) return;
+      ctx.globalAlpha = wip ? 0.4 : 0.8;
+      ctx.strokeStyle = wip ? C.ink3 : C.edge;
+      ctx.lineWidth = 0.8;
+      if (wip) ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(a.x + (b.x - a.x) * seg, a.y + (b.y - a.y) * seg);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+    const speed = hov ? 0.6 : 0.24;
+    st.parts.forEach((pt) => {
+      const l = st.links[pt.l];
+      if (st.mods[l[1]].wip) return;
+      const a = P(st.mods[l[0]]);
+      const b = P(st.mods[l[1]]);
+      const u = (pt.p + t * speed) % 1;
+      const e = clamp01((prog - 0.3) / 0.4);
+      const x = a.x + (b.x - a.x) * u;
+      const y = a.y + (b.y - a.y) * u;
+      ctx.globalAlpha = e * (0.35 + 0.65 * Math.sin(u * Math.PI)) * (hov ? 1 : 0.85);
+      ctx.fillStyle = C.accent;
+      ctx.beginPath();
+      ctx.arc(x, y, hov ? 1.9 : 1.6, 0, TAU);
+      ctx.fill();
+    });
+    st.mods.forEach((m, i) => {
+      const ap = ease(clamp01((prog - i * 0.1) / 0.3));
+      if (ap <= 0) return;
+      const p = P(m);
+      const bw = Math.min(96, w * 0.24);
+      const bh = 46;
+      const x = p.x - bw / 2;
+      const y = p.y - bh / 2;
+      ctx.globalAlpha = ap * (m.wip ? 0.6 : 1);
+      ctx.fillStyle = C.panel;
+      if (m.wip) ctx.setLineDash([3, 3]);
+      roundRect(ctx, x, y, bw, bh, 9);
+      ctx.fill();
+      ctx.strokeStyle = m.wip ? C.ink3 : hov ? C.line2 : C.line;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = ap * (m.wip ? 0.5 : 0.9);
+      ctx.fillStyle = C[m.col];
+      roundRect(ctx, x + 8, y + 9, 4, 4, 1);
+      ctx.fill();
+      txt(ctx, m.label, x + 9, y + 25, 9.5, m.wip ? C.ink3 : C.ink2, "left", 600);
+      txt(ctx, m.sub, x + 9, y + 38, 8.5, C.ink3);
+    });
+    // A small Airflow-style DAG strip above the pipeline — task nodes on a
+    // line, one "running" (pulsing) on hover.
+    const dagY = h * 0.16;
+    const running = hov ? Math.floor((t * 1.1) % st.dag.length) : -1;
+    ctx.globalAlpha = clamp01((prog - 0.5) / 0.4) * 0.7;
+    ctx.strokeStyle = C.line2;
+    ctx.lineWidth = 0.7;
+    ctx.beginPath();
+    ctx.moveTo(st.dag[0] * w, dagY);
+    ctx.lineTo(st.dag[st.dag.length - 1] * w, dagY);
+    ctx.stroke();
+    st.dag.forEach((x, i) => {
+      const active = i === running;
+      ctx.globalAlpha = clamp01((prog - 0.5 - i * 0.05) / 0.3);
+      ctx.fillStyle = active ? C.accent : C.panel;
+      roundRect(ctx, x * w - 5, dagY - 5, 10, 10, 3);
+      ctx.fill();
+      ctx.strokeStyle = active ? C.accent : C.line2;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 0.75;
+    txt(ctx, "AIRFLOW DAG", st.dag[0] * w, dagY - 14, 8, C.ink3, "left", 600);
+
+    ctx.globalAlpha = 0.8;
+    txt(ctx, "BRONZE → SILVER → GOLD", w * 0.045, h - 14, 9, C.ink3, "left");
+    ctx.globalAlpha = 1;
+  },
+};
+
 export const COVER_KINDS: Record<CoverKind, CoverKindDef<any>> = {
   churn: churnKind,
   forecast: forecastKind,
@@ -942,4 +1076,5 @@ export const COVER_KINDS: Record<CoverKind, CoverKindDef<any>> = {
   lifecycle: lifecycleKind,
   semantic: semanticKind,
   benchmark: benchmarkKind,
+  medallion: medallionKind,
 };

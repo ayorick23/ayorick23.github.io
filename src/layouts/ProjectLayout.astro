@@ -18,7 +18,7 @@ const ui = getUI(locale);
 const projectsHref = localizePath("/projects", locale);
 ---
 
-<BaseLayout pageTitle={project.data.title} description={project.data.shortDescription}>
+<BaseLayout pageTitle={project.data.title} description={project.data.shortDescription} ogImage={project.data.ogImage}>
   <section class="mx-auto max-w-[900px] px-8 pt-[150px] pb-[60px]">
     <a
       href={projectsHref}

@@ -40,7 +40,11 @@ const projectSchema = z.object({
   date: z.coerce.date(),
   order: z.number().default(0),
   coverImage: z.string().optional(),
-  coverKind: z.enum(["churn", "forecast", "clusters", "pipeline", "lifecycle", "semantic", "benchmark"]).optional(),
+  /** Social-preview (og:image) for this case study's link. Falls back to the site's default brand card when unset. */
+  ogImage: z.string().optional(),
+  coverKind: z
+    .enum(["churn", "forecast", "clusters", "pipeline", "lifecycle", "semantic", "benchmark", "medallion"])
+    .optional(),
 });
 
 const projectsEn = defineCollection({

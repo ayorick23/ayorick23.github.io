@@ -26,6 +26,7 @@ status: "published"
 date: 2026-08-18
 order: 2
 coverKind: "churn"
+ogImage: "/og/telco-churn-mlops-es.png"
 metrics:
   - label: "ROC-AUC"
     value: "0.99"
@@ -77,10 +78,22 @@ sections:
         caption: "Reporte de Evidently AI: drift detectado en 5 de 39 columnas (12.8%), por debajo del umbral de dataset drift de Evidently (50%)."
   - heading: "Serving, explicabilidad e impacto de negocio"
     body: "El modelo se sirve vía una API REST (FastAPI, validación de requests con Pydantic) con dos endpoints de negocio: predicción y explicación por SHAP (`TreeExplainer`, valores exactos para modelos de árboles, sin necesitar un dataset de background). Un dashboard interactivo en Streamlit consume esa API y agrega una capa de valor de negocio: para cada predicción, estima cuánto ingreso queda en riesgo si ese cliente específico hace churn (valor restante de su contrato actual) y compara ese número contra el costo de una campaña de retención para decidir, con un criterio explícito, si vale la pena intervenir — *la parte del proyecto que conecta la predicción técnica con la decisión de negocio real*."
+    images:
+      - src: "/projects/telco-churn-mlops/screenshot-streamlit-app.png"
+        alt: "Captura de pantalla del dashboard de Streamlit mostrando una predicción de churn del 99.9%, el valor en riesgo ($553.44), la pérdida esperada ($553.07) frente al costo de campaña ($50.00), y el gráfico SHAP de las 15 features con mayor impacto"
+        caption: "Dashboard de Streamlit: cada predicción se traduce en una decisión de negocio — conviene retener si el beneficio neto esperado es positivo."
   - heading: "Testing y CI/CD"
     body: "**149 tests automatizados** (unitarios, de validación de datos, y de integración) corren en cada push y pull request contra `main` vía GitHub Actions, junto con lint (Ruff), formato y type-checking (MyPy) como gate obligatorio antes de mergear. Los tests de integración van más allá de mockear dependencias externas: ejercitan el pipeline de producción real (*sin mocks*) y levantan el stack completo con Docker Compose para detectar en CI la clase de bug que un test unitario, por diseño, no puede ver — un contenedor que construye pero no arranca, o un artefacto que nunca llega a la imagen final."
+    images:
+      - src: "/projects/telco-churn-mlops/screenshot-github-actions-ci.png"
+        alt: "Captura de pantalla de un workflow de GitHub Actions, mostrando cada paso del pipeline de CI (ruff check, ruff format, mypy, credenciales DVC, docker buildx, pytest) completado en verde"
+        caption: "Workflow de CI en GitHub Actions: lint, format, mypy y la suite completa de tests de integración con Docker en cada push/PR."
   - heading: "Despliegue e infraestructura"
     body: "La API y el dashboard están empaquetados como imágenes Docker independientes (multi-stage builds, con `uv` para instalar dependencias exactas vía lockfile) y orquestables localmente con Docker Compose. El destino final de hosting quedó deliberadamente abierto durante el desarrollo: dos plataformas de free-tier (Render, luego Hugging Face Spaces) cambiaron de política de precios entre que se diseñó el despliegue y que se intentó ejecutar — *una decisión de infraestructura real y su trade-off, no una limitación técnica del proyecto*."
+    images:
+      - src: "/projects/telco-churn-mlops/screenshot-docker-containers.png"
+        alt: "Captura de pantalla de Docker Desktop mostrando los contenedores del proyecto corriendo: telco-churn-mlops-api en el puerto 8000 y telco-churn-mlops-dashboard en el puerto 8501"
+        caption: "API y dashboard orquestados con Docker Compose, cada uno en su propio contenedor y puerto."
   - heading: "Retos técnicos y cómo se resolvieron"
     body: "El proyecto documentó y resolvió tres clases de problema real, no hipotético:\n\n1. Un bug del artifact storage de MLflow en DagsHub que bloqueaba descargar el pipeline desde el Registry — diagnosticado con evidencia (reproducido, aislado de causas como cuota o credenciales) y resuelto rediseñando para depender menos de esa descarga, versionando el champion con DVC en vez de MLflow.\n2. Una imagen Docker que construía sin error pero entraba en crash loop en producción por una librería del sistema operativo (`libgomp1`) perdida entre etapas de un multi-stage build.\n3. Dos plataformas de hosting gratuito que cambiaron su política de precios a mitad de la implementación.\n\nCada episodio quedó documentado con el diagnóstico completo, no solo el fix, como parte del criterio de ingeniería del proyecto."
   - heading: "Resultados y aprendizajes"

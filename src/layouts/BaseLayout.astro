@@ -1,8 +1,6 @@
 ---
 import "../styles/global.css";
-import { getImage } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
-import profilePhoto from "../assets/images/dereck-mendez.png";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { getUI, getAlternatePath, localizePath, resolveLocale } from "../lib/i18n";
@@ -12,9 +10,11 @@ interface Props {
   /** Page-specific title segment, e.g. "About". Omit for the homepage. */
   pageTitle?: string;
   description?: string;
+  /** Absolute path under /public to a page-specific social preview image, e.g. a project's og cover. Defaults to the site's brand card. */
+  ogImage?: string;
 }
 
-const { pageTitle, description } = Astro.props;
+const { pageTitle, description, ogImage } = Astro.props;
 const locale = resolveLocale(Astro.currentLocale);
 const ui = getUI(locale);
 
@@ -27,8 +27,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const alternatePath = getAlternatePath(Astro.url.pathname, locale);
 const alternateLocale = locale === "en" ? "es" : "en";
 
-const ogImage = await getImage({ src: profilePhoto, width: 1200, height: 630, fit: "cover" });
-const ogImageURL = new URL(ogImage.src, Astro.site).toString();
+const ogImageURL = new URL(ogImage ?? `/og/site-${locale}.png`, Astro.site).toString();
 
 const personSchema = {
   "@context": "https://schema.org",
@@ -64,6 +63,8 @@ const personSchema = {
     <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={locale === "es" ? "es_ES" : "en_US"} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
