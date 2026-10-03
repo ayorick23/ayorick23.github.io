@@ -23,5 +23,13 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [sitemap(), icon({ iconDir: 'src/assets/icons' })],
+  integrations: [sitemap(), icon({
+      iconDir: 'src/assets/icons',
+      // SVGO's default cleanupIds shortens every gradient id to "a", "b"... in
+      // each icon, so two full-color logos on the same page end up pointing at
+      // each other's gradients (the Polars logo rendered invisible).
+      svgoOptions: {
+        plugins: [{ name: 'preset-default', params: { overrides: { cleanupIds: false } } }],
+      },
+    })],
 });

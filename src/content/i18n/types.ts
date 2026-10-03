@@ -1,4 +1,5 @@
 import type { ConstellationNodeId } from "../../data/constellation";
+import type { ToolGroupKey } from "../../data/tools";
 
 export interface TimelineEntry {
   period: string;
@@ -75,7 +76,11 @@ export interface UICopy {
   };
   tools: {
     kicker: string;
-    description: string;
+    headingLead: string;
+    headingAccent: string;
+    filterLabel: string;
+    filterAll: string;
+    groups: Record<ToolGroupKey, { name: string; short: string; description: string }>;
     exploringLabel: string;
   };
   about: {

@@ -89,8 +89,17 @@ export const en: UICopy = {
   },
   tools: {
     kicker: "Tools & technologies",
-    description:
-      "Tools I use to analyse data, build models and turn experiments into reproducible systems.",
+    headingLead: "The stack,",
+    headingAccent: "organised by discipline.",
+    filterLabel: "Filter tools by discipline",
+    filterAll: "All",
+    groups: {
+      data: { name: "Data & Analytics", short: "Data", description: "Wrangling, exploring and modelling data in code." },
+      bi: { name: "BI & Visualization", short: "BI", description: "Turning analysis into something people read and use." },
+      de: { name: "Data Engineering", short: "Data Engineering", description: "Storage, transformation and orchestration." },
+      ml: { name: "Machine Learning & MLOps", short: "Machine Learning", description: "Training, tracking, versioning and serving models." },
+      eng: { name: "Engineering Practices", short: "Engineering Practices", description: "Version control, testing, CI and containers." },
+    },
     exploringLabel: "Currently exploring",
   },
   about: {

@@ -139,33 +139,134 @@
   }
 }
 
-@keyframes dm-marquee {
-  to {
-    transform: translateX(-50%);
-  }
+/* Tools by discipline — filter pill, collapsible rows and brand-colored hover. */
+.dm-tools-filter {
+  scrollbar-width: none;
+  /* The pill slides inside a backdrop-blurred, scroll-clipped box; without its
+     own layer Chrome can leave stale repaint streaks behind the moving pill. */
+  isolation: isolate;
+  transform: translateZ(0);
 }
-.dm-marquee-track {
-  animation: dm-marquee 36s linear infinite;
-  /* One of the tool logos is an auto-traced SVG with a very heavy path — without
-     forcing its own GPU layer, re-rasterizing it every frame causes a visible
-     stutter right as it scrolls into view. */
-  will-change: transform;
+.dm-tools-filter::-webkit-scrollbar {
+  display: none;
 }
-.dm-tools-marquee:hover .dm-marquee-track,
-.dm-tools-marquee:focus-within .dm-marquee-track {
-  animation-play-state: paused;
+.dm-tools-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  pointer-events: none;
+  will-change: transform, width;
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1),
+    width 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.dm-tools-tab {
+  color: var(--ink-2);
+  transition: color 0.25s ease;
+}
+.dm-tools-tab:hover {
+  color: var(--ink);
+}
+.dm-tools-tab[aria-pressed="true"] {
+  color: var(--btn-fg);
+}
+.dm-tools-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.dm-tool-group {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows 0.55s cubic-bezier(0.2, 0.7, 0.3, 1),
+    opacity 0.4s ease 0.1s,
+    visibility 0s;
+}
+.dm-tool-group[data-hidden] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    visibility 0s 0.5s;
+}
+.dm-tool-group + .dm-tool-group .dm-tool-row {
+  border-top: 1px solid var(--line);
+}
+.dm-tool-group[data-lead] .dm-tool-row {
+  border-top-color: transparent;
+}
+.dm-tool-dot {
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.dm-tool-row:hover .dm-tool-dot {
+  background: var(--accent);
+  box-shadow:
+    0 0 0 4px var(--accent-soft),
+    0 0 14px var(--accent);
+}
+
+.dm-tool-chip {
+  --brand-active: var(--brand);
+  border-color: var(--line);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+:root:not([data-theme="light"]) .dm-tool-chip {
+  --brand-active: var(--brand-on-dark, var(--brand));
+}
+.dm-tool-chip.border-dashed {
+  border-color: var(--line-2);
+}
+.dm-tool-chip:hover {
+  border-color: color-mix(in oklab, var(--brand-active) 38%, transparent);
+  background: color-mix(in oklab, var(--brand-active) 7%, var(--veil-2));
+}
+.dm-tool-logo {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  color: var(--ink-2);
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+    color 0.3s ease;
+}
+.dm-tool-logo > * {
+  grid-area: 1 / 1;
+  transition: opacity 0.3s ease;
+}
+.dm-tool-color {
+  opacity: 0;
+}
+.dm-tool-chip:hover .dm-tool-logo {
+  transform: scale(1.12) rotate(-6deg);
+  color: var(--brand-active);
+}
+.dm-tool-chip:hover .dm-tool-logo[data-has-color] .dm-tool-mono {
+  opacity: 0;
+}
+.dm-tool-chip:hover .dm-tool-color {
+  opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
-  .dm-marquee-track {
-    animation: none;
+  .dm-tools-indicator,
+  .dm-tool-group,
+  .dm-tool-group[data-hidden] {
+    transition: none;
   }
-  .dm-marquee-track [aria-hidden="true"] {
-    display: none;
+  .dm-tool-chip:hover .dm-tool-logo {
+    transform: none;
   }
-}
-.dm-tool-tile:hover,
-.dm-tool-tile:focus-within {
-  box-shadow: 0 0 14px -5px var(--accent-soft);
 }
 
 /* Hero GitHub/LinkedIn icons — same pulsing-glow language as the constellation stars */

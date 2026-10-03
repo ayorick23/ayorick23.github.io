@@ -73,6 +73,9 @@ Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shor
 
 ## Pendientes / contenido por completar
 
+- **Próximas tareas de rediseño** (referencia de Claude Design en `desing_reference/`):
+  - Rediseño de la página interna de "Sobre mí" (`AboutView.astro`).
+  - Filtros para la sección de proyectos (por tecnologías, por disciplina, entre otros).
 - Hay 3 proyectos reales: `data-ai-compensation-benchmark` y `telco-churn-mlops` (`status: "published"`, en/es en paridad completa) y `ecommerce-medallion-pipeline` (`status: "draft"`, todavía en desarrollo — arquitectura Medallion Bronze/Silver/Gold con Polars, DuckDB y Airflow, sin contenido detallado todavía porque el desarrollo no ha llegado ahí). Los proyectos plantilla/de ejemplo (`customer-segmentation`, `mlops-platform`, `nlp-llm-projects`) y los duplicados/genéricos obsoletos (`operational-analytics-bi`, `operational-demand-forecasting`) se eliminaron de la content collection — ya no deben reaparecer.
 - `ecommerce-medallion-pipeline` estrenó el `coverKind: "medallion"` (nodos SOURCES → BRONZE → SILVER → GOLD, con GOLD dibujado punteado/deshabilitado a propósito porque el proyecto no ha llegado ahí, más una mini tira de nodos arriba que evoca el DAG de Airflow). Cuando el proyecto avance, actualizar `status`, agregar `githubUrl`'s contenido real y quitar el estado "wip" de GOLD en `project-cover-kinds.ts` si ya aplica.
 - Ningún proyecto tiene `coverImage` real todavía (la tarjeta sigue mostrando el placeholder de portada) — no confundir con `ogImage`, que sí está seteado en los 3 proyectos (ver sección de portadas para redes sociales arriba).

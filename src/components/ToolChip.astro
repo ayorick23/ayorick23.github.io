@@ -1,0 +1,52 @@
+---
+import { Icon } from "astro-icon/components";
+import type { Tool } from "../data/tools";
+
+interface Props {
+  tool: Tool;
+  dashed?: boolean;
+}
+
+const { tool, dashed = false } = Astro.props;
+
+const rasterIcons = import.meta.glob<{ default: { src: string } }>("../assets/icons/*.{png,webp}", {
+  eager: true,
+});
+function rasterSrc(filename: string) {
+  const entry = Object.entries(rasterIcons).find(([path]) => path.endsWith(`/${filename}`));
+  return entry?.[1].default.src ?? "";
+}
+
+function maskStyle(filename: string) {
+  const url = rasterSrc(filename);
+  return `mask-image:url(${url});mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url(${url});-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center`;
+}
+
+const isBitmap = (filename: string) => /\.(png|webp)$/.test(filename);
+const brandVars = `--brand:${tool.brand};${tool.brandOnDark ? `--brand-on-dark:${tool.brandOnDark}` : ""}`;
+---
+
+<div
+  data-tool-chip
+  class:list={["dm-tool-chip flex items-center gap-[10px] rounded-xl border bg-veil py-[7px] pr-[14px] pl-[9px]", dashed && "border-dashed"]}
+  style={brandVars}
+>
+  <span class="dm-tool-logo" data-has-color={tool.colorIcon ? "true" : undefined}>
+    {
+      tool.raster ? (
+        <span class="dm-tool-mono h-full w-full bg-current" style={maskStyle(tool.icon)} />
+      ) : (
+        <Icon name={tool.icon} class="dm-tool-mono h-full w-full" />
+      )
+    }
+    {
+      tool.colorIcon &&
+        (isBitmap(tool.colorIcon) ? (
+          <img src={rasterSrc(tool.colorIcon)} alt="" class="dm-tool-color h-full w-full object-contain" />
+        ) : (
+          <Icon name={tool.colorIcon} class="dm-tool-color h-full w-full" />
+        ))
+    }
+  </span>
+  <span class="font-display text-[13px] leading-none font-medium whitespace-nowrap text-ink">{tool.name}</span>
+</div>

@@ -8,7 +8,8 @@ import Timeline from "../Timeline.astro";
 import Button from "../Button.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 import { getFeaturedProjects } from "../../lib/projects";
-import { coreTools, exploringTools } from "../../data/tools";
+import { toolGroups, exploringTools } from "../../data/tools";
+import ToolChip from "../ToolChip.astro";
 import { socialLinks } from "../../data/social-links";
 import profilePhoto from "../../assets/images/dereck-mendez.png";
 
@@ -19,13 +20,10 @@ const featuredProjects = await getFeaturedProjects(locale, 3);
 const socialLabels: Record<string, string> = { github: "GitHub", linkedin: "LinkedIn", email: "Email" };
 const heroSocials = socialLinks.filter((s) => s.id === "github" || s.id === "linkedin");
 
-const rasterIcons = import.meta.glob<{ default: { src: string } }>("../../assets/icons/*.png", {
-  eager: true,
-});
-function rasterSrc(filename: string) {
-  const entry = Object.entries(rasterIcons).find(([path]) => path.endsWith(`/${filename}`));
-  return entry?.[1].default.src ?? "";
-}
+const toolFilters = [
+  { key: "all", label: ui.tools.filterAll },
+  ...toolGroups.map((g) => ({ key: g.key, label: ui.tools.groups[g.key].short })),
+];
 ---
 
 <section
@@ -107,75 +105,85 @@ function rasterSrc(filename: string) {
   <ProjectGrid projects={featuredProjects} ui={ui} locale={locale} />
 </section>
 
-<section data-reveal class="mx-auto max-w-[1240px] px-8 pt-[22px] pb-[70px]">
-  <div class="rounded-[18px] border border-line bg-veil p-[28px_26px] backdrop-blur-[18px]">
-    <div class="mb-[14px] flex items-center gap-[9px]">
-      <span class="h-1 w-1 rounded-full bg-accent"></span>
-      <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.tools.kicker}</span>
-    </div>
-    <h2 class="mb-6 max-w-xl font-display text-[clamp(1.35rem,2.6vw,1.9rem)] leading-[1.2] font-light tracking-[-0.02em]">
-      {ui.tools.description}
-    </h2>
-    <div class="dm-tools-marquee relative -mx-[26px] overflow-x-hidden pt-3 pb-12 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
-      <div class="dm-marquee-track flex w-max items-center gap-5 px-[26px]">
-        {
-          [...coreTools, ...coreTools].map((tool, i) => {
-            const duplicate = i >= coreTools.length;
-            return (
-              <div
-                aria-hidden={duplicate ? "true" : undefined}
-                class="dm-tool-tile group relative z-0 flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-line-2 hover:text-ink hover:z-20 focus-within:z-20"
-              >
-                {tool.raster ? (
-                  <span
-                    class="h-10 w-10 bg-current"
-                    style={`mask-image:url(${rasterSrc(tool.icon)});mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url(${rasterSrc(tool.icon)});-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center`}
-                  />
-                ) : (
-                  <Icon name={tool.icon} class="h-10 w-10" />
-                )}
-                <span
-                  role="tooltip"
-                  class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] italic whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-                >
-                  {tool.name}
-                </span>
-                <span class="sr-only">{tool.name}</span>
-              </div>
-            );
-          })
-        }
+<section data-reveal data-tools-root class="mx-auto max-w-[1240px] px-8 pt-[22px] pb-[70px]">
+  <div class="mb-7 flex flex-wrap items-end justify-between gap-5">
+    <div>
+      <div class="mb-[18px] flex items-center gap-[9px]">
+        <span class="h-1 w-1 rounded-full bg-accent"></span>
+        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.tools.kicker}</span>
       </div>
+      <h2 class="m-0 max-w-[520px] font-display text-[clamp(26px,3vw,36px)] leading-[1.16] font-light tracking-[-0.025em]">
+        {ui.tools.headingLead} <span class="font-semibold">{ui.tools.headingAccent}</span>
+      </h2>
     </div>
+    <div
+      role="group"
+      aria-label={ui.tools.filterLabel}
+      data-tools-filter
+      class="dm-tools-filter relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-veil p-1 backdrop-blur-[16px]"
+    >
+      <span data-tools-indicator aria-hidden="true" class="dm-tools-indicator"></span>
+      {
+        toolFilters.map((filter) => (
+          <button
+            type="button"
+            data-tools-filter-btn={filter.key}
+            aria-pressed={filter.key === "all" ? "true" : "false"}
+            class="dm-tools-tab relative z-[1] shrink-0 cursor-pointer rounded-full border-0 bg-transparent px-[13px] py-[9px] font-display text-xs leading-none font-medium whitespace-nowrap"
+          >
+            {filter.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+  <div
+    data-tools-panel
+    class="shadow-elevated overflow-hidden rounded-[22px] border border-line bg-[image:var(--gradient-card)] backdrop-blur-[20px]"
+    style="box-shadow: var(--shadow-elevated);"
+  >
     {
-      exploringTools.length > 0 && (
-        <div class="mt-6 flex flex-wrap items-center gap-4 border-t border-line pt-5">
-          <span class="font-mono text-[10px] tracking-[0.2em] text-accent-2 uppercase">{ui.tools.exploringLabel}</span>
-          <div class="flex flex-wrap gap-4">
-            {exploringTools.map((tool) => (
-              <div class="group relative z-0 flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-line-2 text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:text-ink hover:z-20 focus-within:z-20">
-                {tool.raster ? (
-                  <span
-                    class="h-6 w-6 bg-current"
-                    style={`mask-image:url(${rasterSrc(tool.icon)});mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url(${rasterSrc(tool.icon)});-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center`}
-                  />
-                ) : (
-                  <Icon name={tool.icon} class="h-6 w-6" />
-                )}
-                <span
-                  role="tooltip"
-                  class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-md border border-line bg-surface px-2 py-1 font-mono text-[10px] italic whitespace-nowrap text-ink-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-                >
-                  {tool.name}
-                </span>
-                <span class="sr-only">{tool.name}</span>
+      toolGroups.map((group, gi) => (
+        <div data-tool-group={group.key} class="dm-tool-group">
+          <div class="min-h-0 overflow-hidden">
+            <div class="dm-tool-row grid grid-cols-1 items-center gap-x-9 gap-y-[18px] px-7 py-[26px] transition-colors duration-300 hover:bg-veil lg:grid-cols-[minmax(240px,330px)_1fr]">
+              <div class="flex items-start gap-4">
+                <span class="dm-tool-dot mt-[6px] h-[7px] w-[7px] shrink-0 rounded-full border border-accent bg-bg" />
+                <div>
+                  <div class="mb-[7px] flex items-baseline gap-[10px]">
+                    <span class="font-mono text-[10.5px] leading-none text-ink-3">{String(gi + 1).padStart(2, "0")}</span>
+                    <h3 class="m-0 font-display text-base leading-[1.25] font-semibold text-ink">
+                      {ui.tools.groups[group.key].name}
+                    </h3>
+                  </div>
+                  <p class="m-0 font-display text-[13px] leading-normal text-ink-2">
+                    {ui.tools.groups[group.key].description}
+                  </p>
+                </div>
               </div>
-            ))}
+              <div class="flex min-w-0 flex-wrap gap-2">
+                {group.tools.map((tool) => (
+                  <ToolChip tool={tool} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      )
+      ))
     }
   </div>
+  {
+    exploringTools.length > 0 && (
+      <div class="mt-[22px] flex flex-wrap items-center gap-[14px] rounded-[14px] border border-line bg-veil px-5 py-4 backdrop-blur-[16px]">
+        <span class="font-mono text-[10px] tracking-[0.2em] text-accent-2 uppercase">{ui.tools.exploringLabel}</span>
+        <div class="flex flex-wrap gap-2">
+          {exploringTools.map((tool) => (
+            <ToolChip tool={tool} dashed />
+          ))}
+        </div>
+      </div>
+    )
+  }
 </section>
 
 <section id="about" data-reveal class="mx-auto max-w-[1240px] px-8 py-[60px] scroll-mt-[100px]">
@@ -328,8 +336,10 @@ function rasterSrc(filename: string) {
 <script>
   import { initConstellation } from "../../scripts/constellation";
   import { initNebula } from "../../scripts/nebula";
+  import { initToolsFilter } from "../../scripts/tools";
   document.addEventListener("astro:page-load", initConstellation);
   document.addEventListener("astro:page-load", initNebula);
+  document.addEventListener("astro:page-load", initToolsFilter);
 </script>
 
 <style>
