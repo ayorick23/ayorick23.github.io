@@ -50,8 +50,9 @@ export const toolGroups: ToolGroup[] = [
     tools: [
       { name: "Power BI", icon: "logos--microsoft-power-bi", colorIcon: "logos--microsoft-power-bi-color", brand: "#d9a400", brandOnDark: "#f2c811" },
       { name: "Data Studio", icon: "simple-icons--looker", colorIcon: "logos--looker-icon", brand: "#4285f4" },
-      { name: "Excel", icon: "selfhst--microsoft-excel-light", colorIcon: "selfhst--microsoft-excel", brand: "#217346", brandOnDark: "#21a366" },
       { name: "Streamlit", icon: "simple-icons--streamlit", colorIcon: "devicon--streamlit-color", brand: "#ff4b4b" },
+      { name: "Matplotlib", icon: "devicon-plain--matplotlib", colorIcon: "devicon--matplotlib", brand: "#11557c", brandOnDark: "#4a9fd8" },
+      { name: "Seaborn", icon: "seaborn_logo_black.png", raster: true, colorIcon: "devicon--seaborn", brand: "#444876", brandOnDark: "#7db0bc" },
     ],
   },
   {
