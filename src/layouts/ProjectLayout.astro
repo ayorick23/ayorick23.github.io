@@ -2,11 +2,13 @@
 import { Icon } from "astro-icon/components";
 import BaseLayout from "./BaseLayout.astro";
 import ProjectCover from "../components/ProjectCover.astro";
-import MacWindowFrame from "../components/MacWindowFrame.astro";
+import SectionImage from "../components/SectionImage.astro";
 import StatusBadge from "../components/StatusBadge.astro";
 import type { ProjectEntry } from "../lib/projects";
 import { getUI, localizePath, resolveLocale } from "../lib/i18n";
 import { renderBody } from "../lib/format-text";
+import { maskStyle } from "../lib/raster-icons";
+import { techIcon } from "../lib/tech-icons";
 
 interface Props {
   project: ProjectEntry;
@@ -19,38 +21,50 @@ const projectsHref = localizePath("/projects", locale);
 ---
 
 <BaseLayout pageTitle={project.data.title} description={project.data.shortDescription} ogImage={project.data.ogImage}>
-  <section class="mx-auto max-w-[900px] px-8 pt-[150px] pb-[60px]">
-    <a
-      href={projectsHref}
-      class="mb-[34px] inline-flex items-center gap-2 font-mono text-[12px] text-ink-3 transition-colors duration-200 ease-out hover:text-ink"
-    >
-      ← {ui.projects.backLabel}
-    </a>
+  <section class="mx-auto max-w-[1216px] px-[18px] pt-[150px] pb-[60px]">
+    <div data-reveal>
+      <a
+        href={projectsHref}
+        class="mb-[34px] inline-flex items-center gap-2 font-mono text-[12px] text-ink-3 transition-colors duration-200 ease-out hover:text-ink"
+      >
+        ← {ui.projects.backLabel}
+      </a>
 
-    <div class="mb-5 flex items-center gap-3">
-      <span class="font-mono text-[11px] text-ink-3">{String(project.data.order).padStart(2, "0")}</span>
-      <span class="font-mono text-[10px] tracking-[0.18em] text-accent uppercase">{project.data.category}</span>
-      <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
-    </div>
-    <h1 class="mb-5 font-display text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.08] font-light tracking-[-0.03em]">
-      {project.data.title}
-    </h1>
-    <p class="mb-8 font-display text-[17px] leading-[1.6] text-ink-2">
-      {project.data.description}
-    </p>
+      <div class="mb-5 flex items-center gap-3">
+        <span class="font-mono text-[11px] text-ink-3">{String(project.data.order).padStart(2, "0")}</span>
+        <span class="font-mono text-[10px] tracking-[0.18em] text-accent uppercase">{project.data.category}</span>
+        <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
+      </div>
+      <h1 class="mb-5 font-display text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.08] font-light tracking-[-0.03em]">
+        {project.data.title}
+      </h1>
+      <div class="section-body mb-8 font-display text-[17px] leading-[1.6] text-ink-2" set:html={renderBody(project.data.description)} />
 
-    <div class="mb-10">
-      <div class="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">{ui.projects.technologiesLabel}</div>
-      <div class="flex flex-wrap gap-[8px]">
-        {
-          project.data.technologies.map((tech) => (
-            <span class="rounded-[7px] border border-line bg-veil px-[10px] py-[7px] font-mono text-[11px] text-ink-2">{tech}</span>
-          ))
-        }
+      <div class="mb-10">
+        <div class="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">{ui.projects.technologiesLabel}</div>
+        <div class="flex flex-wrap gap-[8px]">
+          {
+            project.data.technologies.map((tech) => {
+              const icon = techIcon(tech);
+              return (
+                <span class="inline-flex items-center gap-[7px] rounded-[7px] border border-line bg-veil px-[10px] py-[7px] font-mono text-[11px] text-ink-2">
+                  {icon &&
+                    (icon.raster ? (
+                      <span class="h-[14px] w-[14px] shrink-0 bg-current text-ink" style={maskStyle(icon.icon)} />
+                    ) : (
+                      <Icon name={icon.icon} class="h-[14px] w-[14px] shrink-0 text-ink" />
+                    ))}
+                  {tech}
+                </span>
+              );
+            })
+          }
+        </div>
       </div>
     </div>
 
     <div
+      data-reveal
       data-cover-hover-scope
       class:list={["project-cover shadow-elevated relative mb-5 h-[300px] overflow-hidden rounded-[20px] border border-line", !project.data.coverKind && "project-cover--empty"]}
       style="box-shadow: var(--shadow-elevated);"
@@ -67,10 +81,10 @@ const projectsHref = localizePath("/projects", locale);
 
     {
       project.data.metrics.length > 0 && (
-        <div class="mb-[52px] grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-px overflow-hidden rounded-2xl border border-line bg-line">
+        <div data-reveal class="mb-[52px] grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-px overflow-hidden rounded-2xl border border-line bg-line">
           {project.data.metrics.map((metric) => (
             <div class="bg-[image:var(--gradient-card)] px-5 py-6 backdrop-blur-[16px]">
-              <div class="font-display text-[27px] leading-none tracking-[-0.02em] text-ink">{metric.value}</div>
+              <div class="font-display text-[27px] leading-none font-bold tracking-[-0.02em] text-ink">{metric.value}</div>
               <div class="mt-[9px] font-mono text-[11px] text-ink-3">{metric.label}</div>
             </div>
           ))}
@@ -80,23 +94,30 @@ const projectsHref = localizePath("/projects", locale);
 
     <div class="flex flex-col gap-11">
       {
-        project.data.sections.map((block) => (
-          <div class="flex flex-col gap-3">
-            <div class="font-mono text-[22px] leading-[1.2] font-normal tracking-[-0.01em] text-accent uppercase">{block.heading}</div>
-            <div class="section-body font-display text-[15.5px] leading-[1.72] text-ink-2" set:html={renderBody(block.body)} />
-            {block.images.length > 0 && (
-              <div class="mt-3 flex flex-col gap-6">
-                {block.images.map((image) => (
-                  <MacWindowFrame src={image.src} alt={image.alt} caption={image.caption} />
-                ))}
-              </div>
-            )}
+        project.data.sections.map((block, index) => (
+          <div data-reveal class="lg:grid lg:grid-cols-[1fr_minmax(0,836px)] lg:gap-x-10">
+            <div aria-hidden="true">
+              <span class="mb-2 block font-display text-[44px] leading-none font-bold tracking-[-0.04em] text-ink tabular-nums lg:sticky lg:top-[104px] lg:mb-0 lg:text-[clamp(5rem,7.5vw,7.5rem)] lg:leading-[0.82]">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            </div>
+            <div class="flex flex-col gap-3 border-t-2 border-ink pt-5">
+              <div class="font-mono text-[22px] leading-[1.2] font-normal tracking-[-0.01em] text-accent uppercase">{block.heading}</div>
+              <div class="section-body font-display text-[15.5px] leading-[1.72] text-ink-2" set:html={renderBody(block.body)} />
+              {block.images.length > 0 && (
+                <div class="mt-3 flex flex-col gap-6">
+                  {block.images.map((image) => (
+                    <SectionImage src={image.src} alt={image.alt} caption={image.caption} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         ))
       }
     </div>
 
-    <div class="mt-[52px] flex flex-wrap gap-[10px] border-t border-line pt-8">
+    <div data-reveal class="mt-[52px] flex flex-wrap gap-[10px] border-t border-line pt-8 lg:ml-auto lg:max-w-[836px]">
       {
         project.data.githubUrl ? (
           <a

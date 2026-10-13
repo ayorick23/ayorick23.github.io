@@ -128,6 +128,11 @@ export interface UICopy {
     backLabel: string;
     otherLabel: string;
     technologiesLabel: string;
+    lightbox: {
+      close: string;
+      previous: string;
+      next: string;
+    };
   };
   footer: {
     tagline: string;

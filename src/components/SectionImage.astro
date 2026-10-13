@@ -1,0 +1,64 @@
+---
+import { getUI, resolveLocale } from "../lib/i18n";
+
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+const { src, alt, caption } = Astro.props;
+const labels = JSON.stringify(getUI(resolveLocale(Astro.currentLocale)).projects.lightbox);
+---
+
+<figure>
+  <button
+    type="button"
+    class="section-image__trigger"
+    data-lightbox-trigger
+    data-lightbox-src={src}
+    data-lightbox-alt={alt}
+    data-lightbox-labels={labels}
+    aria-label={alt}
+  >
+    <img src={src} alt={alt} loading="lazy" class="section-image__img" />
+  </button>
+  {caption && <figcaption class="section-image__caption">{caption}</figcaption>}
+</figure>
+
+<script>
+  import { initLightbox } from "../scripts/lightbox";
+  document.addEventListener("astro:page-load", initLightbox);
+</script>
+
+<style>
+  .section-image__trigger {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 14px;
+    cursor: zoom-in;
+    border: none;
+    padding: 0;
+    background: none;
+  }
+  .section-image__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .section-image__trigger:hover .section-image__img,
+  .section-image__trigger:focus-visible .section-image__img {
+    /* No filter here: a filter keeps the image on a GPU layer rasterized at its
+       resting size, so the zoomed state stays blurry. */
+    transform: scale(1.025);
+  }
+  .section-image__caption {
+    padding: 10px 2px 0;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--ink-3);
+  }
+</style>

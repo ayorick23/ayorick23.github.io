@@ -259,6 +259,11 @@ export const en: UICopy = {
     backLabel: "All projects",
     otherLabel: "Other projects",
     technologiesLabel: "Technologies used",
+    lightbox: {
+      close: "Close",
+      previous: "Previous image",
+      next: "Next image",
+    },
   },
   footer: {
     tagline: "Data · Machine Learning · MLOps",

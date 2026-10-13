@@ -88,3 +88,20 @@ export const toolGroups: ToolGroup[] = [
 ];
 
 export const exploringTools: Tool[] = [];
+
+/**
+ * Mono icons for technologies that appear in a project's stack but not in the
+ * home page tool groups (lookup by name is case-insensitive; see
+ * src/lib/tech-icons.ts). Same rules as `Tool.icon`: currentColor SVG, or a
+ * PNG drawn as a mask when `raster` is set. Names with no entry here or in
+ * `toolGroups` render as text only.
+ */
+export const projectTechIcons: Record<string, { icon: string; raster?: boolean }> = {
+  pandera: { icon: "pandera_logo_white.png", raster: true },
+  sqlite: { icon: "simple-icons:sqlite" },
+  jupyter: { icon: "simple-icons:jupyter" },
+  uv: { icon: "simple-icons:uv" },
+  ruff: { icon: "simple-icons:ruff" },
+  optuna: { icon: "simple-icons:optuna" },
+  pydantic: { icon: "simple-icons:pydantic" },
+};

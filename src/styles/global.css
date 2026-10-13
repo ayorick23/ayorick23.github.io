@@ -423,24 +423,25 @@ body {
   list-style: decimal;
 }
 
-/* Image lightbox — overlay is created dynamically by lightbox.ts, so it lives
-   outside any component's scoped styles. */
+/* Image lightbox carousel — overlay is created dynamically by lightbox.ts, so
+   it lives outside any component's scoped styles. lightbox.ts sets each
+   slide's horizontal offset (--x) from the active one; the active slide is
+   full size and its neighbours shrink and show only their inner half (the
+   half facing the active slide), so they hint at what's next without
+   stealing width from it. */
 .lightbox-overlay {
+  --lb-w: min(76vw, 1280px);
+  --lb-near: 0.5;
+  --lb-ease: cubic-bezier(0.2, 0.7, 0.3, 1);
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 48px;
-  overflow: auto;
+  overflow: hidden;
   background: rgba(3, 4, 8, 0.86);
   backdrop-filter: blur(6px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.22s ease-out;
+  transition: opacity 0.3s ease-out;
 }
 :root[data-theme="light"] .lightbox-overlay {
   background: rgba(15, 18, 28, 0.74);
@@ -449,48 +450,176 @@ body {
   opacity: 1;
   pointer-events: auto;
 }
-.lightbox-img {
-  max-width: 92vw;
-  max-height: 82vh;
-  border-radius: 10px;
-  box-shadow: var(--shadow-elevated);
-  cursor: zoom-in;
-  transform: scale(0.86);
+.lightbox-stage {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+}
+.lightbox-slide {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  max-width: var(--lb-w);
+  max-height: 74vh;
+  border-radius: 12px;
+  user-select: none;
   opacity: 0;
+  pointer-events: none;
+  clip-path: inset(0 0 0 0 round 12px);
+  transform: translate(-50%, -50%) translateX(var(--x, 0px)) scale(var(--lb-near));
   transition:
-    max-width 0.25s ease-out,
-    max-height 0.25s ease-out,
-    transform 0.28s cubic-bezier(0.2, 0.7, 0.3, 1),
-    opacity 0.22s ease-out;
+    transform 0.6s var(--lb-ease),
+    clip-path 0.6s var(--lb-ease),
+    opacity 0.45s ease-out;
 }
-.lightbox-overlay.is-open .lightbox-img {
-  transform: scale(1);
+.lightbox-slide[data-side="before"] {
+  clip-path: inset(0 0 0 50% round 20px);
+}
+.lightbox-slide[data-side="after"] {
+  clip-path: inset(0 50% 0 0 round 20px);
+}
+.lightbox-slide[data-pos="active"] {
   opacity: 1;
+  clip-path: inset(0 0 0 0 round 12px);
+  transform: translate(-50%, -50%) scale(1);
 }
-.lightbox-img.is-zoomed {
-  max-width: none;
-  max-height: none;
-  cursor: zoom-out;
+.lightbox-slide[data-pos="near"] {
+  opacity: 0.45;
 }
+/* pointer-events is only re-enabled inside an open overlay: a child with
+   pointer-events: auto would otherwise keep catching clicks (and showing the
+   zoom cursor) over the whole page after the overlay fades out. */
+.lightbox-overlay.is-open .lightbox-slide[data-pos="active"] {
+  pointer-events: auto;
+  cursor: zoom-in;
+}
+.lightbox-overlay.is-open .lightbox-slide[data-pos="near"] {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.lightbox-slide[data-pos="near"]:hover {
+  opacity: 0.75;
+}
+.lightbox-overlay:not(.is-ready) .lightbox-slide[data-pos="active"] {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.86);
+}
+.lightbox-overlay:not(.is-ready) .lightbox-slide[data-pos="near"] {
+  opacity: 0;
+}
+.lightbox-overlay.is-placing .lightbox-slide,
+.lightbox-overlay.is-placing .lightbox-caption {
+  transition: none;
+}
+/* Sits just under the active slide (offset set by lightbox.ts from its real
+   height) instead of pinned to the viewport bottom. */
 .lightbox-caption {
+  position: absolute;
+  top: calc(46% + var(--lb-caption-offset, 37vh));
+  right: 24px;
+  left: 24px;
+  transition: top 0.6s var(--lb-ease);
   max-width: 70ch;
+  margin: 0 auto;
   text-align: center;
   font-family: var(--font-mono);
   font-size: 12px;
   font-style: italic;
-  color: var(--ink-2);
+  /* The backdrop is dark in both themes, so the caption can't follow --ink-2. */
+  color: rgba(238, 241, 246, 0.78);
 }
-.lightbox-close {
-  position: fixed;
-  top: 20px;
-  right: 24px;
+.lightbox-counter {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: rgba(238, 241, 246, 0.78);
+}
+.lightbox-close,
+.lightbox-nav {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 38px;
   height: 38px;
   border-radius: 50%;
   border: 1px solid var(--line-2);
   background: var(--veil-2);
   color: var(--ink);
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
+}
+.lightbox-close {
+  top: 20px;
+  right: 24px;
   font-size: 20px;
   line-height: 1;
-  cursor: pointer;
+}
+.lightbox-nav {
+  top: 46%;
+  width: 46px;
+  height: 46px;
+  transform: translateY(-50%);
+}
+.lightbox-nav:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.08);
+}
+.lightbox-nav:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+.lightbox-nav--prev {
+  left: 24px;
+}
+.lightbox-nav--prev svg {
+  transform: rotate(180deg);
+}
+.lightbox-nav--next {
+  right: 24px;
+}
+.lightbox-overlay.is-single .lightbox-nav,
+.lightbox-overlay.is-single .lightbox-counter {
+  display: none;
+}
+.lightbox-zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  overflow: auto;
+  padding: 48px;
+  background: rgba(3, 4, 8, 0.92);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-out;
+}
+.lightbox-overlay.is-zoomed .lightbox-zoom {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lightbox-zoom__img {
+  max-width: none;
+  margin: auto;
+  border-radius: 10px;
+  cursor: zoom-out;
+}
+@media (max-width: 767px) {
+  .lightbox-overlay {
+    --lb-w: 86vw;
+    --lb-near: 0.3;
+  }
+  .lightbox-nav {
+    top: auto;
+    bottom: 64px;
+    transform: none;
+  }
+  .lightbox-nav:hover:not(:disabled) {
+    transform: none;
+  }
 }
