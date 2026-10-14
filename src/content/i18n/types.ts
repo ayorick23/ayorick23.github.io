@@ -69,6 +69,14 @@ export interface UICopy {
     ctaSecondary: string;
     scrollHint: string;
     constellation: Record<ConstellationNodeId, { label: string; description: string }>;
+    constellationPanel: {
+      kicker: string;
+      tools: string;
+      projects: string;
+      close: string;
+      /** Accessible name for the whole interactive sphere. */
+      sphereLabel: string;
+    };
   };
   work: {
     kicker: string;

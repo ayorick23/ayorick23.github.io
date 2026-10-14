@@ -1,72 +1,245 @@
 ---
+import { Icon } from "astro-icon/components";
 import { constellationNodes, constellationEdges } from "../data/constellation";
 import type { UICopy } from "../content/i18n/types";
+import { localizePath, resolveLocale } from "../lib/i18n";
+import { getProjects } from "../lib/projects";
+import { maskStyle } from "../lib/raster-icons";
+import { techIcon } from "../lib/tech-icons";
 
 interface Props {
   ui: UICopy;
 }
 
 const { ui } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
 const labels = ui.hero.constellation;
+const panelCopy = ui.hero.constellationPanel;
+const projects = await getProjects(locale);
+const projectBySlug = new Map(projects.map((p) => [p.id, p]));
 ---
 
 <div
   data-constellation
   data-edges={JSON.stringify(constellationEdges)}
-  class="relative aspect-[1/0.92] min-h-[380px] w-full overflow-hidden"
+  role="group"
+  aria-label={panelCopy.sphereLabel}
+  class="dm-sphere relative aspect-[1/0.92] min-h-[380px] w-full touch-pan-y overflow-hidden select-none"
 >
-  <canvas data-constellation-canvas class="absolute inset-0 h-full w-full"></canvas>
+  <canvas data-constellation-canvas aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
   {
-    constellationNodes.map((node) => {
+    constellationNodes.map((node, i) => {
       const copy = labels[node.id];
       return (
-        <div
-          data-constellation-node
-          data-x={node.x}
-          data-y={node.y}
-          class="absolute h-0 w-0"
-          style={`left:${node.x}%;top:${node.y}%`}
-        >
+        <div data-constellation-node data-lat={node.lat} data-lon={node.lon} class="dm-sphere-node absolute top-0 left-0 h-0 w-0">
           <button
             type="button"
             data-constellation-hit
             aria-label={`${copy.label} — ${copy.description}`}
-            class="absolute -top-6 -left-6 h-12 w-12 touch-none cursor-grab rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing"
+            aria-controls={`sphere-panel-${node.id}`}
+            aria-expanded="false"
+            class="absolute -top-6 -left-6 h-12 w-12 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            data-index={i}
           />
-          <div
-            data-constellation-label
-            class:list={[
-              "pointer-events-none absolute top-[-8px] w-[112px] sm:w-[170px]",
-              node.side === "l" ? "right-2 text-right sm:right-[14px]" : "left-2 text-left sm:left-[14px]",
-            ]}
-          >
+          <div data-constellation-label class="dm-sphere-label pointer-events-none absolute top-[-8px] w-[150px] sm:w-[170px]">
             <div data-label-title class="font-display text-[13px] leading-[1.2] font-semibold">
-              {node.id === "dataAnalytics" ? (
-                <>
-                  {copy.label.split(" ")[0]}
-                  <br />
-                  {copy.label.split(" ").slice(1).join(" ")}
-                </>
-              ) : (
-                copy.label
-              )}
+              {copy.label}
             </div>
           </div>
         </div>
       );
     })
   }
+
+  {
+    constellationNodes.map((node, i) => {
+      const copy = labels[node.id];
+      const related = node.projects.map((slug) => projectBySlug.get(slug)).filter((p) => p !== undefined);
+      return (
+        <aside id={`sphere-panel-${node.id}`} data-sphere-panel={i} hidden class="dm-sphere-panel">
+          <div class="dm-sphere-panel__head">
+            <span class="flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase">
+              <span class="h-[6px] w-[6px] rounded-full bg-accent" />
+              {panelCopy.kicker} · {String(i + 1).padStart(2, "0")}
+            </span>
+            <button type="button" data-sphere-close aria-label={panelCopy.close} class="dm-sphere-panel__close">
+              <Icon name="lucide:x" class="h-[14px] w-[14px]" />
+            </button>
+          </div>
+          <h3 class="mt-3 font-display text-[20px] leading-[1.2] font-semibold tracking-[-0.015em] text-ink">{copy.label}</h3>
+          <p class="mt-2 font-display text-[13.5px] leading-[1.6] text-ink-2">{copy.description}</p>
+
+          <div class="dm-sphere-panel__section">
+            <div class="dm-sphere-panel__title">
+              <Icon name="lucide:wrench" class="h-[12px] w-[12px]" />
+              {panelCopy.tools}
+            </div>
+            <div class="flex flex-wrap gap-[6px]">
+              {node.tools.map((tool) => {
+                const icon = techIcon(tool);
+                return (
+                  <span class="inline-flex items-center gap-[6px] rounded-[7px] border border-line bg-veil px-[8px] py-[5px] font-mono text-[11px] text-ink-2">
+                    {icon &&
+                      (icon.raster ? (
+                        <span class="h-[13px] w-[13px] shrink-0 bg-current text-ink" style={maskStyle(icon.icon)} />
+                      ) : (
+                        <Icon name={icon.icon} class="h-[13px] w-[13px] shrink-0 text-ink" />
+                      ))}
+                    {tool}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
+          {related.length > 0 && (
+            <div class="dm-sphere-panel__section">
+              <div class="dm-sphere-panel__title">
+                <Icon name="lucide:folder-open" class="h-[12px] w-[12px]" />
+                {panelCopy.projects}
+              </div>
+              <ul class="flex flex-col">
+                {related.map((project) => (
+                  <li>
+                    <a href={localizePath(`/projects/${project.id}`, locale)} class="dm-sphere-panel__link">
+                      <span class="min-w-0">
+                        <span class="block truncate font-display text-[13px] font-semibold text-ink">{project.data.title}</span>
+                        <span class="block truncate font-mono text-[10px] tracking-[0.08em] text-ink-3 uppercase">{project.data.category}</span>
+                      </span>
+                      <Icon name="lucide:arrow-up-right" class="h-[14px] w-[14px] shrink-0" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </aside>
+      );
+    })
+  }
 </div>
 
 <style>
+  .dm-sphere {
+    cursor: grab;
+  }
+  .dm-sphere.is-dragging,
+  .dm-sphere.is-dragging * {
+    cursor: grabbing;
+  }
   [data-label-title] {
     color: var(--ink-2);
     transition:
       color 0.25s ease,
       letter-spacing 0.25s ease;
   }
-  [data-constellation-node].is-active [data-label-title] {
+  .dm-sphere-node {
+    will-change: transform;
+    transition: opacity 0.35s ease;
+  }
+  .dm-sphere-label {
+    left: 14px;
+    text-align: left;
+  }
+  .dm-sphere-node.is-left .dm-sphere-label {
+    left: auto;
+    right: 14px;
+    text-align: right;
+  }
+  .dm-sphere-node.is-active [data-label-title] {
     color: var(--ink);
     letter-spacing: 0.01em;
+  }
+  .dm-sphere-node.is-dimmed {
+    opacity: 0.28;
+  }
+
+  .dm-sphere-panel {
+    position: absolute;
+    /* Above the node labels, which get z-index 1–21 from their depth. */
+    z-index: 30;
+    top: 50%;
+    right: 0;
+    width: min(300px, 52%);
+    max-height: calc(100% - 24px);
+    overflow-y: auto;
+    border-radius: 18px;
+    border: 1px solid var(--line-2);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-elevated);
+    padding: 16px 18px 18px;
+    transform: translateY(-50%);
+  }
+  .dm-sphere-panel[hidden] {
+    display: none;
+  }
+  .dm-sphere-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dm-sphere-panel__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-2);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .dm-sphere-panel__close:hover {
+    color: var(--ink);
+    border-color: var(--line-2);
+  }
+  .dm-sphere-panel__section {
+    margin-top: 16px;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+  .dm-sphere-panel__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .dm-sphere-panel__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 -8px;
+    border-radius: 10px;
+    padding: 8px;
+    color: var(--ink-3);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .dm-sphere-panel__link:hover {
+    background: var(--veil-2);
+    color: var(--accent);
+  }
+  @media (max-width: 640px) {
+    .dm-sphere-panel {
+      top: auto;
+      bottom: 0;
+      left: 0;
+      width: auto;
+      max-height: 62%;
+      transform: none;
+    }
   }
 </style>

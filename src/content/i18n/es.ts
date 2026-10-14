@@ -78,6 +78,13 @@ export const es: UICopy = {
           "Mi principal herramienta para explorar datos y construir soluciones.",
       },
     },
+    constellationPanel: {
+      kicker: "Área de enfoque",
+      tools: "Herramientas",
+      projects: "Proyectos relacionados",
+      close: "Cerrar",
+      sphereLabel: "Esfera interactiva de áreas de enfoque — arrastra para girarla y elige un nodo para ver detalles",
+    },
   },
   work: {
     kicker: "PROYECTOS DESTACADOS",

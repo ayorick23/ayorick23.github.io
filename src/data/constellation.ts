@@ -1,17 +1,56 @@
 /**
- * Structural geometry for the hero constellation. Positions are percentages
- * of the constellation viewport; labels/descriptions live in i18n copy
- * under `hero.constellation.nodes[id]` so this file stays locale-free.
+ * Structural data for the hero sphere. Each node sits on the sphere surface at
+ * a latitude/longitude (degrees; latitude +90 is the top pole); labels and
+ * descriptions live in i18n copy under `hero.constellation[id]` so this file
+ * stays locale-free.
+ *
+ * `tools` are names from `toolGroups` in tools.ts (icons resolve from there)
+ * and `projects` are content-collection slugs — both shown in the panel that
+ * opens when a node is clicked.
  */
 export const constellationNodes = [
-  { id: "machineLearning", x: 58, y: 8, side: "r" },
-  { id: "dataScience", x: 24, y: 16, side: "l" },
-  // x nudged in from 80 to keep the two-line "Data / Analytics" title from clipping
-  // a few px past the mobile constellation's overflow-hidden edge.
-  { id: "dataAnalytics", x: 76, y: 36, side: "r" },
-  { id: "mlops", x: 14, y: 52, side: "l" },
-  { id: "peopleAnalytics", x: 70, y: 68, side: "r" },
-  { id: "python", x: 40, y: 88, side: "r" },
+  {
+    id: "machineLearning",
+    lat: 38,
+    lon: 10,
+    tools: ["scikit-learn", "LightGBM", "MLflow"],
+    projects: ["telco-churn-mlops"],
+  },
+  {
+    id: "dataScience",
+    lat: -24,
+    lon: 70,
+    tools: ["Python", "pandas", "NumPy", "SciPy", "scikit-learn"],
+    projects: ["data-ai-compensation-benchmark", "telco-churn-mlops"],
+  },
+  {
+    id: "dataAnalytics",
+    lat: 30,
+    lon: 130,
+    tools: ["SQL", "pandas", "Power BI", "Matplotlib", "Seaborn"],
+    projects: ["data-ai-compensation-benchmark"],
+  },
+  {
+    id: "mlops",
+    lat: -34,
+    lon: 190,
+    tools: ["MLflow", "DVC", "FastAPI", "Docker", "GitHub Actions"],
+    projects: ["telco-churn-mlops"],
+  },
+  {
+    id: "peopleAnalytics",
+    lat: 20,
+    lon: 250,
+    tools: ["Power BI", "Data Studio", "Python", "SQL"],
+    projects: ["data-ai-compensation-benchmark"],
+  },
+  {
+    id: "python",
+    lat: -16,
+    lon: 310,
+    tools: ["Python", "pandas", "Polars", "NumPy", "FastAPI", "pytest"],
+    projects: ["data-ai-compensation-benchmark", "telco-churn-mlops", "ecommerce-medallion-pipeline"],
+  },
 ] as const;
 
 export type ConstellationNodeId = (typeof constellationNodes)[number]["id"];

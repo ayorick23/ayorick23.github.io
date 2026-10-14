@@ -1,244 +1,263 @@
-interface NebulaBody {
-  baseXPct: number;
-  baseYPct: number;
-  r: number;
-  driftPhase: number;
-  driftSpeed: number;
-  driftAmp: number;
-  offsetX: number;
-  offsetY: number;
-  velX: number;
-  velY: number;
+/*
+  Contact card nebula — a WebGL fragment shader instead of 2D canvas blobs,
+  because the reference look (wispy, twisting smoke filaments) comes from
+  domain-warped noise: fbm sampled at coordinates that are themselves offset
+  by fbm, animated over time so the gas keeps flowing.
+
+  The cursor leaves a short trail; each trail point drags the smoke along its
+  velocity and swirls it around, fading out over ~2s, so the gas looks pushed
+  around rather than repelled by a fixed force field.
+*/
+
+const TRAIL = 16;
+// Rendered below CSS resolution and upscaled by the browser — smoke is soft by
+// nature, and this keeps the per-pixel noise cost reasonable on big cards.
+const RENDER_SCALE = 0.55;
+
+const VERT = `
+attribute vec2 aPos;
+void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
+`;
+
+const FRAG = `
+precision highp float;
+uniform vec2 uRes;
+uniform float uTime;
+uniform vec4 uTrail[${TRAIL}];
+uniform float uTrailAge[${TRAIL}];
+uniform vec3 uCore;
+uniform vec3 uMid;
+uniform vec3 uEdge;
+uniform vec3 uSpark;
+uniform float uIntensity;
+uniform float uOpacity;
+uniform float uCompact;
+
+float hash(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
 }
 
-interface NebulaStar extends NebulaBody {
-  mix: number;
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
 
-interface NebulaCloud extends NebulaBody {
-  colorVar: string;
-  breathePhase: number;
+float fbm(vec2 p) {
+  float v = 0.0;
+  float a = 0.5;
+  mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+  for (int i = 0; i < 5; i++) {
+    v += a * noise(p);
+    p = m * p;
+    a *= 0.5;
+  }
+  return v;
 }
 
-// Same "let go and it settles back" spring feel as the hero constellation / timeline —
-// stars are light dust (snappy), clouds are heavier gas (slow, sluggish response).
-const STAR_SPRING_STIFFNESS = 0.09;
-const STAR_SPRING_DAMPING = 0.78;
-const STAR_REPEL_RADIUS = 130;
-const STAR_REPEL_STRENGTH = 2.2;
+float stars(vec2 p, float density, float size, float t) {
+  vec2 cell = floor(p * density);
+  vec2 local = fract(p * density) - 0.5;
+  float h = hash(cell);
+  if (h < 0.93) return 0.0;
+  vec2 jitter = vec2(hash(cell + 7.1), hash(cell + 3.7)) - 0.5;
+  float d = length(local - jitter * 0.7);
+  float twinkle = 0.55 + 0.45 * sin(t * (1.5 + h * 3.0) + h * 40.0);
+  return smoothstep(size, 0.0, d) * twinkle * (h - 0.93) * 14.0;
+}
 
-const CLOUD_SPRING_STIFFNESS = 0.035;
-const CLOUD_SPRING_DAMPING = 0.86;
-const CLOUD_REPEL_RADIUS = 260;
-const CLOUD_REPEL_STRENGTH = 0.9;
+void main() {
+  vec2 frag = gl_FragCoord.xy;
+  float aspect = uRes.x / uRes.y;
+  vec2 p = frag / uRes.y;
 
-const CLOUD_COLOR_VARS = ["--nebula-cloud-1", "--nebula-cloud-2", "--nebula-cloud-3", "--nebula-cloud-4"];
+  vec2 disp = vec2(0.0);
+  for (int i = 0; i < ${TRAIL}; i++) {
+    float age = uTrailAge[i];
+    if (age > 2.5) continue;
+    vec2 d = p - uTrail[i].xy;
+    vec2 vel = uTrail[i].zw;
+    float g = exp(-dot(d, d) / 0.018) * exp(-age * 1.4);
+    disp += vel * g * 0.55;
+    disp += vec2(-d.y, d.x) * g * length(vel) * 2.2;
+  }
+
+  // On narrow cards the copy fills the width, so the nebula moves to the
+  // bottom (behind the buttons) and fades out upward instead of leftward.
+  vec2 center = mix(vec2(aspect * 0.74, 0.52), vec2(aspect * 0.62, 0.16), uCompact);
+  vec2 q0 = p - center - disp;
+  float t = uTime * 0.06;
+  // Smoke rises: the sample space scrolls down over time so features drift
+  // up, and it's stretched vertically so wisps elongate into plumes.
+  vec2 s = q0 * vec2(2.6, 1.7) - vec2(0.0, uTime * 0.09);
+
+  vec2 q = vec2(fbm(s + vec2(0.0, t)), fbm(s + vec2(5.2, 1.3) - t));
+  vec2 r = vec2(fbm(s + 1.8 * q + vec2(1.7, 9.2) + t), fbm(s + 1.8 * q + vec2(8.3, 2.8) - t * 0.8));
+  float f = fbm(s + 2.0 * r);
+
+  // Soft density ramps rather than sharp bright ridges — hard-edged ridges
+  // and strong warping are what made the gas read as water caustics.
+  float smoke = smoothstep(0.3, 0.8, f);
+  float wisp = pow(1.0 - abs(f * 2.0 - 1.0), 2.0);
+  // Finer turbulence that breaks the gas into curling tufts.
+  float detail = fbm(s * 2.3 + 2.4 * r - vec2(0.0, t));
+
+  // A tall column of gas, like the reference, with a noisy silhouette.
+  vec2 sh = q0 * vec2(1.55, 1.2);
+  float shape = smoothstep(0.66, 0.04, length(sh) + (r.x - 0.5) * 0.6 + (q.y - 0.5) * 0.3);
+  float density = (smoke * 0.95 + wisp * 0.35) * (0.45 + detail * 1.1) * shape;
+
+  float core = smoothstep(0.4, 0.75, f) * smoothstep(0.45, 0.0, length(q0 * vec2(1.5, 1.3) - vec2(0.0, 0.08)));
+  vec3 col = mix(uEdge, uMid, smoothstep(0.2, 0.7, q.y + detail * 0.3));
+  col = mix(col, uCore, clamp(core * 2.2, 0.0, 1.0));
+  // Densest tufts glow toward white, like the lit edges of the reference.
+  col = mix(col, mix(uSpark, vec3(1.0), 0.4), smoothstep(0.55, 0.95, smoke * detail * 1.4) * 0.45);
+  col += mix(uMid, uSpark, 0.5) * pow(wisp * detail, 2.0) * 0.45;
+
+  // Keep the left side (where the copy sits) calm.
+  float fade = mix(smoothstep(aspect * 0.3, aspect * 0.62, p.x), smoothstep(0.62, 0.12, p.y) * 0.75, uCompact);
+  float alpha = clamp(density * uIntensity, 0.0, 1.0) * fade;
+
+  // Static star field + gold dust rising out of the top of the column.
+  float field = stars(p, 70.0, 0.09, uTime) * 0.6 * fade;
+  vec2 dustP = p + vec2(0.0, -uTime * 0.025);
+  float column = smoothstep(0.3, 0.0, abs(q0.x * 1.6)) * smoothstep(-0.2, 0.45, q0.y);
+  float dust = (stars(dustP + disp, 140.0, 0.12, uTime) + stars(dustP * 1.7 + disp, 200.0, 0.14, uTime * 1.2)) * column * fade * 1.6;
+  float sparkle = clamp(field + dust + stars(p - disp, 110.0, 0.08, uTime * 1.3) * shape * 1.2, 0.0, 1.0);
+
+  // uOpacity < 1 lets premultiplied color exceed alpha, so in dark mode the gas
+  // adds light like an emissive glow instead of painting a dark veil over the
+  // card; light mode needs full coverage to tint the white background.
+  vec3 premul = col * alpha + uSpark * sparkle;
+  gl_FragColor = vec4(premul, clamp((alpha + sparkle) * uOpacity, 0.0, 1.0));
+}
+`;
+
+type RGB = [number, number, number];
+
+// Dark: the reference palette (golden core, blue-white wisps, violet edges).
+// Light: same structure in the site's light-mode aurora colors, deeper so it
+// still reads over a white card.
+const PALETTES: Record<"dark" | "light", { core: RGB; mid: RGB; edge: RGB; spark: RGB; intensity: number; opacity: number }> = {
+  dark: { core: [1.0, 0.62, 0.28], mid: [0.66, 0.78, 1.0], edge: [0.4, 0.32, 0.86], spark: [1.0, 0.9, 0.72], intensity: 1.55, opacity: 0.2 },
+  light: { core: [1.0, 0.52, 0.28], mid: [0.95, 0.42, 0.62], edge: [0.42, 0.3, 0.9], spark: [0.3, 0.38, 0.9], intensity: 1.05, opacity: 1 },
+};
+
+function compile(gl: WebGLRenderingContext, type: number, source: string) {
+  const shader = gl.createShader(type);
+  if (!shader) return null;
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    gl.deleteShader(shader);
+    return null;
+  }
+  return shader;
+}
 
 export function initNebula() {
   const container = document.querySelector<HTMLElement>("[data-nebula]");
   const canvas = container?.querySelector<HTMLCanvasElement>("[data-nebula-canvas]");
-  const ctx = canvas?.getContext("2d");
-  if (!container || !canvas || !ctx) return;
-  if (container.dataset.initialized) return;
+  if (!container || !canvas || container.dataset.initialized) return;
   container.dataset.initialized = "true";
 
+  const gl = canvas.getContext("webgl", { premultipliedAlpha: true, antialias: false, alpha: true });
+  if (!gl) return;
+  const vs = compile(gl, gl.VERTEX_SHADER, VERT);
+  const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
+  const program = gl.createProgram();
+  if (!vs || !fs || !program) return;
+  gl.attachShader(program, vs);
+  gl.attachShader(program, fs);
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+  gl.useProgram(program);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(program, "aPos");
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  const u = (name: string) => gl.getUniformLocation(program, name);
+  const uRes = u("uRes");
+  const uTime = u("uTime");
+  const uTrail = u("uTrail");
+  const uTrailAge = u("uTrailAge");
+  const uCore = u("uCore");
+  const uMid = u("uMid");
+  const uEdge = u("uEdge");
+  const uSpark = u("uSpark");
+  const uIntensity = u("uIntensity");
+  const uOpacity = u("uOpacity");
+  const uCompact = u("uCompact");
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // Fewer bodies on narrow viewports — same reason the repel/glow math stays untouched,
-  // this is purely a mobile CPU budget cut, not a visual redesign.
-  const isNarrow = window.matchMedia("(max-width: 640px)").matches;
   const controller = new AbortController();
   const { signal } = controller;
+  // The copy sits on top of this layer, so pointer events are read from the
+  // whole card rather than the canvas container.
+  const card = container.parentElement ?? container;
 
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
+  let width = 1;
+  let height = 1;
   let raf = 0;
   let running = false;
-  let pointerX = -9999;
-  let pointerY = -9999;
-  let pointerActive = false;
+  let inView = false;
   const startTime = performance.now();
 
-  // Colors only change on theme toggle, not every frame — reading them via
-  // getComputedStyle inside the draw loop forces a style recalc 60x/sec for no reason.
-  let accent = "#5b8cff";
-  let accent2 = "#9b7cff";
-  let star = "#dce6ff";
-  let cloudColors: Record<string, string> = {};
+  const trail = new Float32Array(TRAIL * 4);
+  const trailAge = new Float32Array(TRAIL).fill(99);
+  const trailBorn = new Float64Array(TRAIL).fill(-1e9);
+  let head = 0;
+  let last: { x: number; y: number; t: number } | null = null;
 
-  function readThemeColors() {
-    const styles = getComputedStyle(document.documentElement);
-    accent = styles.getPropertyValue("--accent").trim() || "#5b8cff";
-    accent2 = styles.getPropertyValue("--accent-2").trim() || "#9b7cff";
-    star = styles.getPropertyValue("--star").trim() || "#dce6ff";
-    cloudColors = {};
-    CLOUD_COLOR_VARS.forEach((v) => {
-      cloudColors[v] = styles.getPropertyValue(v).trim();
-    });
+  function applyPalette() {
+    const theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+    const pal = PALETTES[theme];
+    gl!.uniform3fv(uCore, pal.core);
+    gl!.uniform3fv(uMid, pal.mid);
+    gl!.uniform3fv(uEdge, pal.edge);
+    gl!.uniform3fv(uSpark, pal.spark);
+    gl!.uniform1f(uIntensity, pal.intensity);
+    gl!.uniform1f(uOpacity, pal.opacity);
+    if (!running) render(performance.now());
   }
-  readThemeColors();
-
-  const themeObserver = new MutationObserver(readThemeColors);
-  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-
-  const starCount = isNarrow ? 24 : 46;
-  const cloudCount = isNarrow ? 3 : 5;
-
-  const stars: NebulaStar[] = Array.from({ length: starCount }, () => ({
-    // Weighted toward the right two-thirds of the card, where the copy leaves empty space.
-    baseXPct: 38 + Math.random() * 82,
-    baseYPct: Math.random() * 100,
-    r: Math.random() * 2.2 + 0.9,
-    driftPhase: Math.random() * Math.PI * 2,
-    driftSpeed: Math.random() * 0.35 + 0.12,
-    driftAmp: Math.random() * 10 + 6,
-    mix: Math.random(),
-    offsetX: 0,
-    offsetY: 0,
-    velX: 0,
-    velY: 0,
-  }));
-
-  const clouds: NebulaCloud[] = Array.from({ length: cloudCount }, (_, i) => ({
-    baseXPct: 32 + Math.random() * 88,
-    baseYPct: Math.random() * 100,
-    r: Math.random() * 90 + 130,
-    driftPhase: Math.random() * Math.PI * 2,
-    driftSpeed: Math.random() * 0.08 + 0.03,
-    driftAmp: Math.random() * 16 + 10,
-    colorVar: CLOUD_COLOR_VARS[i % CLOUD_COLOR_VARS.length],
-    breathePhase: Math.random() * Math.PI * 2,
-    offsetX: 0,
-    offsetY: 0,
-    velX: 0,
-    velY: 0,
-  }));
 
   function resize() {
     const rect = container!.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    width = rect.width;
-    height = rect.height;
-    canvas!.width = Math.max(1, Math.round(width * dpr));
-    canvas!.height = Math.max(1, Math.round(height * dpr));
+    const scale = Math.min(window.devicePixelRatio || 1, 2) * RENDER_SCALE;
+    width = Math.max(1, Math.round(rect.width * scale));
+    height = Math.max(1, Math.round(rect.height * scale));
+    canvas!.width = width;
+    canvas!.height = height;
+    gl!.viewport(0, 0, width, height);
+    gl!.uniform2f(uRes, width, height);
+    gl!.uniform1f(uCompact, rect.width < 640 ? 1 : 0);
+    if (!running) render(performance.now());
   }
 
-  function ambient(body: NebulaBody, elapsed: number) {
-    const x = (body.baseXPct / 100) * width + Math.cos(elapsed * body.driftSpeed + body.driftPhase) * body.driftAmp;
-    const y = (body.baseYPct / 100) * height + Math.sin(elapsed * body.driftSpeed * 0.8 + body.driftPhase) * body.driftAmp;
-    return { x, y };
+  function render(now: number) {
+    for (let i = 0; i < TRAIL; i++) trailAge[i] = (now - trailBorn[i]) / 1000;
+    gl!.uniform1f(uTime, reduceMotion ? 12 : (now - startTime) / 1000);
+    gl!.uniform4fv(uTrail, trail);
+    gl!.uniform1fv(uTrailAge, trailAge);
+    gl!.clearColor(0, 0, 0, 0);
+    gl!.clear(gl!.COLOR_BUFFER_BIT);
+    gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
   }
-
-  function mixColor(a: string, b: string, t: number) {
-    return t < 0.5 ? a : b;
-  }
-
-  function draw(elapsed: number) {
-    ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx!.clearRect(0, 0, width, height);
-
-    // Gas layer first — soft, slow-breathing color washes behind the star field.
-    clouds.forEach((c) => {
-      const base = ambient(c, elapsed);
-      const x = base.x + c.offsetX;
-      const y = base.y + c.offsetY;
-      const color = cloudColors[c.colorVar];
-      if (!color) return;
-      const breathe = reduceMotion ? 0.85 : 0.78 + 0.22 * Math.sin(elapsed * 0.35 + c.breathePhase);
-      const gradient = ctx!.createRadialGradient(x, y, 0, x, y, c.r);
-      gradient.addColorStop(0, color);
-      gradient.addColorStop(0.55, color);
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
-      ctx!.globalAlpha = breathe;
-      ctx!.fillStyle = gradient;
-      ctx!.beginPath();
-      ctx!.arc(x, y, c.r, 0, Math.PI * 2);
-      ctx!.fill();
-    });
-
-    stars.forEach((p) => {
-      const base = ambient(p, elapsed);
-      const x = base.x + p.offsetX;
-      const y = base.y + p.offsetY;
-      const glowR = p.r * 9;
-      const gradient = ctx!.createRadialGradient(x, y, 0, x, y, glowR);
-      const color = mixColor(accent, accent2, p.mix);
-      gradient.addColorStop(0, color);
-      gradient.addColorStop(0.35, color);
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
-      ctx!.globalAlpha = 0.16;
-      ctx!.fillStyle = gradient;
-      ctx!.beginPath();
-      ctx!.arc(x, y, glowR, 0, Math.PI * 2);
-      ctx!.fill();
-
-      // Soft core: a second, tighter gradient instead of a hard dot + ctx.filter blur.
-      // Canvas 2D filter() runs an unaccelerated per-shape blur pass on most browsers —
-      // measurably ~2.5x slower per star and a real contributor to the scroll jank this
-      // section caused — a feathered gradient reads just as soft for free.
-      const coreR = p.r * 2.4;
-      const core = ctx!.createRadialGradient(x, y, 0, x, y, coreR);
-      core.addColorStop(0, star);
-      core.addColorStop(0.45, star);
-      core.addColorStop(1, "rgba(0,0,0,0)");
-      ctx!.globalAlpha = 0.6;
-      ctx!.fillStyle = core;
-      ctx!.beginPath();
-      ctx!.arc(x, y, coreR, 0, Math.PI * 2);
-      ctx!.fill();
-    });
-
-    ctx!.globalAlpha = 1;
-  }
-
-  function applySpring(body: NebulaBody, stiffness: number, damping: number) {
-    const accX = -stiffness * body.offsetX;
-    const accY = -stiffness * body.offsetY;
-    body.velX = (body.velX + accX) * damping;
-    body.velY = (body.velY + accY) * damping;
-    body.offsetX += body.velX;
-    body.offsetY += body.velY;
-  }
-
-  function applyRepel(body: NebulaBody, elapsed: number, radius: number, strength: number) {
-    if (!pointerActive) return;
-    const base = ambient(body, elapsed);
-    const dx = base.x + body.offsetX - pointerX;
-    const dy = base.y + body.offsetY - pointerY;
-    const dist = Math.hypot(dx, dy);
-    if (dist < radius && dist > 0.001) {
-      const force = (1 - dist / radius) * strength;
-      body.velX += (dx / dist) * force;
-      body.velY += (dy / dist) * force;
-    }
-  }
-
-  function updatePhysics() {
-    const elapsed = (performance.now() - startTime) / 1000;
-    stars.forEach((p) => {
-      applyRepel(p, elapsed, STAR_REPEL_RADIUS, STAR_REPEL_STRENGTH);
-      applySpring(p, STAR_SPRING_STIFFNESS, STAR_SPRING_DAMPING);
-    });
-    clouds.forEach((c) => {
-      applyRepel(c, elapsed, CLOUD_REPEL_RADIUS, CLOUD_REPEL_STRENGTH);
-      applySpring(c, CLOUD_SPRING_STIFFNESS, CLOUD_SPRING_DAMPING);
-    });
-  }
-
-  const ro = new ResizeObserver(() => resize());
-  ro.observe(container);
-  resize();
 
   function loop(now: number) {
-    updatePhysics();
-    draw((now - startTime) / 1000);
+    render(now);
     raf = requestAnimationFrame(loop);
   }
 
-  let inView = false;
-
   function sync() {
-    const shouldRun = inView && !document.hidden;
+    const shouldRun = !reduceMotion && inView && !document.hidden;
     if (shouldRun && !running) {
       running = true;
       raf = requestAnimationFrame(loop);
@@ -248,52 +267,51 @@ export function initNebula() {
     }
   }
 
-  function stop() {
-    running = false;
-    cancelAnimationFrame(raf);
-  }
+  applyPalette();
+  const themeObserver = new MutationObserver(applyPalette);
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-  if (reduceMotion) {
-    draw(0);
-  } else {
-    // Only animate while the contact card is actually on screen — it sits at the very
-    // bottom of the page, so without this the canvas was redrawing 60x/sec for the
-    // entire visit even if the visitor never scrolled anywhere near it.
-    const io = new IntersectionObserver(
-      (entries) => {
-        inView = entries.some((entry) => entry.isIntersecting);
-        sync();
-      },
-      { rootMargin: "200px" },
-    );
-    io.observe(container);
+  const ro = new ResizeObserver(resize);
+  ro.observe(container);
+  resize();
 
-    document.addEventListener("visibilitychange", sync, { signal });
+  // Only animate while the card is on screen — it sits at the very bottom of
+  // the page, so otherwise the shader would run for the whole visit.
+  const io = new IntersectionObserver(
+    (entries) => {
+      inView = entries.some((entry) => entry.isIntersecting);
+      sync();
+    },
+    { rootMargin: "200px" },
+  );
+  io.observe(container);
+  document.addEventListener("visibilitychange", sync, { signal });
 
-    container.addEventListener(
+  if (!reduceMotion) {
+    card.addEventListener(
       "pointermove",
       (e) => {
         const rect = container.getBoundingClientRect();
-        pointerX = e.clientX - rect.left;
-        pointerY = e.clientY - rect.top;
-        pointerActive = true;
+        // Shader space: y up, normalized by the card height.
+        const x = (e.clientX - rect.left) / rect.height;
+        const y = 1 - (e.clientY - rect.top) / rect.height;
+        const now = performance.now();
+        // Sampled every ~35ms so the 16 trail points span a visible stroke
+        // instead of the last few frames of a fast mouse.
+        if (last && now - last.t < 35) return;
+        if (last) {
+          const dt = (now - last.t) / 1000;
+          const vx = Math.max(-1.5, Math.min(1.5, (x - last.x) / dt)) * 0.12;
+          const vy = Math.max(-1.5, Math.min(1.5, (y - last.y) / dt)) * 0.12;
+          trail.set([x, y, vx, vy], head * 4);
+          trailBorn[head] = now;
+          head = (head + 1) % TRAIL;
+        }
+        last = { x, y, t: now };
       },
       { signal },
     );
-    container.addEventListener("pointerleave", () => (pointerActive = false), { signal });
-
-    document.addEventListener(
-      "astro:before-swap",
-      () => {
-        controller.abort();
-        ro.disconnect();
-        io.disconnect();
-        themeObserver.disconnect();
-        stop();
-      },
-      { once: true },
-    );
-    return;
+    card.addEventListener("pointerleave", () => (last = null), { signal });
   }
 
   document.addEventListener(
@@ -301,8 +319,11 @@ export function initNebula() {
     () => {
       controller.abort();
       ro.disconnect();
+      io.disconnect();
       themeObserver.disconnect();
-      stop();
+      running = false;
+      cancelAnimationFrame(raf);
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     },
     { once: true },
   );
