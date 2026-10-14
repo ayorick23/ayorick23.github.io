@@ -1,0 +1,443 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { Icon } from "astro-icon/components";
+import SectionHeader from "./SectionHeader.astro";
+import { certificateCategories, certificates } from "../data/certificates";
+import { formatYearMonth } from "../lib/dates";
+import { getUI, resolveLocale } from "../lib/i18n";
+
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+const copy = ui.about.certificates;
+
+const previews = import.meta.glob<{ default: ImageMetadata }>("../assets/certificates/*.jpg", { eager: true });
+const preview = (id: string) => {
+  const img = previews[`../assets/certificates/${id}.jpg`]?.default;
+  if (!img) throw new Error(`Missing certificate preview for "${id}" — run scripts/render-certificates.py`);
+  return img;
+};
+
+const byId = new Map(certificates.map((c) => [c.id, c]));
+const counts = certificateCategories
+  .map((cat) => ({ cat, n: certificates.filter((c) => c.category === cat).length }))
+  .filter(({ n }) => n > 0);
+const hoursLabel = (h: number) => `${h.toLocaleString(locale)} h`;
+const pad = (n: number) => String(n).padStart(2, "0");
+// Matches ABOVE in scripts/certificates.ts: the card that starts in the stack's middle slot.
+const startIndex = Math.min(2, certificates.length - 1);
+const first = certificates[startIndex];
+const peekMeta = (c: (typeof certificates)[number]) =>
+  `${copy.categories[c.category]} · ${c.issuer.split(" · ")[0]} · ${formatYearMonth(c.issued, locale)}`;
+---
+
+<section class="mt-[110px]" data-certs>
+  <SectionHeader kicker={copy.kicker} headingLead={copy.headingLead} headingAccent={copy.headingAccent} dot="accent-2" />
+
+  <div class="dm-certs">
+    <aside class="dm-certs__aside min-w-0" data-certs-aside>
+      <div data-certs-idle>
+        <p class="max-w-[340px] font-display text-[15px] leading-[1.7] text-ink-2">{copy.intro}</p>
+        <div class="mt-8 flex items-baseline gap-3">
+          <span class="font-display text-[56px] leading-none font-light tracking-[-0.04em] text-ink">
+            {certificates.length}
+          </span>
+          <span class="font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">{copy.total}</span>
+        </div>
+        <ul class="mt-6 flex flex-col gap-2 border-t border-line pt-5">
+          {counts.map(({ cat, n }) => (
+            <li class="flex items-center justify-between font-mono text-[11.5px] text-ink-2">
+              <span class="flex items-center gap-2">
+                <span class:list={["dm-cat-dot", `dm-cat-dot--${cat}`]}></span>
+                {copy.categories[cat]}
+              </span>
+              <span class="text-ink-3">{pad(n)}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 font-mono text-[10.5px] leading-[1.7] tracking-[0.08em] text-ink-3 uppercase">{copy.hint}</p>
+      </div>
+
+      {certificates.map((c) => {
+        const related = c.related && byId.get(c.related.id);
+        return (
+          <article class="dm-cert-panel" id={`cert-panel-${c.id}`} data-cert-panel={c.id} hidden>
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class:list={["dm-cat-chip", `dm-cat-chip--${c.category}`]}>
+                  <span class:list={["dm-cat-dot", `dm-cat-dot--${c.category}`]}></span>
+                  {copy.categories[c.category]}
+                </span>
+                {c.series && (
+                  <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-3 uppercase">
+                    {copy.module.replace("{part}", String(c.series.part)).replace("{total}", String(c.series.total))}
+                  </span>
+                )}
+              </div>
+              <button type="button" class="dm-cert-panel__close" data-cert-close aria-label={copy.close}>
+                <Icon name="lucide:x" class="h-4 w-4" />
+              </button>
+            </div>
+            {c.series && <div class="mt-4 font-mono text-[11px] text-ink-3">{c.series.name[locale]}</div>}
+            <h3
+              class:list={[
+                "font-display text-[21px] leading-[1.25] font-semibold tracking-[-0.015em] text-ink",
+                c.series ? "mt-1.5" : "mt-4",
+              ]}
+            >
+              {c.title[locale]}
+            </h3>
+            <p class="mt-3 font-display text-[14.5px] leading-[1.65] text-ink-2">{copy.descriptions[c.id]}</p>
+            <dl class="mt-5 grid gap-x-4 gap-y-3 border-t border-line pt-5 font-mono text-[11.5px]">
+              <div class="dm-cert-panel__row">
+                <dt>{copy.issuer}</dt>
+                <dd>{c.issuer}</dd>
+              </div>
+              <div class="dm-cert-panel__row">
+                <dt>{copy.issued}</dt>
+                <dd class="uppercase">{formatYearMonth(c.issued, locale)}</dd>
+              </div>
+              {c.hours && (
+                <div class="dm-cert-panel__row">
+                  <dt>{copy.hours}</dt>
+                  <dd>{hoursLabel(c.hours)}</dd>
+                </div>
+              )}
+            </dl>
+            {related && c.related && (
+              <button type="button" class="dm-cert-panel__related" data-cert-open={related.id}>
+                <span class="font-mono text-[10px] tracking-[0.14em] text-ink-3 uppercase">{copy[c.related.kind]}</span>
+                <span class="flex items-center justify-between gap-3 font-display text-[13.5px] font-semibold text-ink">
+                  {related.title[locale]}
+                  <Icon name="lucide:arrow-right" class="h-4 w-4 flex-none text-accent" />
+                </span>
+              </button>
+            )}
+            <div class="mt-6 flex flex-wrap gap-2.5">
+              {c.verifyUrl && (
+                <a class="dm-cert-btn dm-cert-btn--primary" href={c.verifyUrl} target="_blank" rel="noopener noreferrer">
+                  <Icon name="lucide:badge-check" class="h-4 w-4" />
+                  {copy.verify}
+                </a>
+              )}
+              <a class="dm-cert-btn" href={`/certificates/${c.id}.pdf`} target="_blank" rel="noopener">
+                <Icon name="lucide:file-text" class="h-4 w-4" />
+                {copy.viewPdf}
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </aside>
+
+    <div class="dm-certs__main min-w-0">
+      <div class="dm-stage" data-certs-stage tabindex="0" role="group" aria-roledescription="carousel" aria-label={copy.stackLabel}>
+        <ol class="dm-stage__list">
+          {certificates.map((c, i) => {
+            const img = preview(c.id);
+            return (
+              <li
+                class="dm-card"
+                style={`--ratio: ${img.width / img.height}`}
+                data-cert={c.id}
+                data-peek-meta={peekMeta(c)}
+                data-peek-title={c.title[locale]}
+              >
+                <button
+                  type="button"
+                  class="dm-card__face"
+                  aria-expanded="false"
+                  aria-controls={`cert-panel-${c.id}`}
+                  aria-label={`${c.title[locale]} — ${c.issuer}`}
+                >
+                  <Image
+                    src={img}
+                    alt=""
+                    widths={[480, 800, 1280]}
+                    sizes="(min-width: 1024px) 600px, 92vw"
+                    loading={i < 6 ? "eager" : "lazy"}
+                    class="dm-card__img"
+                  />
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <div class="dm-stage__bar">
+        <div class="min-w-0" aria-live="polite">
+          <span class="block truncate font-mono text-[10.5px] tracking-[0.14em] text-ink-3 uppercase" data-peek-meta>
+            {peekMeta(first)}
+          </span>
+          <span class="mt-1 block truncate font-display text-[14.5px] font-semibold text-ink" data-peek-title>{first.title[locale]}</span>
+        </div>
+        <div class="flex flex-none items-center gap-3">
+          <span class="font-mono text-[12px] text-ink-2 tabular-nums">
+            <span class="text-ink" data-certs-index>{pad(startIndex + 1)}</span> / {pad(certificates.length)}
+          </span>
+          <button type="button" class="dm-stage__nav" data-certs-step="-1" aria-label={copy.previous}>
+            <Icon name="lucide:chevron-up" class="h-4 w-4" />
+          </button>
+          <button type="button" class="dm-stage__nav" data-certs-step="1" aria-label={copy.next}>
+            <Icon name="lucide:chevron-down" class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <div data-certs-mobile-host></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initCertificates } from "../scripts/certificates";
+  document.addEventListener("astro:page-load", initCertificates);
+</script>
+
+<style>
+  .dm-certs {
+    display: grid;
+    gap: 36px;
+  }
+  @media (min-width: 1024px) {
+    .dm-certs {
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 56px;
+      align-items: start;
+    }
+  }
+
+  /* The card positions are computed per frame in scripts/certificates.ts; CSS only sets the stage. */
+  .dm-stage {
+    position: relative;
+    height: var(--stage-h, 640px);
+    overflow: hidden;
+    border-radius: 22px;
+    touch-action: none;
+    outline: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%);
+  }
+  .dm-stage:focus-visible {
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  /* perspective must sit on the cards' direct parent to affect their 3D transforms. */
+  .dm-stage__list {
+    position: absolute;
+    inset: 0;
+    perspective: 1100px;
+    perspective-origin: 50% 0%;
+  }
+  .dm-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--card-w, 560px);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .dm-card__face {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+    background: var(--surface);
+    box-shadow:
+      0 -16px 36px -12px rgba(0, 0, 0, 0.75),
+      0 0 0 1px var(--line-2);
+    outline-offset: 4px;
+  }
+  .dm-card__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(var(--b, 1)) saturate(var(--s, 1));
+    pointer-events: none;
+    user-select: none;
+  }
+  .dm-card.is-open .dm-card__face {
+    cursor: zoom-out;
+    box-shadow:
+      0 34px 70px -26px rgba(0, 0, 0, 0.9),
+      0 0 0 1px var(--line-2);
+  }
+  :global(:root[data-theme="light"]) .dm-card__face {
+    box-shadow:
+      0 -12px 30px -14px rgba(20, 28, 50, 0.3),
+      0 0 0 1px var(--line-2);
+  }
+
+  .dm-stage__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 16px;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  .dm-stage__nav {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    color: var(--ink-2);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      opacity 0.2s ease;
+  }
+  .dm-stage__nav:hover:not(:disabled) {
+    color: var(--ink);
+    border-color: var(--ink-3);
+  }
+  .dm-stage__nav:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .dm-cat-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex: none;
+    background: var(--ink-3);
+  }
+  .dm-cat-dot--certification {
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  .dm-cat-dot--specialization {
+    background: var(--accent-2);
+  }
+  .dm-cat-dot--course {
+    background: var(--ink-2);
+  }
+  .dm-cat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    padding: 3px 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .dm-cat-chip--certification {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .dm-cert-panel {
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: var(--gradient-card), var(--surface);
+    box-shadow: var(--shadow-elevated);
+    padding: 22px;
+    animation: dm-cert-panel-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  .dm-cert-panel[hidden] {
+    display: none;
+  }
+  [data-certs-mobile-host] > .dm-cert-panel {
+    margin-top: 20px;
+  }
+  .dm-cert-panel__close {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    color: var(--ink-2);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .dm-cert-panel__close:hover {
+    color: var(--ink);
+    border-color: var(--ink-3);
+  }
+  .dm-cert-panel__row {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 12px;
+  }
+  .dm-cert-panel__row dt {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10.5px;
+    padding-top: 1px;
+  }
+  .dm-cert-panel__row dd {
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .dm-cert-panel__related {
+    margin-top: 18px;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 12px;
+    border: 1px dashed var(--line-2);
+    padding: 12px 14px;
+    text-align: left;
+    transition:
+      border-color 0.25s ease,
+      background 0.25s ease;
+  }
+  .dm-cert-panel__related:hover,
+  .dm-cert-panel__related:focus-visible {
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    background: var(--veil);
+  }
+  .dm-cert-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    padding: 8px 15px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .dm-cert-btn:hover {
+    border-color: var(--ink-3);
+    transform: translateY(-1px);
+  }
+  .dm-cert-btn--primary {
+    background: var(--btn-bg);
+    border-color: var(--btn-bg);
+    color: var(--btn-fg);
+  }
+  .dm-cert-btn--primary:hover {
+    border-color: var(--btn-bg);
+  }
+
+  @keyframes dm-cert-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+</style>

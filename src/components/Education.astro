@@ -1,0 +1,293 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+import { educationMilestones } from "../data/education";
+import { formatYearMonth, monthIndex } from "../lib/dates";
+import { getUI, resolveLocale } from "../lib/i18n";
+
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+const copy = ui.about.education;
+
+const start = monthIndex(educationMilestones[0].date);
+const end = monthIndex(educationMilestones[educationMilestones.length - 1].date);
+const at = (m: number) => Math.min(1, Math.max(0, (m - start) / (end - start)));
+const now = new Date();
+const today = at(now.getUTCFullYear() * 12 + now.getUTCMonth());
+---
+
+<section data-reveal class="mt-[90px]">
+  <SectionHeader kicker={copy.kicker} headingLead={copy.headingLead} headingAccent={copy.headingAccent} />
+
+  <div
+    data-edu
+    data-start={start}
+    data-end={end}
+    class="rounded-[22px] border border-line bg-[image:var(--gradient-card)] px-6 py-8 sm:px-10 sm:py-10"
+    style={`box-shadow: var(--shadow-elevated); --progress: ${today}`}
+  >
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="max-w-[620px]">
+        <div class="font-mono text-[10.5px] tracking-[0.2em] text-ink-3 uppercase">{copy.institution}</div>
+        <h3 class="mt-3 font-display text-[clamp(1.2rem,2.3vw,1.6rem)] leading-[1.25] font-semibold tracking-[-0.02em]">
+          {copy.degree}
+        </h3>
+      </div>
+      <span class="dm-edu__status">
+        <span class="dm-edu__status-dot"></span>
+        {copy.status}
+      </span>
+    </div>
+
+    <div class="dm-edu__track">
+      <div class="dm-edu__rail"></div>
+      <div class="dm-edu__fill"></div>
+      <div class="dm-edu__today" data-edu-today style={`--at: ${today}`}>
+        <span class="dm-edu__today-label">{copy.today}</span>
+        <span class="dm-edu__today-dot"></span>
+      </div>
+      <ol>
+        {educationMilestones.map((m, i) => {
+          const pos = at(monthIndex(m.date));
+          const text = copy.milestones[m.id];
+          return (
+            <li
+              class:list={[
+                "dm-edu__milestone",
+                i === 0 && "is-first",
+                i === educationMilestones.length - 1 && "is-last",
+              ]}
+              data-edu-milestone
+              data-at={pos}
+              data-reached={pos <= today ? "" : undefined}
+              style={`--at: ${pos}`}
+            >
+              <span class="dm-edu__dot"></span>
+              <span class="dm-edu__label">
+                <span class="font-mono text-[11px] tracking-[0.14em] text-accent uppercase">
+                  {formatYearMonth(m.date, locale, m.yearOnly)}
+                </span>
+                <span class="mt-1 block font-display text-[14.5px] font-semibold text-ink">{text.title}</span>
+                <span class="mt-0.5 block font-display text-[12.5px] leading-[1.45] text-ink-2">{text.detail}</span>
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initEducation } from "../scripts/education";
+  document.addEventListener("astro:page-load", initEducation);
+</script>
+
+<style>
+  .dm-edu__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: var(--accent-soft);
+    padding: 4px 11px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .dm-edu__status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: dm-edu-pulse 2.4s ease-in-out infinite;
+  }
+
+  /* Horizontal on desktop: --at drives `left`; vertical on mobile: --at drives `top`. */
+  .dm-edu__track {
+    position: relative;
+    margin-top: 64px;
+    height: 120px;
+  }
+  .dm-edu__rail,
+  .dm-edu__fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    border-radius: 2px;
+  }
+  .dm-edu__rail {
+    background: var(--line-2);
+  }
+  .dm-edu__fill {
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) 0.3s;
+  }
+  :global([data-reveal].is-visible) .dm-edu__fill {
+    transform: scaleX(var(--progress));
+  }
+
+  .dm-edu__milestone {
+    position: absolute;
+    top: 0;
+    left: calc(var(--at) * 100%);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 220px;
+  }
+  .dm-edu__milestone.is-first {
+    transform: none;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .dm-edu__milestone.is-last {
+    transform: translateX(-100%);
+    align-items: flex-end;
+    text-align: right;
+  }
+  .dm-edu__dot {
+    width: 12px;
+    height: 12px;
+    margin-top: -5px;
+    border-radius: 50%;
+    border: 2px solid var(--line-2);
+    background: var(--bg);
+    transition:
+      background 0.4s ease,
+      border-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+  .dm-edu__milestone[data-reached] .dm-edu__dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .dm-edu__label {
+    margin-top: 16px;
+  }
+
+  .dm-edu__today {
+    position: absolute;
+    top: 0;
+    left: calc(var(--at) * 100%);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease 1.6s;
+  }
+  :global([data-reveal].is-visible) .dm-edu__today {
+    opacity: 1;
+  }
+  .dm-edu__today-label {
+    position: absolute;
+    bottom: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .dm-edu__today-dot {
+    width: 9px;
+    height: 9px;
+    margin-top: -3.5px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+    animation: dm-edu-ring 2.4s ease-out infinite;
+  }
+
+  @keyframes dm-edu-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  @keyframes dm-edu-ring {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 12px transparent;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .dm-edu__track {
+      margin-top: 40px;
+      margin-bottom: 76px;
+      height: 300px;
+      margin-left: 58px;
+    }
+    .dm-edu__rail,
+    .dm-edu__fill {
+      right: auto;
+      bottom: 0;
+      width: 2px;
+      height: auto;
+    }
+    .dm-edu__fill {
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      transform-origin: center top;
+      transform: scaleY(0);
+    }
+    :global([data-reveal].is-visible) .dm-edu__fill {
+      transform: scaleY(var(--progress));
+    }
+    .dm-edu__milestone,
+    .dm-edu__milestone.is-first,
+    .dm-edu__milestone.is-last {
+      left: 0;
+      top: calc(var(--at) * 100%);
+      flex-direction: row;
+      align-items: flex-start;
+      text-align: left;
+      width: auto;
+      transform: translate(-5px, -6px);
+    }
+    .dm-edu__dot {
+      margin-top: 0;
+      flex: none;
+    }
+    .dm-edu__label {
+      margin: -4px 0 0 16px;
+    }
+    .dm-edu__today {
+      left: 0;
+      top: calc(var(--at) * 100%);
+      transform: translate(-3.5px, -4.5px);
+      flex-direction: row;
+    }
+    .dm-edu__today-dot {
+      margin-top: 0;
+    }
+    .dm-edu__today-label {
+      bottom: auto;
+      right: 18px;
+      top: -2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dm-edu__status-dot,
+    .dm-edu__today-dot {
+      animation: none;
+    }
+  }
+</style>

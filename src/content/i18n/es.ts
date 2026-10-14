@@ -158,6 +158,83 @@ export const es: UICopy = {
         "Fuera de la tecnología, disfruto de actividades que me alejan de una pantalla: explorar montañas, pasar tiempo al aire libre y jugar videojuegos. Intereses diferentes, pero un mismo principio: curiosidad, exploración y ganas de seguir aprendiendo.",
       ],
     },
+    education: {
+      kicker: "EDUCACIÓN",
+      headingLead: "Formación",
+      headingAccent: "universitaria.",
+      institution: "Universidad Evangélica de El Salvador",
+      degree: "Ingeniería en Desarrollo de Software y Ciencia de Datos",
+      status: "En curso",
+      today: "Hoy",
+      milestones: {
+        start: {
+          title: "Inicio de la carrera",
+          detail: "Ingeniería en Desarrollo de Software y Ciencia de Datos",
+        },
+        technician: {
+          title: "Técnico",
+          detail: "Técnico en Desarrollo de Software y Ciencia de Datos",
+        },
+        engineering: {
+          title: "Ingeniería",
+          detail: "Ingeniero en Desarrollo de Software y Ciencia de Datos",
+        },
+      },
+    },
+    certificates: {
+      kicker: "CERTIFICADOS",
+      headingLead: "Aprendizaje",
+      headingAccent: "continuo.",
+      intro:
+        "Cursos, especializaciones y certificaciones que han acompañado mi camino hacia los datos y el Machine Learning.",
+      hint: "Desplázate sobre la pila para recorrerla; haz clic en uno para verlo completo.",
+      total: "certificados",
+      previous: "Certificado anterior",
+      next: "Certificado siguiente",
+      stackLabel: "Pila de certificados",
+      categories: {
+        certification: "Certificación",
+        specialization: "Especialización",
+        course: "Curso",
+        diploma: "Diploma",
+      },
+      issuer: "Institución",
+      issued: "Fecha",
+      hours: "Duración",
+      verify: "Verificar",
+      viewPdf: "Ver PDF",
+      close: "Cerrar",
+      module: "Módulo {part} de {total}",
+      preparedFor: "Preparación para",
+      preparedBy: "Preparada con",
+      descriptions: {
+        "platzi-fundamentos-ingenieria-datos": "Pipelines de datos, procesos ETL/ELT y arquitecturas de almacenamiento.",
+        "platzi-docker-fundamentos": "Contenedores, imágenes, volúmenes y redes en Docker.",
+        "platzi-python-ciencia-datos": "NumPy y Pandas para limpiar, transformar y explorar datos.",
+        "platzi-regresion-lineal":
+          "Regresión lineal simple y múltiple con scikit-learn, interpretación de coeficientes y evaluación del modelo.",
+        "cisco-data-analytics-essentials":
+          "El proceso de análisis de datos y cómo genera valor; tipos, formatos y fuentes de datos; preparación y análisis estadístico básico; laboratorios prácticos con Excel, SQL y Tableau, y presentación de un portafolio de proyecto.",
+        "uees-fundamentos-analisis-datos":
+          "El mismo programa de Data Analytics Essentials, otorgado por la universidad a través de Cisco Networking Academy.",
+        "platzi-power-bi-avanzado": "Modelado de datos, DAX avanzado y dashboards interactivos.",
+        "platzi-people-analytics":
+          "Métricas de recursos humanos —rotación, ausentismo, desempeño— y uso de datos para decisiones sobre personas.",
+        "udemy-docker": "Imágenes, contenedores, Dockerfiles, Docker Compose y despliegue de aplicaciones.",
+        "udemy-claude": "Uso práctico de Claude como asistente de IA generativa y técnicas de prompting.",
+        "udemy-git-github":
+          "Control de versiones con Git: ramas, merges, resolución de conflictos y colaboración en GitHub.",
+        "fepade-python-mod-4": "Conceptos avanzados de programación en Python.",
+        "fepade-python-mod-3": "Librerías de Python para manipular y analizar datos.",
+        "fepade-python-mod-2": "Clases, herencia, encapsulamiento y polimorfismo en Python.",
+        "fepade-python-mod-1": "Sintaxis, tipos de datos, estructuras de control y funciones en Python.",
+        "udemy-power-bi": "Power Query, modelado de datos, DAX y reportes de inteligencia de negocios.",
+        "certiport-it-specialist-databases":
+          "Certificación oficial por examen: diseño de bases de datos relacionales, SQL y manipulación de datos.",
+        "academia-europea-bases-de-datos": "Curso de preparación de 36 horas para la certificación IT Specialist – Databases.",
+        "a2-sql": "Consultas, joins, agregaciones y subconsultas en SQL.",
+      },
+    },
   },
   experience: {
     kicker: "TRAYECTORIA PROFESIONAL",

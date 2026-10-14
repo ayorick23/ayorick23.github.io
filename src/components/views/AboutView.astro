@@ -2,6 +2,8 @@
 import { Image } from "astro:assets";
 import profilePhoto from "../../assets/images/dereck-mendez.png";
 import Button from "../Button.astro";
+import Education from "../Education.astro";
+import Certificates from "../Certificates.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 import { getCvHref } from "../../lib/cv";
 
@@ -64,7 +66,10 @@ const cvHref = getCvHref(locale);
     </div>
   </div>
 
-  <div class="mt-[70px] max-w-[720px] border-t border-line pt-[46px]">
+  <Education />
+  <Certificates />
+
+  <div class="mt-[110px] max-w-[720px] border-t border-line pt-[46px]">
     <h2 class="mb-5 font-display text-[clamp(1.4rem,2.6vw,1.9rem)] leading-[1.2] font-light tracking-[-0.02em]">
       {ui.about.full.beyondHeading}
     </h2>

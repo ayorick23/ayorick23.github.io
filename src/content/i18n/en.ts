@@ -153,6 +153,82 @@ export const en: UICopy = {
         "Outside of technology, I enjoy challenges that take me away from a screen — exploring mountains, spending time outdoors and playing video games. Different interests, same principle: curiosity, exploration and the willingness to keep learning.",
       ],
     },
+    education: {
+      kicker: "EDUCATION",
+      headingLead: "University",
+      headingAccent: "education.",
+      institution: "Universidad Evangélica de El Salvador",
+      degree: "Engineering in Software Development and Data Science",
+      status: "In progress",
+      today: "Today",
+      milestones: {
+        start: {
+          title: "Program start",
+          detail: "Engineering in Software Development and Data Science",
+        },
+        technician: {
+          title: "Technician degree",
+          detail: "Technician in Software Development and Data Science",
+        },
+        engineering: {
+          title: "Engineering degree",
+          detail: "Engineer in Software Development and Data Science",
+        },
+      },
+    },
+    certificates: {
+      kicker: "CERTIFICATES",
+      headingLead: "Continuous",
+      headingAccent: "learning.",
+      intro:
+        "Courses, specializations and certifications that have shaped my path into data and Machine Learning.",
+      hint: "Scroll over the stack to browse it; click one to see it in full.",
+      total: "certificates",
+      previous: "Previous certificate",
+      next: "Next certificate",
+      stackLabel: "Certificate stack",
+      categories: {
+        certification: "Certification",
+        specialization: "Specialization",
+        course: "Course",
+        diploma: "Diploma",
+      },
+      issuer: "Issued by",
+      issued: "Date",
+      hours: "Duration",
+      verify: "Verify",
+      viewPdf: "View PDF",
+      close: "Close",
+      module: "Module {part} of {total}",
+      preparedFor: "Preparation for",
+      preparedBy: "Prepared with",
+      descriptions: {
+        "platzi-fundamentos-ingenieria-datos": "Data pipelines, ETL/ELT processes and storage architectures.",
+        "platzi-docker-fundamentos": "Containers, images, volumes and networking in Docker.",
+        "platzi-python-ciencia-datos": "NumPy and Pandas to clean, transform and explore data.",
+        "platzi-regresion-lineal":
+          "Simple and multiple linear regression with scikit-learn, coefficient interpretation and model evaluation.",
+        "cisco-data-analytics-essentials":
+          "How the data analytics process creates value; data types, formats and sources; data preparation and basic statistical analysis; hands-on labs with Excel, SQL and Tableau, and a project portfolio.",
+        "uees-fundamentos-analisis-datos":
+          "The same Data Analytics Essentials program, awarded by the university through Cisco Networking Academy.",
+        "platzi-power-bi-avanzado": "Data modeling, advanced DAX and interactive dashboards.",
+        "platzi-people-analytics":
+          "HR metrics —turnover, absenteeism, performance— and using data to make people decisions.",
+        "udemy-docker": "Images, containers, Dockerfiles, Docker Compose and application deployment.",
+        "udemy-claude": "Practical use of Claude as a generative AI assistant and prompting techniques.",
+        "udemy-git-github": "Version control with Git: branches, merges, conflict resolution and collaboration on GitHub.",
+        "fepade-python-mod-4": "Advanced Python programming concepts.",
+        "fepade-python-mod-3": "Python libraries to manipulate and analyze data.",
+        "fepade-python-mod-2": "Classes, inheritance, encapsulation and polymorphism in Python.",
+        "fepade-python-mod-1": "Syntax, data types, control flow and functions in Python.",
+        "udemy-power-bi": "Power Query, data modeling, DAX and business intelligence reports.",
+        "certiport-it-specialist-databases":
+          "Official exam-based certification: relational database design, SQL and data manipulation.",
+        "academia-europea-bases-de-datos": "36-hour preparation course for the IT Specialist – Databases certification.",
+        "a2-sql": "Queries, joins, aggregations and subqueries in SQL.",
+      },
+    },
   },
   experience: {
     kicker: "PROFESSIONAL JOURNEY",

@@ -1,6 +1,8 @@
 import type { ConstellationNodeId } from "../../data/constellation";
 import type { ToolGroupKey } from "../../data/tools";
 import type { Discipline } from "../../data/disciplines";
+import type { CertificateCategory } from "../../data/certificates";
+import type { EducationMilestoneId } from "../../data/education";
 
 export interface TimelineEntry {
   period: string;
@@ -108,6 +110,41 @@ export interface UICopy {
       behindDataParagraphs: string[];
       beyondHeading: string;
       beyondParagraphs: string[];
+    };
+    education: {
+      kicker: string;
+      headingLead: string;
+      headingAccent: string;
+      institution: string;
+      degree: string;
+      status: string;
+      today: string;
+      milestones: Record<EducationMilestoneId, { title: string; detail: string }>;
+    };
+    certificates: {
+      kicker: string;
+      headingLead: string;
+      headingAccent: string;
+      intro: string;
+      hint: string;
+      total: string;
+      previous: string;
+      next: string;
+      /** Accessible name for the scrollable certificate stack. */
+      stackLabel: string;
+      categories: Record<CertificateCategory, string>;
+      issuer: string;
+      issued: string;
+      hours: string;
+      verify: string;
+      viewPdf: string;
+      close: string;
+      /** "{part}" and "{total}" are replaced with the module numbers. */
+      module: string;
+      preparedFor: string;
+      preparedBy: string;
+      /** Keyed by certificate id (src/data/certificates.ts). */
+      descriptions: Record<string, string>;
     };
   };
   experience: {
