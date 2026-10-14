@@ -1,6 +1,7 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "zod";
+import { DISCIPLINES } from "./data/disciplines";
 
 const projectSchema = z.object({
   title: z.string(),
@@ -8,6 +9,7 @@ const projectSchema = z.object({
   shortDescription: z.string(),
   description: z.string(),
   technologies: z.array(z.string()),
+  disciplines: z.array(z.enum(DISCIPLINES)).default([]),
   githubUrl: z.url().optional(),
   demoUrl: z.url().optional(),
   metrics: z

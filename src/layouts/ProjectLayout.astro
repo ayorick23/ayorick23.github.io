@@ -47,12 +47,12 @@ const projectsHref = localizePath("/projects", locale);
             project.data.technologies.map((tech) => {
               const icon = techIcon(tech);
               return (
-                <span class="inline-flex items-center gap-[7px] rounded-[7px] border border-line bg-veil px-[10px] py-[7px] font-mono text-[11px] text-ink-2">
+                <span class="inline-flex items-center gap-[8px] rounded-[8px] border border-line bg-veil px-[11px] py-[8px] font-mono text-[13px] text-ink-2">
                   {icon &&
                     (icon.raster ? (
-                      <span class="h-[14px] w-[14px] shrink-0 bg-current text-ink" style={maskStyle(icon.icon)} />
+                      <span class="h-[16px] w-[16px] shrink-0 bg-current text-ink" style={maskStyle(icon.icon)} />
                     ) : (
-                      <Icon name={icon.icon} class="h-[14px] w-[14px] shrink-0 text-ink" />
+                      <Icon name={icon.icon} class="h-[16px] w-[16px] shrink-0 text-ink" />
                     ))}
                   {tech}
                 </span>
@@ -81,11 +81,15 @@ const projectsHref = localizePath("/projects", locale);
 
     {
       project.data.metrics.length > 0 && (
-        <div data-reveal class="mb-[52px] grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-px overflow-hidden rounded-2xl border border-line bg-line">
-          {project.data.metrics.map((metric) => (
-            <div class="bg-[image:var(--gradient-card)] px-5 py-6 backdrop-blur-[16px]">
-              <div class="font-display text-[27px] leading-none font-bold tracking-[-0.02em] text-ink">{metric.value}</div>
-              <div class="mt-[9px] font-mono text-[11px] text-ink-3">{metric.label}</div>
+        <div data-metrics class="mb-[52px] grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-3">
+          {project.data.metrics.map((metric, i) => (
+            <div data-metric class="dm-metric" style={`--i:${i}`}>
+              <span class="dm-metric__glow" aria-hidden="true" />
+              <span class="relative font-mono text-[10.5px] tracking-[0.14em] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
+              <div class="relative mt-auto">
+                <div data-metric-value class="dm-metric__value">{metric.value}</div>
+                <div class="dm-metric__label">{metric.label}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -158,6 +162,11 @@ const projectsHref = localizePath("/projects", locale);
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { initMetricCards } from "../scripts/metrics";
+  document.addEventListener("astro:page-load", initMetricCards);
+</script>
 
 <style>
   .project-cover {

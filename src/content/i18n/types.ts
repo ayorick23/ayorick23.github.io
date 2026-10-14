@@ -1,15 +1,19 @@
 import type { ConstellationNodeId } from "../../data/constellation";
 import type { ToolGroupKey } from "../../data/tools";
+import type { Discipline } from "../../data/disciplines";
 
 export interface TimelineEntry {
   period: string;
   role: string;
   org: string;
+  /** ~3-line condensed version of `description`, shown in the home page timeline. */
+  summary: string;
   description: string;
   tags: string[];
 }
 
 export interface CapabilityItem {
+  id: Discipline;
   title: string;
   description: string;
 }
@@ -128,6 +132,25 @@ export interface UICopy {
     backLabel: string;
     otherLabel: string;
     technologiesLabel: string;
+    filter: {
+      label: string;
+      discipline: string;
+      status: string;
+      technologies: string;
+      allDisciplines: string;
+      allStatuses: string;
+      clear: string;
+      /** `{n}` is replaced with the number of visible projects. */
+      resultOne: string;
+      resultMany: string;
+      empty: string;
+      techPlaceholder: string;
+      /** `{n}` is replaced with the number of selected technologies. */
+      techSelected: string;
+      techOther: string;
+      techClear: string;
+      techRemove: string;
+    };
     lightbox: {
       close: string;
       previous: string;

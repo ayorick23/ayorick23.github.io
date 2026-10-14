@@ -164,6 +164,8 @@ export const es: UICopy = {
         period: "JUN 2026 - ACTUALIDAD",
         role: "Consultor de Ingeniería",
         org: "ACF Technologies LATAM",
+        summary:
+          "Trabajo en la intersección entre analítica, software y soluciones basadas en datos, conectando problemas reales de negocio con soluciones técnicas mientras me especializo en Machine Learning y MLOps.",
         description:
           "Actualmente trabajo en la intersección entre analítica, software y soluciones basadas en datos, mientras continúo desarrollando mi especialización en Machine Learning y MLOps. Mi posición actual me permite comprender problemas reales de negocio y conectarlos con soluciones técnicas, al mismo tiempo que sigo ampliando mi experiencia en flujos de datos, analítica e ingeniería.",
         tags: [],
@@ -172,6 +174,8 @@ export const es: UICopy = {
         period: "JUL 2023 - JUN 2026",
         role: "Coordinador de Formación y Desarrollo",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Combiné la gestión de personas con People Analytics y BI: automaticé reportes con Python y construí dashboards en Power BI y Looker Studio con datos de Guatemala, Costa Rica y El Salvador.",
         description:
           "Consolidé mi transición hacia una visión analítica del negocio, combinando la gestión de personas con People Analytics, automatización y Business Intelligence. Desarrollé automatizaciones de reportes con Python y dashboards en Power BI y Looker Studio para transformar datos en insights y KPIs que apoyaran la mejora de procesos y la toma de decisiones. La experiencia trabajando con información y necesidades de negocio de Guatemala, Costa Rica y El Salvador amplió mi perspectiva regional y fortaleció mi capacidad para conectar datos de personas con objetivos reales del negocio.",
         tags: [],
@@ -180,6 +184,8 @@ export const es: UICopy = {
         period: "AGO 2022 - JUL 2023",
         role: "Capacitador de Operaciones e Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Capacité al personal de nuevo ingreso del área de inventarios y comencé a construir mis propios indicadores y dashboards en Excel, además de herramientas para estandarizar procesos.",
         description:
           "Profundicé mi comprensión de la operación y de Recursos Humanos mientras capacitaba al personal de nuevo ingreso del área de inventarios. Comencé a desarrollar mis propios indicadores y dashboards en Excel para dar seguimiento a la gestión, además de crear formatos y herramientas para estandarizar procesos. El contacto constante con reportes, inventarios y la operación de las sucursales fortaleció mi capacidad para interpretar información y conectar los datos con las necesidades del negocio.",
         tags: [],
@@ -188,6 +194,8 @@ export const es: UICopy = {
         period: "NOV 2021 - JUL 2022",
         role: "Encargado de Control de Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Coordiné al equipo de control de inventarios y supervisé conteos, inconsistencias y ajustes, tomando decisiones basadas en datos para mantener la confiabilidad del inventario.",
         description:
           "Evolucioné hacia una posición con mayor responsabilidad sobre los procesos de control de inventarios y la coordinación del equipo encargado de ejecutarlos. Además de continuar trabajando con información operativa y análisis en Excel, supervisaba conteos, inconsistencias, ajustes y seguimiento de resultados, tomando decisiones basadas en datos para mantener la confiabilidad del inventario. Esta etapa fortaleció tanto mis capacidades analíticas como mi experiencia en coordinación y gestión de personas.",
         tags: [],
@@ -196,6 +204,8 @@ export const es: UICopy = {
         period: "FEB 2021 - OCT 2021",
         role: "Analista de Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Mis primeros pasos en el análisis de datos: conteos cíclicos en Excel, detección de faltantes y sobrantes, e investigación de las causas detrás de cada inconsistencia.",
         description:
           "Di mis primeros pasos en el análisis de datos desde el control de inventarios, utilizando Excel para realizar conteos cíclicos, identificar faltantes y sobrantes, analizar inconsistencias e investigar sus posibles causas. El seguimiento sistemático de estos datos me permitió desarrollar una visión analítica de la operación y comprender cómo la información puede utilizarse para detectar problemas, respaldar decisiones y mejorar los procesos del negocio.",
         tags: [],
@@ -204,6 +214,8 @@ export const es: UICopy = {
         period: "OCT 2019 - FEB 2021",
         role: "Vendedor de Pinturas",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Empecé desde la operación y el contacto directo con clientes, entendiendo de primera mano cómo funciona una sucursal: la base de todo lo que vino después.",
         description:
           "Mi experiencia profesional comenzó desde la operación y el contacto directo con el negocio, desarrollando conocimiento sobre productos, clientes y dinámica comercial dentro de una empresa de ferretería. Esta etapa me permitió comprender de primera mano cómo funcionan las operaciones de una sucursal y sentó las bases para posteriormente involucrarme en procesos de control, análisis y gestión de inventarios.",
         tags: [],
@@ -216,34 +228,40 @@ export const es: UICopy = {
     headingAccent: "puedo hacer.",
     items: [
       {
+        id: "data-analysis",
         title: "Análisis de datos",
         description:
           "Convertir preguntas de negocio en análisis estructurados utilizando datos para entender qué está ocurriendo y por qué.",
       },
       {
+        id: "data-visualization",
         title: "Visualización de datos",
         description:
           "Comunicar resultados analíticos mediante dashboards y visualizaciones claras orientadas a la toma de decisiones.",
       },
       {
+        id: "machine-learning",
         title: "Machine Learning",
         description:
           "Construir y evaluar modelos predictivos utilizando buenos baselines, validaciones apropiadas y métricas alineadas con el problema.",
       },
       {
+        id: "forecasting",
         title: "Forecasting",
         description:
           "Modelar patrones temporales y evaluar pronósticos mediante estrategias de validación que representen cómo se utilizarán las predicciones en la práctica.",
       },
       {
+        id: "mlops",
         title: "MLOps",
         description:
           "Construir flujos reproducibles de Machine Learning alrededor del seguimiento de experimentos, versionado, testing, empaquetado y reentrenamiento automatizado.",
       },
       {
-        title: "Ingeniería de software para ML",
+        id: "data-engineering",
+        title: "Ingeniería de datos",
         description:
-          "Desarrollar código Python, APIs y pipelines estructurados, testeados y mantenibles en lugar de scripts aislados.",
+          "Diseñar pipelines de datos confiables —ingesta, transformaciones por capas y orquestación— para que la analítica y los modelos trabajen sobre datos limpios y reproducibles.",
       },
     ],
   },
@@ -264,6 +282,23 @@ export const es: UICopy = {
     backLabel: "Todos los proyectos",
     otherLabel: "Otros proyectos",
     technologiesLabel: "Tecnologías utilizadas",
+    filter: {
+      label: "Filtrar proyectos",
+      discipline: "Disciplina",
+      status: "Estado",
+      technologies: "Tecnologías",
+      allDisciplines: "Todas",
+      allStatuses: "Todos",
+      clear: "Limpiar filtros",
+      resultOne: "{n} proyecto",
+      resultMany: "{n} proyectos",
+      empty: "Todavía no hay ningún proyecto con esta combinación de filtros.",
+      techPlaceholder: "Cualquier tecnología",
+      techSelected: "{n} seleccionadas",
+      techOther: "Otras",
+      techClear: "Quitar tecnologías",
+      techRemove: "Quitar filtro",
+    },
     lightbox: {
       close: "Cerrar",
       previous: "Imagen anterior",

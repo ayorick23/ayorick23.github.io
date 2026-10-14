@@ -1,0 +1,320 @@
+---
+import type { Discipline } from "../data/disciplines";
+import { createIso, type P } from "../lib/iso";
+
+interface Props {
+  kind: Discipline;
+}
+
+const { kind } = Astro.props;
+const iso = createIso(210, 196);
+const floor = () => iso.grid(132, 22, `ci-fade-${kind}`);
+const pad = (x: number, y: number, w: number, d: number, h = 5, cls = "ci-pad") => iso.box(x, y, 0, w, d, h, cls);
+
+function dataAnalysis() {
+  const bars = [
+    { x: -26, h: 34 },
+    { x: -8, h: 58 },
+    { x: 10, h: 46 },
+    { x: 28, h: 84, accent: true },
+  ];
+  const table = [
+    `<rect class="ci-ui" x="5" y="6" width="46" height="9" rx="1.5"/>`,
+    ...[0, 1, 2, 3, 4].map((r) => `<line class="ci-ui-line" x1="5" y1="${22 + r * 8}" x2="51" y2="${22 + r * 8}"/>`),
+    `<line class="ci-ui-line" x1="20" y1="15" x2="20" y2="56"/>`,
+    `<line class="ci-ui-line" x1="36" y1="15" x2="36" y2="56"/>`,
+    `<rect class="ci-ui-accent" x="36" y="30" width="15" height="8"/>`,
+  ].join("");
+  const scatter = [
+    [8, 30],
+    [14, 24],
+    [20, 27],
+    [26, 18],
+    [32, 20],
+    [38, 12],
+    [44, 10],
+  ]
+    .map(([u, v]) => `<circle class="ci-ui-dot" cx="${u}" cy="${v}" r="1.8"/>`)
+    .join("");
+  const lens = [
+    `<circle class="ci-lens-glass" cx="0" cy="0" r="21"/>`,
+    `<circle class="ci-lens-ring" cx="0" cy="0" r="21"/>`,
+    `<circle class="ci-lens-inner" cx="0" cy="0" r="16"/>`,
+    `<path class="ci-lens-shine" d="M -11 -8 A 13 13 0 0 1 -2 -14"/>`,
+    `<line class="ci-lens-handle" x1="15" y1="15" x2="34" y2="34"/>`,
+  ].join("");
+  return [
+    floor(),
+    iso.pipe([[-67, -78, 0], [-67, 4, 0], [-34, 4, 0]]),
+    iso.pipe([[-50, 64, 0], [-12, 64, 0], [-12, 40, 0]]),
+    iso.pipe([[40, 8, 0], [72, 8, 0], [72, 34, 0]], "ci-pipe--accent"),
+    iso.box(-96, -86, 0, 58, 4, 64),
+    iso.onPlane("left", [-96, -82, 64], table),
+    pad(-34, -34, 74, 74, 6),
+    ...bars.map((b) => iso.box(b.x, -2, 6, 14, 14, b.h, b.accent ? "ci-accent" : "")),
+    iso.path(bars.map((b) => [b.x + 7, 5, b.h + 18] as P), "ci-trend"),
+    ...bars.map((b) => iso.node(b.x + 7, 5, b.h + 18, 2.8, b.accent ? "ci-node ci-node--accent" : "ci-node")),
+    pad(-96, 46, 50, 40, 3),
+    iso.onPlane("top", [-96, 46, 3], `${scatter}<line class="ci-ui-accent-line" x1="6" y1="32" x2="46" y2="8"/>`),
+    iso.box(58, 34, 0, 30, 30, 30),
+    iso.icon("sigma", "left", [64, 64, 24], 18, "ci-icon--muted"),
+    iso.icon("chart-pie", "right", [88, 58, 24], 18, "ci-icon--muted"),
+    `<g class="ci-float">`,
+    iso.onPlane("left", [24, 40, 118], lens, 1, "ci-lens"),
+    `</g>`,
+  ].join("");
+}
+
+function dataVisualization() {
+  const W = 112;
+  const H = 76;
+  const monitor = [
+    `<line class="ci-ui-line" x1="0" y1="9" x2="${W}" y2="9"/>`,
+    ...[0, 1, 2].map((i) => `<circle class="ci-ui-dot" cx="${6 + i * 5}" cy="4.5" r="1.5"/>`),
+    `<rect class="ci-ui" x="6" y="15" width="62" height="32" rx="2"/>`,
+    `<polyline class="ci-ui-accent-line" points="10,40 20,33 29,36 39,24 48,28 58,19 64,21"/>`,
+    `<rect class="ci-ui" x="73" y="15" width="33" height="32" rx="2"/>`,
+    ...[0, 1, 2, 3].map((i) => {
+      const h = [12, 20, 15, 25][i];
+      return `<rect class="${i === 3 ? "ci-ui-accent" : "ci-ui-fill"}" x="${78 + i * 7}" y="${43 - h}" width="4" height="${h}"/>`;
+    }),
+    ...[0, 1, 2].map(
+      (i) =>
+        `<rect class="ci-ui" x="${6 + i * 34}" y="52" width="30" height="18" rx="2"/><line class="${i === 0 ? "ci-ui-accent-line" : "ci-ui-line"}" x1="${11 + i * 34}" y1="58" x2="${25 + i * 34}" y2="58"/><line class="ci-ui-line" x1="${11 + i * 34}" y1="64" x2="${19 + i * 34}" y2="64"/>`,
+    ),
+  ].join("");
+  const side = [
+    `<circle class="ci-ui-ring" cx="22" cy="28" r="13"/>`,
+    `<circle class="ci-ui-donut" cx="22" cy="28" r="13" stroke-dasharray="52 82" transform="rotate(-90 22 28)"/>`,
+    ...[0, 1, 2].map(
+      (i) =>
+        `<rect class="${i === 0 ? "ci-ui-accent" : "ci-ui-fill"}" x="42" y="${19 + i * 8}" width="4" height="4"/><line class="ci-ui-line" x1="50" y1="${21 + i * 8}" x2="${62 - i * 3}" y2="${21 + i * 8}"/>`,
+    ),
+    `<line class="ci-ui-line" x1="8" y1="52" x2="62" y2="52"/>`,
+    `<line class="ci-ui-line" x1="8" y1="58" x2="44" y2="58"/>`,
+  ].join("");
+  const hbars = [52, 38, 70, 30]
+    .map(
+      (w, i) =>
+        `<rect class="${i === 2 ? "ci-ui-accent" : "ci-ui-fill"}" x="8" y="${8 + i * 9}" width="${w}" height="5" rx="1"/>`,
+    )
+    .join("");
+  return [
+    floor(),
+    iso.pipe([[-24, -64, 0], [-24, 30, 0]], "", false),
+    iso.pipe([[56, -22, 0], [30, -22, 0], [30, 30, 0]]),
+    iso.box(-86, -78, 0, 124, 14, 6),
+    iso.box(-80, -74, 6, W, 4, H),
+    iso.onPlane("left", [-80, -70, 6 + H], monitor),
+    iso.box(56, -66, 0, 4, 70, 70),
+    iso.onPlane("right", [60, 4, 70], side),
+    pad(-76, 30, 96, 48, 4),
+    iso.onPlane("top", [-76, 30, 4], hbars),
+    iso.box(52, 40, 0, 28, 28, 28),
+    iso.icon("chart-column", "left", [57, 68, 23], 18, "ci-icon--muted"),
+    iso.icon("chart-line", "right", [80, 63, 23], 18, "ci-icon--accent"),
+  ].join("");
+}
+
+function machineLearning() {
+  const pins = (n: number, len: number) =>
+    Array.from({ length: n }, (_, i) => `<line class="ci-ui-line" x1="${8 + i * 8}" y1="1" x2="${8 + i * 8}" y2="${len}"/>`).join("");
+  const chipTop = [
+    `<rect class="ci-ui" x="8" y="8" width="44" height="44" rx="3"/>`,
+    `<rect class="ci-ui-glow" x="13" y="13" width="34" height="34" rx="2"/>`,
+    `<text class="ci-ui-text" x="30" y="37" text-anchor="middle">AI</text>`,
+  ].join("");
+  const layers = [
+    [16, 34, 52, 70],
+    [25, 43, 61],
+    [43],
+  ];
+  const lx = [14, 40, 66];
+  const net: string[] = [];
+  for (let l = 0; l < layers.length - 1; l++) {
+    layers[l].forEach((a) =>
+      layers[l + 1].forEach((b) =>
+        net.push(`<line class="${l === 1 ? "ci-ui-accent-line" : "ci-ui-line"}" x1="${lx[l]}" y1="${a}" x2="${lx[l + 1]}" y2="${b}"/>`),
+      ),
+    );
+  }
+  layers.forEach((layer, l) =>
+    layer.forEach((v) => net.push(`<circle class="${l === 2 ? "ci-ui-node ci-ui-node--accent" : "ci-ui-node"}" cx="${lx[l]}" cy="${v}" r="${l === 2 ? 4.5 : 3.2}"/>`)),
+  );
+  return [
+    floor(),
+    iso.pipe([[-55, -52, 0], [-44, -52, 0], [-44, -12, 0], [-30, -12, 0]], "ci-pipe--accent"),
+    iso.pipe([[30, -14, 0], [64, -14, 0]], "ci-pipe--accent"),
+    iso.pipe([[-8, 30, 0], [-8, 56, 0], [-50, 56, 0]]),
+    iso.pipe([[14, 30, 0], [14, 70, 0], [40, 70, 0]]),
+    iso.box(-96, -72, 0, 40, 40, 16),
+    iso.disc(-76, -52, 16, 15, "ci-glow"),
+    `<g class="ci-float">`,
+    iso.icon("brain", "left", [-98, -52, 86], 44, "ci-icon--accent ci-icon--bold"),
+    `</g>`,
+    iso.box(-30, -30, 0, 60, 60, 9, "ci-chip"),
+    iso.onPlane("left", [-30, 30, 9], pins(6, 6)),
+    iso.onPlane("right", [30, 30, 9], pins(6, 6)),
+    iso.onPlane("top", [-30, -30, 9], chipTop),
+    iso.box(64, -82, 0, 4, 84, 86),
+    iso.onPlane("right", [68, 2, 86], net.join("")),
+    iso.box(-80, 42, 0, 28, 28, 28),
+    iso.icon("bot", "left", [-75, 70, 23], 18, "ci-icon--muted"),
+    iso.icon("sparkles", "right", [-52, 65, 23], 18, "ci-icon--accent"),
+    iso.box(40, 58, 0, 26, 26, 14),
+    iso.icon("cpu", "top", [46, 64, 14], 14, "ci-icon--muted"),
+  ].join("");
+}
+
+function forecasting() {
+  const history: P[] = [
+    [-78, 0, 30],
+    [-64, 0, 44],
+    [-50, 0, 36],
+    [-36, 0, 58],
+    [-22, 0, 50],
+    [-8, 0, 72],
+    [6, 0, 64],
+  ];
+  const forecast: P[] = [
+    [6, 0, 64],
+    [24, 0, 82],
+    [42, 0, 78],
+    [60, 0, 98],
+    [78, 0, 94],
+  ];
+  const band: P[] = [
+    [6, 0, 64],
+    ...forecast.slice(1).map(([x, , z], i) => [x, 0, z + 8 + i * 6] as P),
+    ...forecast
+      .slice(1)
+      .reverse()
+      .map(([x, , z], i, arr) => [x, 0, z - 8 - (arr.length - 1 - i) * 6] as P),
+  ];
+  const ticks = [-70, -48, -26, -4, 18, 40, 62].map((x, i) => iso.box(x, 34, 4, 12, 12, i >= 4 ? 4 : 8, i >= 4 ? "ci-ghost" : ""));
+  return [
+    floor(),
+    iso.pipe([[-56, 60, 0], [-56, 74, 0], [-74, 74, 0]]),
+    iso.pipe([[86, 20, 0], [112, 20, 0], [112, 52, 0]], "ci-pipe--accent"),
+    pad(-86, -50, 172, 110, 4),
+    iso.poly(
+      [
+        [-80, 0, 4],
+        [80, 0, 4],
+        [80, 0, 128],
+        [-80, 0, 128],
+      ],
+      "ci-pane",
+    ),
+    iso.line([-80, 0, 4], [-80, 0, 128], "ci-grid ci-grid--strong"),
+    iso.line([6, 0, 4], [6, 0, 124], "ci-now"),
+    iso.poly(band, "ci-band"),
+    iso.path(history, "ci-trend"),
+    iso.path(forecast, "ci-trend ci-trend--forecast"),
+    ...history.map((p) => iso.node(...p, 2.4, "ci-node")),
+    iso.node(...forecast[forecast.length - 1], 3.6, "ci-node ci-node--accent ci-pulse"),
+    ...ticks,
+    iso.box(-102, 60, 0, 28, 28, 28),
+    iso.icon("calendar", "left", [-97, 88, 23], 18, "ci-icon--muted"),
+    iso.icon("clock", "right", [-74, 83, 23], 18, "ci-icon--muted"),
+    iso.box(100, 52, 0, 26, 26, 34),
+    iso.icon("trending-up", "left", [104, 78, 28], 18, "ci-icon--accent"),
+    iso.icon("gauge", "right", [126, 72, 28], 16, "ci-icon--muted"),
+  ].join("");
+}
+
+function mlops() {
+  const drift = [
+    `<line class="ci-ui-line" x1="0" y1="9" x2="64" y2="9"/>`,
+    ...[0, 1, 2].map((i) => `<circle class="ci-ui-dot" cx="${6 + i * 5}" cy="4.5" r="1.5"/>`),
+    `<line class="ci-ui-warn" x1="6" y1="22" x2="58" y2="22"/>`,
+    `<polyline class="ci-ui-accent-line" points="6,40 14,36 22,38 30,33 38,35 46,27 52,24 58,18"/>`,
+    `<line class="ci-ui-line" x1="6" y1="50" x2="40" y2="50"/>`,
+    `<line class="ci-ui-line" x1="6" y1="56" x2="28" y2="56"/>`,
+  ].join("");
+  return [
+    floor(),
+    iso.line([-6, -84, 46], [-6, -84, 0], "ci-pipe ci-pipe--drop"),
+    iso.pipe([[-6, -84, 0], [-6, -14, 0]], "ci-pipe--accent"),
+    iso.pipe([[-74, 6, 0], [-22, 6, 0]], "ci-pipe--accent"),
+    iso.pipe([[22, 6, 0], [62, 6, 0]], "ci-pipe--accent"),
+    iso.pipe([[64, 30, 0], [64, 66, 0], [46, 66, 0]], "ci-pipe--accent"),
+    iso.pipe([[14, 66, 0], [0, 66, 0], [0, 26, 0]], "ci-pipe--accent"),
+    `<g class="ci-float">`,
+    iso.cloud([-6, -84, 50], 74, 14),
+    `</g>`,
+    iso.rack(-104, -50, 30, 26, 4, 12, "", 2),
+    iso.rack(-104, -16, 30, 26, 3, 12, "", 0),
+    iso.box(-22, -14, 0, 44, 40, 38, "ci-accent"),
+    iso.icon("brain", "left", [-12, 26, 32], 24, "ci-icon--on-accent"),
+    iso.icon("git-branch", "right", [22, 18, 31], 20, "ci-icon--on-accent"),
+    iso.box(62, -40, 0, 4, 70, 64),
+    iso.onPlane("right", [66, 30, 64], drift),
+    iso.cylinder(30, 66, 0, 16, 8),
+    iso.icon("refresh-cw", "top", [22, 58, 8], 16, "ci-icon--accent"),
+  ].join("");
+}
+
+function dataEngineering() {
+  const assets = [
+    [0, 0],
+    [12, 0],
+    [24, 0],
+    [0, 12],
+    [12, 12],
+    [0, 24],
+  ].map(([dx, dy]) => iso.box(10 + dx, -122 + dy, 0, 9, 9, 9));
+  const slabs = [0, 18, 36];
+  return [
+    floor(),
+    iso.line([-124, -56, 44], [-124, -56, 0], "ci-pipe ci-pipe--drop"),
+    iso.pipe([[-124, -56, 0], [-46, -56, 0], [-46, -26, 0]]),
+    iso.pipe([[22, -88, 0], [22, -44, 0], [-10, -44, 0]]),
+    iso.pipe([[-82, 34, 0], [-62, 34, 0], [-62, 0, 0], [-50, 0, 0]]),
+    iso.pipe([[10, -6, 0], [44, -6, 0]], "ci-pipe--accent"),
+    iso.pipe([[60, 26, 0], [60, 46, 0], [-20, 46, 0], [-20, 70, 0]], "ci-pipe--accent"),
+    iso.pipe([[60, 46, 0], [92, 46, 0], [92, 62, 0]], "ci-pipe--accent"),
+    iso.pipe([[34, 46, 0], [34, 72, 0]], "ci-pipe--accent"),
+    ...assets,
+    `<g class="ci-float">`,
+    iso.cloud([-124, -56, 48], 62, 14),
+    `</g>`,
+    iso.rack(-112, 20, 28, 26, 4, 12, "", 1),
+    iso.database(-20, -4, 30, 3, 18, 5),
+    ...slabs.map((z, i) => iso.box(44, -36, z, 56, 62, 12, i === 2 ? "ci-accent" : i === 1 ? "ci-mid" : "")),
+    iso.box(-34, 70, 0, 28, 28, 28),
+    iso.icon("chart-line", "left", [-29, 98, 23], 18, "ci-icon--muted"),
+    iso.box(22, 72, 0, 26, 26, 26),
+    iso.icon("table", "left", [26, 98, 21], 18, "ci-icon--muted"),
+    iso.box(80, 62, 0, 26, 26, 26),
+    iso.icon("brain", "left", [84, 88, 21], 18, "ci-icon--accent"),
+  ].join("");
+}
+
+const draw: Record<Discipline, () => string> = {
+  "data-analysis": dataAnalysis,
+  "data-visualization": dataVisualization,
+  "machine-learning": machineLearning,
+  forecasting,
+  mlops,
+  "data-engineering": dataEngineering,
+};
+
+// Cropped to each scene's measured drawing bounds (plus a small margin), so
+// every illustration fills its panel instead of floating in empty floor grid.
+const bounds: Record<Discipline, [number, number, number, number]> = {
+  "data-analysis": [52, 41, 274, 272],
+  "data-visualization": [77, 37, 319, 270],
+  "machine-learning": [80, 40, 340, 271],
+  forecasting: [46, 28, 328, 298],
+  mlops: [111, 53, 316, 264],
+  "data-engineering": [73, 17, 353, 293],
+};
+const M = 12;
+const [x0, y0, x1, y1] = bounds[kind];
+const viewBox = [x0 - M, y0 - M, x1 - x0 + M * 2, y1 - y0 + M * 2].join(" ");
+
+const svg = draw[kind]();
+---
+
+<svg class="dm-cap-illus" viewBox={viewBox} fill="none" aria-hidden="true" set:html={svg} />

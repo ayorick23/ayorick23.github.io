@@ -21,6 +21,7 @@ technologies:
     "Pandera",
   ]
 githubUrl: "https://github.com/ayorick23/telco-churn-mlops"
+disciplines: ["machine-learning", "mlops"]
 featured: true
 status: "published"
 date: 2026-08-18

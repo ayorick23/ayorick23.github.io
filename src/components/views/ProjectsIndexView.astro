@@ -4,11 +4,37 @@ import ProjectCover from "../ProjectCover.astro";
 import StatusBadge from "../StatusBadge.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 import { getProjects } from "../../lib/projects";
+import { maskStyle } from "../../lib/raster-icons";
+import { techGroup, techIcon } from "../../lib/tech-icons";
+import { toolGroups } from "../../data/tools";
+import { DISCIPLINES } from "../../data/disciplines";
 
 const locale = resolveLocale(Astro.currentLocale);
 const ui = getUI(locale);
 const projects = await getProjects(locale);
 const homeHref = localizePath("/", locale);
+const f = ui.projects.filter;
+
+const disciplineLabel = new Map(ui.capabilities.items.map((c) => [c.id, c.title]));
+const disciplineFilters = DISCIPLINES.map((id) => ({
+  key: id,
+  label: disciplineLabel.get(id) ?? id,
+  count: projects.filter((p) => p.data.disciplines.includes(id)).length,
+})).filter((d) => d.count > 0);
+
+const statusFilters = (["published", "draft", "placeholder"] as const)
+  .map((key) => ({ key, label: ui.common.statusLabel[key], count: projects.filter((p) => p.data.status === key).length }))
+  .filter((s) => s.count > 0);
+
+const techCounts = new Map<string, number>();
+projects.forEach((p) => p.data.technologies.forEach((t) => techCounts.set(t, (techCounts.get(t) ?? 0) + 1)));
+const techs = [...techCounts.entries()]
+  .map(([name, count]) => ({ name, count, icon: techIcon(name), group: techGroup(name) }))
+  .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
+const techSections = [
+  ...toolGroups.map((g) => ({ key: g.key as string, label: ui.tools.groups[g.key].name, items: techs.filter((t) => t.group === g.key) })),
+  { key: "other", label: f.techOther, items: techs.filter((t) => !t.group) },
+].filter((section) => section.items.length > 0);
 ---
 
 <section class="mx-auto max-w-[1240px] px-8 pt-[150px] pb-[60px]">
@@ -24,64 +50,181 @@ const homeHref = localizePath("/", locale);
   <p class="mb-3 max-w-[520px] font-display text-[16px] leading-[1.6] text-ink-2">{ui.projects.subtitle}</p>
   <p class="mb-12 font-mono text-[11.5px] text-ink-3">{ui.projects.note}</p>
 
-  <div class="flex flex-col gap-4">
-    {
-      projects.map((project, i) => (
-        <div
-          data-cover-hover-scope
-          class="shadow-elevated group relative grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-stretch gap-[26px] rounded-[20px] border border-line bg-[image:var(--gradient-card)] p-5 backdrop-blur-[18px] transition-transform duration-300 ease-[cubic-bezier(.2,.7,.3,1)] hover:-translate-y-1 hover:border-line-2"
-          style="box-shadow: var(--shadow-elevated);"
-        >
-          <a
-            href={localizePath(`/projects/${project.id}`, locale)}
-            class="absolute inset-0 z-0"
-            aria-label={project.data.title}
-          />
-          <div class:list={["project-row-cover relative h-full min-h-[150px] w-full overflow-hidden rounded-[14px] border border-line", !project.data.coverKind && "project-row-cover--empty"]}>
-            {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
-            {
-              !project.data.coverKind && (
-                <span class="absolute bottom-[10px] left-3 font-mono text-[9.5px] tracking-[0.14em] text-ink-3 uppercase">
-                  {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
-                </span>
-              )
-            }
-          </div>
-          <div class="flex flex-col gap-[11px]">
-            <div class="flex items-center gap-3">
-              <span class="font-mono text-[11px] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
-              <span class="font-mono text-[10px] tracking-[0.16em] text-accent uppercase">{project.data.category}</span>
-              <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
-            </div>
-            <div class="font-display text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">{project.data.title}</div>
-            <div class="max-w-[520px] font-display text-[14px] leading-[1.58] text-ink-2">{project.data.shortDescription}</div>
-            <div class="mt-[2px] flex flex-wrap gap-[6px]">
-              {project.data.technologies.slice(0, 4).map((tech) => (
-                <span class="rounded-[7px] border border-line px-[9px] py-[6px] font-mono text-[10.5px] text-ink-2">{tech}</span>
-              ))}
-            </div>
-            <div class="mt-2 flex items-center justify-between">
-              <span class="font-display text-[12.5px] font-medium text-ink">{ui.work.caseStudyCta} →</span>
-              {project.data.githubUrl && (
-                <a
-                  href={project.data.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={ui.common.viewOnGithub}
-                  title={ui.common.viewOnGithub}
-                  class="relative z-10 flex items-center gap-1 rounded-full border border-line-2 bg-veil px-[10px] py-[6px] text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:text-accent"
-                >
-                  <Icon name="akar-icons--github-fill" class="h-[14px] w-[14px]" />
-                  <Icon name="lucide:arrow-up-right" class="h-[12px] w-[12px]" />
-                </a>
-              )}
-            </div>
-          </div>
+  <div
+    data-projects-root
+    data-label-one={f.resultOne}
+    data-label-many={f.resultMany}
+  >
+    <div
+      role="group"
+      aria-label={f.label}
+      class="dm-pf-panel relative z-20 mb-8 flex flex-col gap-5 rounded-[20px] border border-line bg-[image:var(--gradient-card)] p-5 backdrop-blur-[18px]"
+    >
+      <div class="dm-pf-row">
+        <span class="dm-pf-label">{f.discipline}</span>
+        <div data-pf-segment="discipline" class="dm-tools-filter relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-veil p-1">
+          <span data-pf-indicator aria-hidden="true" class="dm-tools-indicator"></span>
+          <button type="button" data-pf-value="all" aria-pressed="true" class="dm-tools-tab dm-pf-tab">{f.allDisciplines}</button>
+          {disciplineFilters.map((d) => (
+            <button type="button" data-pf-value={d.key} aria-pressed="false" class="dm-tools-tab dm-pf-tab">
+              {d.label}<span class="dm-pf-count">{d.count}</span>
+            </button>
+          ))}
         </div>
-      ))
-    }
+      </div>
+      <div class="dm-pf-row">
+        <span class="dm-pf-label">{f.status}</span>
+        <div data-pf-segment="status" class="dm-tools-filter relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-veil p-1">
+          <span data-pf-indicator aria-hidden="true" class="dm-tools-indicator"></span>
+          <button type="button" data-pf-value="all" aria-pressed="true" class="dm-tools-tab dm-pf-tab">{f.allStatuses}</button>
+          {statusFilters.map((st) => (
+            <button type="button" data-pf-value={st.key} aria-pressed="false" class="dm-tools-tab dm-pf-tab">
+              {st.label}<span class="dm-pf-count">{st.count}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div class="dm-pf-row">
+        <span class="dm-pf-label">{f.technologies}</span>
+        <div class="flex flex-wrap items-center gap-[6px]">
+          <div data-pf-dropdown class="relative">
+            <button
+              type="button"
+              data-pf-trigger
+              aria-expanded="false"
+              aria-controls="pf-tech-menu"
+              class="dm-pf-trigger"
+            >
+              <Icon name="lucide:layers" class="h-[14px] w-[14px] shrink-0 text-ink-3" />
+              <span data-pf-trigger-label data-empty={f.techPlaceholder} data-some={f.techSelected}>{f.techPlaceholder}</span>
+              <Icon name="lucide:chevron-down" class="dm-pf-chevron h-[14px] w-[14px] shrink-0" />
+            </button>
+            <div id="pf-tech-menu" data-pf-menu hidden class="dm-pf-menu">
+              {techSections.map((section) => (
+                <div class="dm-pf-menu__group">
+                  <div class="dm-pf-menu__label">{section.label}</div>
+                  {section.items.map((tech) => (
+                    <button type="button" data-pf-tech={tech.name} aria-pressed="false" class="dm-pf-option">
+                      <span class="dm-pf-option__icon">
+                        {tech.icon &&
+                          (tech.icon.raster ? (
+                            <span class="block h-[15px] w-[15px] bg-current" style={maskStyle(tech.icon.icon)} />
+                          ) : (
+                            <Icon name={tech.icon.icon} class="h-[15px] w-[15px]" />
+                          ))}
+                      </span>
+                      <span class="min-w-0 flex-1 truncate text-left">{tech.name}</span>
+                      <span class="dm-pf-count">{tech.count}</span>
+                      <Icon name="lucide:check" class="dm-pf-option__check h-[13px] w-[13px] shrink-0" />
+                    </button>
+                  ))}
+                </div>
+              ))}
+              <div class="dm-pf-menu__foot">
+                <button type="button" data-pf-tech-clear class="dm-pf-clear">
+                  <Icon name="lucide:x" class="h-[13px] w-[13px]" />
+                  {f.techClear}
+                </button>
+              </div>
+            </div>
+          </div>
+          {techs.map((tech) => (
+            <button type="button" data-pf-selected={tech.name} hidden class="dm-pf-chip" aria-label={`${f.techRemove}: ${tech.name}`}>
+              {tech.icon &&
+                (tech.icon.raster ? (
+                  <span class="h-[14px] w-[14px] shrink-0 bg-current" style={maskStyle(tech.icon.icon)} />
+                ) : (
+                  <Icon name={tech.icon.icon} class="h-[14px] w-[14px] shrink-0" />
+                ))}
+              {tech.name}
+              <Icon name="lucide:x" class="h-[12px] w-[12px] shrink-0 opacity-60" />
+            </button>
+          ))}
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+        <span data-pf-result aria-live="polite" class="font-mono text-[11.5px] text-ink-3">
+          {(projects.length === 1 ? f.resultOne : f.resultMany).replace("{n}", String(projects.length))}
+        </span>
+        <button type="button" data-pf-clear hidden class="dm-pf-clear">
+          <Icon name="lucide:x" class="h-[13px] w-[13px]" />
+          {f.clear}
+        </button>
+      </div>
+    </div>
+
+    <p data-pf-empty hidden class="rounded-[20px] border border-dashed border-line-2 px-6 py-10 text-center font-display text-[14.5px] text-ink-2">
+      {f.empty}
+    </p>
+
+    <div class="flex flex-col gap-4">
+      {
+        projects.map((project, i) => (
+          <div
+            data-project-row
+            data-disciplines={project.data.disciplines.join(" ")}
+            data-status={project.data.status}
+            data-techs={JSON.stringify(project.data.technologies)}
+            data-cover-hover-scope
+            class="shadow-elevated group relative grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-stretch gap-[26px] rounded-[20px] border border-line bg-[image:var(--gradient-card)] p-5 backdrop-blur-[18px] transition-transform duration-300 ease-[cubic-bezier(.2,.7,.3,1)] hover:-translate-y-1 hover:border-line-2"
+            style="box-shadow: var(--shadow-elevated);"
+          >
+            <a
+              href={localizePath(`/projects/${project.id}`, locale)}
+              class="absolute inset-0 z-0"
+              aria-label={project.data.title}
+            />
+            <div class:list={["project-row-cover relative h-full min-h-[150px] w-full overflow-hidden rounded-[14px] border border-line", !project.data.coverKind && "project-row-cover--empty"]}>
+              {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
+              {
+                !project.data.coverKind && (
+                  <span class="absolute bottom-[10px] left-3 font-mono text-[9.5px] tracking-[0.14em] text-ink-3 uppercase">
+                    {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
+                  </span>
+                )
+              }
+            </div>
+            <div class="flex flex-col gap-[11px]">
+              <div class="flex items-center gap-3">
+                <span class="font-mono text-[11px] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
+                <span class="font-mono text-[10px] tracking-[0.16em] text-accent uppercase">{project.data.category}</span>
+                <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
+              </div>
+              <div class="font-display text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">{project.data.title}</div>
+              <div class="max-w-[520px] font-display text-[14px] leading-[1.58] text-ink-2">{project.data.shortDescription}</div>
+              <div class="mt-[2px] flex flex-wrap gap-[6px]">
+                {project.data.technologies.slice(0, 4).map((tech) => (
+                  <span class="rounded-[7px] border border-line px-[9px] py-[6px] font-mono text-[10.5px] text-ink-2">{tech}</span>
+                ))}
+              </div>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="font-display text-[12.5px] font-medium text-ink">{ui.work.caseStudyCta} →</span>
+                {project.data.githubUrl && (
+                  <a
+                    href={project.data.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={ui.common.viewOnGithub}
+                    title={ui.common.viewOnGithub}
+                    class="relative z-10 flex items-center gap-1 rounded-full border border-line-2 bg-veil px-[10px] py-[6px] text-ink-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+                  >
+                    <Icon name="akar-icons--github-fill" class="h-[14px] w-[14px]" />
+                    <Icon name="lucide:arrow-up-right" class="h-[12px] w-[12px]" />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
   </div>
 </section>
+
+<script>
+  import { initProjectsFilter } from "../../scripts/projects-filter";
+  document.addEventListener("astro:page-load", initProjectsFilter);
+</script>
 
 <style>
   .project-row-cover {

@@ -5,6 +5,7 @@ shortDescription: "A Medallion-architecture data pipeline (Bronze → Silver →
 description: "A data engineering pipeline for an e-commerce dataset, organized into Bronze, Silver and Gold layers. The project's goal is to demonstrate end-to-end data engineering skills: transformation with Polars, analysis with DuckDB and orchestration with Airflow. Currently in development — orchestration with Airflow and the Gold layer haven't been reached yet, so this page covers only the project's general approach for now."
 technologies: ["Polars", "DuckDB", "Airflow"]
 githubUrl: "https://github.com/ayorick23/ecommerce-medallion-pipeline"
+disciplines: ["data-engineering"]
 featured: true
 status: "draft"
 date: 2026-09-16

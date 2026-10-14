@@ -177,6 +177,234 @@
   outline-offset: 1px;
 }
 
+/* Projects index filter — reuses the tools filter's sliding-pill segments above */
+.dm-pf-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+@media (max-width: 640px) {
+  .dm-pf-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+.dm-pf-row > [data-pf-segment] {
+  justify-self: start;
+}
+.dm-pf-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.dm-pf-tab {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 9px 13px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+.dm-pf-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  opacity: 0.6;
+}
+.dm-pf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--veil);
+  padding: 7px 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1;
+  color: var(--ink-2);
+  transition:
+    color 0.2s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.dm-pf-chip:hover {
+  color: var(--ink);
+  border-color: var(--line-2);
+  transform: translateY(-1px);
+}
+.dm-pf-chip[data-pf-selected] {
+  color: var(--ink);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.dm-pf-chip[hidden],
+.dm-pf-clear[hidden] {
+  display: none;
+}
+.dm-pf-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--veil);
+  padding: 9px 14px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink-2);
+  transition:
+    color 0.2s ease,
+    border-color 0.25s ease;
+}
+.dm-pf-trigger:hover,
+.dm-pf-trigger[aria-expanded="true"] {
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+.dm-pf-trigger[data-active] {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.dm-pf-chevron {
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.dm-pf-trigger[aria-expanded="true"] .dm-pf-chevron {
+  transform: rotate(180deg);
+}
+.dm-pf-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 6px 14px;
+  width: min(660px, calc(100vw - 48px));
+  max-height: min(600px, 70vh);
+  overflow-y: auto;
+  border-radius: 16px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  padding: 14px;
+  box-shadow: var(--shadow-elevated);
+}
+.dm-pf-menu[hidden] {
+  display: none;
+}
+.dm-pf-menu__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dm-pf-menu__label {
+  padding: 6px 9px 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.dm-pf-menu__foot {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line);
+  padding: 10px 6px 0;
+}
+.dm-pf-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  cursor: pointer;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  padding: 7px 9px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--ink-2);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.dm-pf-option:hover {
+  color: var(--ink);
+  background: var(--veil-2);
+}
+.dm-pf-option[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+.dm-pf-option__icon {
+  display: inline-flex;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+.dm-pf-option__check {
+  color: var(--accent);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.dm-pf-option[aria-pressed="true"] .dm-pf-option__check {
+  opacity: 1;
+  transform: none;
+}
+.dm-pf-option:focus-visible,
+.dm-pf-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.dm-pf-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: color 0.2s ease;
+}
+.dm-pf-clear:hover {
+  color: var(--accent);
+}
+.dm-pf-chip:focus-visible,
+.dm-pf-clear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+[data-project-row][hidden],
+[data-pf-empty][hidden] {
+  display: none;
+}
+
 .dm-tool-group {
   display: grid;
   grid-template-rows: 1fr;
@@ -303,6 +531,78 @@
   stroke: var(--accent);
   stroke-width: 1.4;
   filter: drop-shadow(0 0 4px var(--accent-soft));
+}
+/* Scroll-driven fill drawn over each grey edge (scripts/timeline.ts): the line
+   "pours" down as you scroll, and every dot it reaches lights up. */
+.dm-timeline-fill {
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px var(--accent-soft));
+}
+.dm-timeline-dot {
+  border-color: var(--line-2);
+  background-color: var(--bg);
+  transition:
+    border-color 0.4s ease,
+    background-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+.dm-timeline-node.is-reached .dm-timeline-dot {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.dm-timeline-node.is-active .dm-timeline-dot {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  box-shadow:
+    0 0 0 6px var(--accent-soft),
+    0 0 16px 1px var(--accent);
+}
+.dm-timeline-text,
+.dm-timeline-body {
+  opacity: 0.3;
+  transition:
+    opacity 0.6s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.dm-timeline-node.is-reached .dm-timeline-text {
+  opacity: 1;
+}
+/* Same as the reference: once the fill reaches a row, its content steps
+   slightly to the right as it lights up. */
+.dm-timeline-node.is-reached .dm-timeline-body {
+  opacity: 1;
+  transform: translateX(10px);
+}
+.dm-timeline-year {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+/* The year and dates drop down out of a slot, scrubbed by scroll position. */
+.dm-rise {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.dm-rise > [data-rise] {
+  display: inline-block;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dm-timeline-text,
+  .dm-timeline-body,
+  .dm-timeline-dot {
+    transition: none;
+  }
 }
 
 /* Hero scroll cue — mouse outline with a dot that travels down and fades */
@@ -621,5 +921,687 @@ body {
   }
   .lightbox-nav:hover:not(:disabled) {
     transform: none;
+  }
+}
+
+/* Project metric cards — glass card that "lights up" from a corner glow, then
+   the number counts up and the label focuses in (see scripts/metrics.ts).
+   The glow reuses the nebula palette so it's blue/violet in dark mode and the
+   warm orange/pink aurora in light mode. */
+.dm-metric {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 168px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--gradient-card);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 18px 20px 20px;
+  box-shadow: var(--shadow-elevated);
+}
+.dm-metric::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent 38%);
+  pointer-events: none;
+}
+.dm-metric__glow {
+  position: absolute;
+  z-index: -1;
+  top: -38%;
+  left: -34%;
+  width: 140%;
+  height: 120%;
+  background:
+    radial-gradient(40% 42% at 36% 44%, var(--nebula-cloud-1), transparent 72%),
+    radial-gradient(34% 34% at 60% 34%, var(--nebula-cloud-2), transparent 72%);
+  filter: blur(14px);
+  opacity: 1;
+  transform-origin: 30% 40%;
+  pointer-events: none;
+}
+.dm-metric__value {
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 4vw, 2.9rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.dm-metric__label {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+/* Pre-animation state: only applied once JS has armed the cards, so without
+   JS (or before hydration fails) the metrics are simply visible. */
+[data-metrics].is-armed .dm-metric {
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  filter: blur(10px);
+}
+[data-metrics].is-armed .dm-metric__glow {
+  opacity: 0;
+  transform: scale(0.4);
+}
+[data-metrics].is-armed .dm-metric__label {
+  opacity: 0;
+  filter: blur(6px);
+}
+[data-metrics].is-armed .dm-metric__value {
+  opacity: 0;
+}
+[data-metrics] .dm-metric,
+[data-metrics] .dm-metric__glow,
+[data-metrics] .dm-metric__label,
+[data-metrics] .dm-metric__value {
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.3, 1),
+    filter 0.8s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+[data-metrics].is-armed.is-visible .dm-metric {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition-delay: calc(var(--i) * 110ms);
+}
+[data-metrics].is-armed.is-visible .dm-metric__glow {
+  opacity: 1;
+  transform: none;
+  transition-duration: 1.4s;
+  transition-delay: calc(var(--i) * 110ms + 150ms);
+}
+[data-metrics].is-armed.is-visible .dm-metric__value {
+  opacity: 1;
+  transition-delay: calc(var(--i) * 110ms + 380ms);
+}
+[data-metrics].is-armed.is-visible .dm-metric__label {
+  opacity: 1;
+  filter: none;
+  transition-delay: calc(var(--i) * 110ms + 700ms);
+}
+
+/* Capabilities accordion — inspired by the "Selected work" section on
+   dataconale.com: the hovered panel grows (flex-grow) while the rest shrink to
+   a vertical title. On narrow screens it becomes a regular vertical accordion. */
+.dm-caps {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--gradient-card);
+  box-shadow: var(--shadow-elevated);
+}
+.dm-cap {
+  position: relative;
+  min-width: 0;
+}
+.dm-cap + .dm-cap {
+  border-top: 1px solid var(--line);
+}
+.dm-cap__head {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  padding: 20px 22px;
+  text-align: left;
+  color: var(--ink);
+  transition: background-color 0.3s ease;
+}
+.dm-cap__head:hover {
+  background: var(--accent-soft);
+}
+.dm-cap__head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.dm-cap__num {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+.dm-cap__vtitle {
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.dm-cap__plus {
+  position: relative;
+  margin-left: auto;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: var(--ink-2);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.dm-cap__plus::before,
+.dm-cap__plus::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.dm-cap__plus::before {
+  left: 0;
+  right: 0;
+  top: 5.5px;
+  height: 1px;
+}
+.dm-cap__plus::after {
+  top: 0;
+  bottom: 0;
+  left: 5.5px;
+  width: 1px;
+}
+.dm-cap[data-open] .dm-cap__plus {
+  transform: rotate(45deg);
+}
+.dm-cap__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.dm-cap[data-open] .dm-cap__body {
+  grid-template-rows: 1fr;
+}
+.dm-cap__inner {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  gap: 8px;
+}
+.dm-cap__text {
+  padding: 0 22px;
+}
+.dm-cap__text .dm-cap__num,
+.dm-cap__title {
+  display: none;
+}
+.dm-cap__title {
+  margin: 14px 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.1vw, 1.9rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.dm-cap__desc {
+  max-width: 420px;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.dm-cap__art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 22px 22px;
+  color: var(--ink-2);
+}
+.dm-cap-illus {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  overflow: visible;
+}
+
+/* Body content enters after the panel has started opening; the illustration
+   wipes in from the left (clip-path) a beat later. */
+.dm-cap__text,
+.dm-cap__art {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.dm-cap__art {
+  clip-path: inset(0 100% 0 0);
+  transition:
+    opacity 0.35s ease,
+    clip-path 0.35s ease;
+}
+.dm-cap[data-open] .dm-cap__text {
+  opacity: 1;
+  transition: opacity 0.6s ease 0.28s;
+}
+.dm-cap[data-open] .dm-cap__art {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transition:
+    opacity 0.6s ease 0.38s,
+    clip-path 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.38s;
+}
+
+@media (min-width: 1024px) {
+  .dm-caps {
+    flex-direction: row;
+    height: 500px;
+    container-type: inline-size;
+  }
+  .dm-cap {
+    flex: 1 1 0;
+    overflow: hidden;
+    transition: flex-grow 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .dm-cap[data-open] {
+    flex-grow: 7;
+  }
+  .dm-cap + .dm-cap {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+  .dm-cap__head {
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 0 24px;
+    transition:
+      opacity 0.4s ease 0.35s,
+      background-color 0.3s ease;
+  }
+  .dm-cap__vtitle {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    margin-top: auto;
+    margin-bottom: 22px;
+    white-space: nowrap;
+    font-size: 15px;
+    color: var(--ink-2);
+    transition: color 0.3s ease;
+  }
+  .dm-cap__head:hover .dm-cap__vtitle {
+    color: var(--ink);
+  }
+  .dm-cap__plus {
+    margin-left: 0;
+  }
+  .dm-cap[data-open] .dm-cap__head {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .dm-cap__body {
+    display: block;
+    position: absolute;
+    inset: 0 auto 0 0;
+    /* 6 panels: the open one takes 7 of 12 flex units. Fixed width so the
+       content is uncovered by the growing panel instead of reflowing with it. */
+    width: calc(100cqw * 7 / 12);
+  }
+  .dm-cap__inner {
+    height: 100%;
+    overflow: visible;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: stretch;
+    gap: 0;
+  }
+  .dm-cap__text {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 4px 34px 34px;
+  }
+  .dm-cap__text .dm-cap__num,
+  .dm-cap__title {
+    display: block;
+  }
+  .dm-cap__title {
+    margin-top: auto;
+  }
+  .dm-cap__art {
+    padding: 20px 20px 20px 0;
+  }
+  .dm-cap-illus {
+    max-width: none;
+  }
+}
+
+/* Illustration parts (CapabilityIllustration.astro + lib/iso.ts). Faces are
+   currentColor mixed into the page background at different strengths, so the
+   solids read as 3D, occlude each other like the line-art references, and
+   still follow the theme. */
+.dm-cap-illus {
+  --ci-top: color-mix(in srgb, currentColor 9%, var(--bg));
+  --ci-left: color-mix(in srgb, currentColor 4%, var(--bg));
+  --ci-right: color-mix(in srgb, currentColor 16%, var(--bg));
+  --ci-stroke: color-mix(in srgb, currentColor 62%, transparent);
+}
+.dm-cap-illus .ci-box polygon,
+.dm-cap-illus .ci-box path,
+.dm-cap-illus .ci-box ellipse {
+  stroke: var(--ci-stroke);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.dm-cap-illus .ci-t {
+  fill: var(--ci-top);
+}
+.dm-cap-illus .ci-l {
+  fill: var(--ci-left);
+}
+.dm-cap-illus .ci-r {
+  fill: var(--ci-right);
+}
+.dm-cap-illus .ci-pad .ci-t {
+  fill: color-mix(in srgb, currentColor 5%, var(--bg));
+}
+.dm-cap-illus .ci-accent polygon,
+.dm-cap-illus .ci-accent path,
+.dm-cap-illus .ci-accent ellipse {
+  stroke: var(--accent);
+}
+.dm-cap-illus .ci-accent .ci-t {
+  fill: color-mix(in srgb, var(--accent) 38%, var(--bg));
+}
+.dm-cap-illus .ci-accent .ci-r {
+  fill: color-mix(in srgb, var(--accent) 62%, var(--bg));
+}
+.dm-cap-illus .ci-accent .ci-l {
+  fill: color-mix(in srgb, var(--accent) 24%, var(--bg));
+}
+.dm-cap-illus .ci-mid .ci-t,
+.dm-cap-illus .ci-mid .ci-r {
+  fill: color-mix(in srgb, var(--accent-2) 22%, var(--bg));
+}
+.dm-cap-illus .ci-chip .ci-t {
+  fill: color-mix(in srgb, currentColor 12%, var(--bg));
+}
+.dm-cap-illus .ci-ghost polygon {
+  stroke-dasharray: 2 3;
+  fill: transparent;
+}
+.dm-cap-illus .ci-floor {
+  stroke: currentColor;
+  stroke-opacity: 0.16;
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.dm-cap-illus .ci-grid {
+  stroke: currentColor;
+  stroke-opacity: 0.12;
+  stroke-width: 1;
+}
+.dm-cap-illus .ci-grid--strong {
+  stroke-opacity: 0.35;
+}
+.dm-cap-illus .ci-plane * {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Content printed on faces (screens, tables, chips) */
+.dm-cap-illus .ci-ui {
+  fill: color-mix(in srgb, currentColor 5%, var(--bg));
+  stroke: currentColor;
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+}
+.dm-cap-illus .ci-ui-line {
+  stroke: currentColor;
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+.dm-cap-illus .ci-ui-fill {
+  fill: currentColor;
+  fill-opacity: 0.35;
+}
+.dm-cap-illus .ci-ui-accent {
+  fill: var(--accent);
+  fill-opacity: 0.85;
+}
+.dm-cap-illus .ci-ui-accent-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.dm-cap-illus .ci-ui-warn {
+  stroke: var(--accent-2);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.dm-cap-illus .ci-ui-dot {
+  fill: currentColor;
+  fill-opacity: 0.55;
+}
+.dm-cap-illus .ci-ui-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.25;
+  stroke-width: 5;
+}
+.dm-cap-illus .ci-ui-donut {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+}
+.dm-cap-illus .ci-ui-node {
+  fill: var(--bg);
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+.dm-cap-illus .ci-ui-node--accent {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.dm-cap-illus .ci-ui-glow {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+.dm-cap-illus .ci-ui-text {
+  fill: var(--accent);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.dm-cap-illus .ci-icon {
+  color: currentColor;
+}
+.dm-cap-illus .ci-icon * {
+  stroke-width: 1.4;
+}
+.dm-cap-illus .ci-icon--muted {
+  color: color-mix(in srgb, currentColor 75%, transparent);
+}
+.dm-cap-illus .ci-icon--accent {
+  color: var(--accent);
+}
+.dm-cap-illus .ci-icon--bold * {
+  stroke-width: 1.8;
+}
+.dm-cap-illus .ci-icon--on-accent {
+  color: color-mix(in srgb, var(--accent) 30%, var(--ink));
+}
+
+/* Pipelines: dotted lines whose dots travel toward the end of the pipe */
+.dm-cap-illus .ci-pipe {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.5;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 0.1 5;
+  animation: dm-ci-flow 1.6s linear infinite;
+}
+.dm-cap-illus .ci-pipe--accent {
+  stroke: var(--accent);
+  stroke-opacity: 0.9;
+}
+.dm-cap-illus .ci-pipe--drop {
+  stroke-opacity: 0.35;
+}
+@keyframes dm-ci-flow {
+  to {
+    stroke-dashoffset: -10.2;
+  }
+}
+.dm-cap-illus .ci-joint {
+  fill: var(--bg);
+  stroke: currentColor;
+  stroke-opacity: 0.6;
+  stroke-width: 1.2;
+}
+.dm-cap-illus .ci-joint--end {
+  fill: currentColor;
+  fill-opacity: 0.5;
+  stroke: none;
+}
+
+/* Upright extruded cloud */
+.dm-cap-illus .ci-cloud path {
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.dm-cap-illus .ci-cloud-back path {
+  fill: var(--ci-right);
+  stroke: var(--ci-stroke);
+  stroke-width: 1;
+}
+.dm-cap-illus .ci-cloud-mid path {
+  fill: var(--ci-right);
+  stroke: none;
+}
+.dm-cap-illus .ci-cloud-front path {
+  fill: var(--ci-top);
+  stroke: var(--ci-stroke);
+  stroke-width: 1;
+}
+
+.dm-cap-illus .ci-led {
+  fill: currentColor;
+  fill-opacity: 0.45;
+}
+.dm-cap-illus .ci-led--on {
+  fill: var(--accent);
+  fill-opacity: 1;
+  filter: drop-shadow(0 0 3px var(--accent));
+}
+.dm-cap-illus .ci-vent {
+  stroke: currentColor;
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+}
+
+/* Magnifying glass */
+.dm-cap-illus .ci-lens-glass {
+  fill: var(--accent-soft);
+}
+.dm-cap-illus .ci-lens-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.dm-cap-illus .ci-lens-inner {
+  fill: none;
+  stroke: var(--accent);
+  stroke-opacity: 0.35;
+  stroke-width: 1;
+}
+.dm-cap-illus .ci-lens-shine {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.55;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.dm-cap-illus .ci-lens-handle {
+  stroke: currentColor;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-opacity: 0.75;
+}
+
+.dm-cap-illus .ci-trend {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.dm-cap-illus .ci-trend--forecast {
+  stroke-dasharray: 4 4;
+}
+.dm-cap-illus .ci-pane {
+  fill: currentColor;
+  fill-opacity: 0.04;
+  stroke: currentColor;
+  stroke-opacity: 0.22;
+}
+.dm-cap-illus .ci-band {
+  fill: var(--accent);
+  fill-opacity: 0.12;
+  stroke: none;
+}
+.dm-cap-illus .ci-now {
+  stroke: currentColor;
+  stroke-opacity: 0.4;
+  stroke-dasharray: 2 4;
+}
+.dm-cap-illus .ci-node {
+  fill: var(--bg);
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+.dm-cap-illus .ci-node--accent {
+  fill: var(--accent);
+  stroke: var(--accent);
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+.dm-cap-illus .ci-glow {
+  fill: var(--accent);
+  fill-opacity: 0.25;
+  filter: blur(4px);
+}
+.dm-cap-illus .ci-float {
+  animation: dm-float 7s ease-in-out infinite;
+}
+@keyframes dm-ci-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+.dm-cap-illus .ci-pulse {
+  animation: dm-ci-pulse 2.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dm-cap,
+  .dm-cap__body,
+  .dm-cap__head,
+  .dm-cap__text,
+  .dm-cap__art,
+  .dm-cap__plus {
+    transition: none !important;
+  }
+  .dm-cap-illus .ci-float,
+  .dm-cap-illus .ci-pulse,
+  .dm-cap-illus .ci-pipe {
+    animation: none;
   }
 }

@@ -21,6 +21,7 @@ technologies:
     "GitHub Actions",
   ]
 githubUrl: "https://github.com/ayorick23/data-ai-compensation-benchmark"
+disciplines: ["data-analysis", "data-visualization"]
 featured: true
 status: "published"
 date: 2026-08-19

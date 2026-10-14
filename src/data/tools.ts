@@ -105,3 +105,21 @@ export const projectTechIcons: Record<string, { icon: string; raster?: boolean }
   optuna: { icon: "simple-icons:optuna" },
   pydantic: { icon: "simple-icons:pydantic" },
 };
+
+/**
+ * Group for project technologies that aren't in `toolGroups`, so the projects
+ * filter dropdown can file every technology under the same categories as the
+ * home page tools section. Lookup is case-insensitive.
+ */
+export const projectTechGroups: Record<string, ToolGroupKey> = {
+  pandera: "data",
+  jupyter: "data",
+  sqlite: "de",
+  optuna: "ml",
+  shap: "ml",
+  "evidently ai": "ml",
+  uv: "eng",
+  ruff: "eng",
+  mypy: "eng",
+  pydantic: "eng",
+};

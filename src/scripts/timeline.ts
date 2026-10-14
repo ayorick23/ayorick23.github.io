@@ -17,6 +17,16 @@ interface NodeState {
 const SPRING_STIFFNESS = 0.09;
 const SPRING_DAMPING = 0.78;
 const SVG_NS = "http://www.w3.org/2000/svg";
+// Fraction of the viewport height where the scroll-driven fill "arrives".
+const FILL_ANCHOR = 0.62;
+// A row's year and dates start dropping once its top reaches RISE_START of
+// the viewport height and are fully in place by RISE_END — late enough that
+// the motion happens where the reader is actually looking.
+const RISE_START = 0.88;
+const RISE_END = 0.58;
+
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
 export function initTimelineDots() {
   const roots = Array.from(document.querySelectorAll<HTMLElement>("[data-timeline-root]"));
@@ -68,6 +78,14 @@ export function initTimelineDots() {
       return line;
     });
 
+    const fills = edges.map(() => {
+      const line = document.createElementNS(SVG_NS, "line");
+      line.setAttribute("class", "dm-timeline-fill");
+      svg.appendChild(line);
+      return line;
+    });
+    const risers = nodeEls.map((el) => Array.from(el.querySelectorAll<HTMLElement>("[data-rise]")));
+
     const pos = (i: number) => ({ x: states[i].baseX + states[i].offsetX, y: states[i].baseY + states[i].offsetY });
 
     const renderNodes = () => {
@@ -87,7 +105,41 @@ export function initTimelineDots() {
         line.setAttribute("y2", b.y.toFixed(1));
         line.classList.toggle("is-lit", lit);
       });
+      renderScroll();
     };
+
+    function renderScroll() {
+      const viewH = window.innerHeight;
+      // Near the bottom of the page the anchor slides down to the viewport
+      // edge, otherwise the last rows could never be reached on short pages.
+      const remaining = document.documentElement.scrollHeight - (window.scrollY + viewH);
+      const endBoost = 1 - clamp01(remaining / (viewH * (1 - FILL_ANCHOR)));
+      const anchor = FILL_ANCHOR + (1 - FILL_ANCHOR) * endBoost;
+      const anchorY = viewH * anchor - root.getBoundingClientRect().top;
+
+      fills.forEach((line, i) => {
+        const a = pos(i);
+        const b = pos(i + 1);
+        const span = states[i + 1].baseY - states[i].baseY;
+        const p = span > 0 ? clamp01((anchorY - states[i].baseY) / span) : 0;
+        line.setAttribute("x1", a.x.toFixed(1));
+        line.setAttribute("y1", a.y.toFixed(1));
+        line.setAttribute("x2", (a.x + (b.x - a.x) * p).toFixed(1));
+        line.setAttribute("y2", (a.y + (b.y - a.y) * p).toFixed(1));
+        line.style.opacity = p > 0 ? "1" : "0";
+      });
+
+      states.forEach((s, i) => {
+        s.el.classList.toggle("is-reached", anchorY >= s.baseY - 2);
+        if (reduceMotion) return;
+        const top = s.el.getBoundingClientRect().top - s.offsetY;
+        const progress = clamp01((viewH * RISE_START - top) / (viewH * (RISE_START - RISE_END)));
+        risers[i].forEach((span, j) => {
+          const t = easeOutCubic(clamp01(progress * 1.2 - j * 0.2));
+          span.style.transform = t >= 1 ? "" : `translateY(-${((1 - t) * 110).toFixed(1)}%)`;
+        });
+      });
+    }
 
     let raf = 0;
     const settled = (s: NodeState) =>
@@ -165,6 +217,19 @@ export function initTimelineDots() {
     });
 
     renderEdges();
+
+    let scrollRaf = 0;
+    const onScroll = () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        renderScroll();
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    // Home's timeline is re-rendered on every visit, so drop the listener when
+    // the page is swapped out instead of piling one up per navigation.
+    document.addEventListener("astro:before-swap", () => window.removeEventListener("scroll", onScroll), { once: true });
 
     const ro = new ResizeObserver(() => {
       const fresh = measureBases();

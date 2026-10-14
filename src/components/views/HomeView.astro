@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import Constellation from "../Constellation.astro";
 import ProjectGrid from "../ProjectGrid.astro";
-import CapabilityCard from "../CapabilityCard.astro";
+import CapabilityIllustration from "../CapabilityIllustration.astro";
 import Timeline from "../Timeline.astro";
 import Button from "../Button.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
@@ -285,7 +285,7 @@ const toolFilters = [
   </div>
   {ui.experience.note && <p class="mb-[46px] font-mono text-[12px] text-ink-3">{ui.experience.note}</p>}
   <div class={ui.experience.note ? "" : "mt-[46px]"}>
-    <Timeline entries={ui.experience.timeline.slice(0, 2)} />
+    <Timeline entries={ui.experience.timeline} compact />
   </div>
 </section>
 
@@ -297,9 +297,34 @@ const toolFilters = [
   <h2 class="mb-[46px] max-w-xl font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
     {ui.capabilities.headingLead} <span class="font-semibold">{ui.capabilities.headingAccent}</span>
   </h2>
-  <div class="grid grid-cols-1 gap-px overflow-hidden rounded-[20px] border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+  <div data-caps class="dm-caps">
     {ui.capabilities.items.map((cap, i) => (
-      <CapabilityCard index={i} title={cap.title} description={cap.description} />
+      <div data-cap class="dm-cap" data-open={i === 0 ? "" : undefined}>
+        <button
+          type="button"
+          data-cap-head
+          id={`cap-head-${cap.id}`}
+          aria-expanded={i === 0 ? "true" : "false"}
+          aria-controls={`cap-body-${cap.id}`}
+          class="dm-cap__head"
+        >
+          <span class="dm-cap__num">{String(i + 1).padStart(2, "0")}</span>
+          <span class="dm-cap__vtitle">{cap.title}</span>
+          <span class="dm-cap__plus" aria-hidden="true" />
+        </button>
+        <div id={`cap-body-${cap.id}`} role="region" aria-labelledby={`cap-head-${cap.id}`} class="dm-cap__body">
+          <div class="dm-cap__inner">
+            <div class="dm-cap__text">
+              <span class="dm-cap__num">{String(i + 1).padStart(2, "0")}</span>
+              <h3 class="dm-cap__title">{cap.title}</h3>
+              <p class="dm-cap__desc">{cap.description}</p>
+            </div>
+            <div class="dm-cap__art">
+              <CapabilityIllustration kind={cap.id} />
+            </div>
+          </div>
+        </div>
+      </div>
     ))}
   </div>
 </section>
@@ -337,9 +362,11 @@ const toolFilters = [
   import { initConstellation } from "../../scripts/constellation";
   import { initNebula } from "../../scripts/nebula";
   import { initToolsFilter } from "../../scripts/tools";
+  import { initCapabilities } from "../../scripts/capabilities";
   document.addEventListener("astro:page-load", initConstellation);
   document.addEventListener("astro:page-load", initNebula);
   document.addEventListener("astro:page-load", initToolsFilter);
+  document.addEventListener("astro:page-load", initCapabilities);
 </script>
 
 <style>

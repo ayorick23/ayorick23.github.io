@@ -159,6 +159,8 @@ export const en: UICopy = {
         period: "JUN 2026 - PRESENT",
         role: "Engineering Consultant",
         org: "ACF Technologies LATAM",
+        summary:
+          "Working at the intersection of analytics, software and data-driven solutions, connecting real business problems with technical solutions while specializing in Machine Learning and MLOps.",
         description:
           "Currently working at the intersection of analytics, software and data-driven solutions, while continuing to develop my expertise in Machine Learning and MLOps. My current role lets me understand real business problems and connect them with technical solutions, while further expanding my experience in data workflows, analytics and engineering.",
         tags: [],
@@ -167,6 +169,8 @@ export const en: UICopy = {
         period: "JUL 2023 - JUN 2026",
         role: "Training & Development Coordinator",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Combined people management with People Analytics and BI: automated reports with Python and built Power BI and Looker Studio dashboards with data from Guatemala, Costa Rica and El Salvador.",
         description:
           "Consolidated my transition toward a more analytical view of the business, combining people management with People Analytics, automation and Business Intelligence. I built report automations with Python and dashboards in Power BI and Looker Studio to turn data into insights and KPIs that supported process improvement and decision-making. Working with data and business needs across Guatemala, Costa Rica and El Salvador broadened my regional perspective and strengthened my ability to connect people data with real business goals.",
         tags: [],
@@ -175,6 +179,8 @@ export const en: UICopy = {
         period: "AUG 2022 - JUL 2023",
         role: "Operations & Inventory Trainer",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Trained new hires in the inventory area and began building my own indicators and dashboards in Excel, along with tools to standardize processes.",
         description:
           "Deepened my understanding of operations and Human Resources while training new hires in the inventory area. I began building my own indicators and dashboards in Excel to track performance, along with formats and tools to standardize processes. Constant exposure to reports, inventory data and branch operations strengthened my ability to interpret information and connect data with real business needs.",
         tags: [],
@@ -183,6 +189,8 @@ export const en: UICopy = {
         period: "NOV 2021 - JUL 2022",
         role: "Inventory Control Supervisor",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Coordinated the inventory control team and oversaw counts, discrepancies and adjustments, making data-driven decisions to keep inventory reliable.",
         description:
           "Took on a role with greater responsibility over inventory control processes and coordination of the team executing them. Alongside continued work with operational data and Excel-based analysis, I oversaw counts, discrepancies, adjustments and results tracking, making data-driven decisions to maintain inventory reliability. This stage strengthened both my analytical skills and my experience in team coordination and people management.",
         tags: [],
@@ -191,6 +199,8 @@ export const en: UICopy = {
         period: "FEB 2021 - OCT 2021",
         role: "Inventory Analyst",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "My first steps in data analysis: cycle counts in Excel, spotting shortages and surpluses, and investigating the root causes behind each discrepancy.",
         description:
           "Took my first steps in data analysis through inventory control, using Excel to run cycle counts, identify shortages and surpluses, and analyze discrepancies and their root causes. Systematically tracking this data helped me develop an analytical view of operations and understand how information can be used to detect problems, support decisions and improve business processes.",
         tags: [],
@@ -199,6 +209,8 @@ export const en: UICopy = {
         period: "OCT 2019 - FEB 2021",
         role: "Paint Sales Associate",
         org: "Almacenes Vidrí S.A. de C.V.",
+        summary:
+          "Started on the operations side, in direct contact with customers, learning firsthand how a branch works: the foundation for everything that came next.",
         description:
           "My professional journey began on the operations side, in direct contact with the business, building knowledge of products, customers and commercial dynamics within a hardware retail company. This stage gave me firsthand understanding of how branch operations work and laid the foundation for later moving into inventory control, analysis and management.",
         tags: [],
@@ -211,34 +223,40 @@ export const en: UICopy = {
     headingAccent: "actually do.",
     items: [
       {
+        id: "data-analysis",
         title: "Data Analysis",
         description:
           "Turn business questions into structured analyses, using data to understand what is happening and why.",
       },
       {
+        id: "data-visualization",
         title: "Data Visualization",
         description:
           "Communicate analytical results through clear dashboards and visualizations designed for decision-making.",
       },
       {
+        id: "machine-learning",
         title: "Machine Learning",
         description:
           "Build and evaluate predictive models with strong baselines, appropriate validation and metrics aligned with the problem.",
       },
       {
+        id: "forecasting",
         title: "Forecasting",
         description:
           "Model temporal patterns and evaluate forecasts using validation strategies that reflect how predictions will be used in practice.",
       },
       {
+        id: "mlops",
         title: "MLOps",
         description:
           "Build reproducible ML workflows around experiment tracking, versioning, testing, packaging and automated retraining.",
       },
       {
-        title: "Software Engineering for ML",
+        id: "data-engineering",
+        title: "Data Engineering",
         description:
-          "Develop structured, tested and maintainable Python code, APIs and pipelines instead of isolated scripts.",
+          "Design reliable data pipelines — ingestion, layered transformations and orchestration — so analytics and models run on clean, reproducible data.",
       },
     ],
   },
@@ -259,6 +277,23 @@ export const en: UICopy = {
     backLabel: "All projects",
     otherLabel: "Other projects",
     technologiesLabel: "Technologies used",
+    filter: {
+      label: "Filter projects",
+      discipline: "Discipline",
+      status: "Status",
+      technologies: "Technologies",
+      allDisciplines: "All",
+      allStatuses: "All",
+      clear: "Clear filters",
+      resultOne: "{n} project",
+      resultMany: "{n} projects",
+      empty: "No project matches this combination of filters yet.",
+      techPlaceholder: "Any technology",
+      techSelected: "{n} selected",
+      techOther: "Other",
+      techClear: "Clear technologies",
+      techRemove: "Remove filter",
+    },
     lightbox: {
       close: "Close",
       previous: "Previous image",
