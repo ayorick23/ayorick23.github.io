@@ -27,14 +27,23 @@ export function initToolsFilter() {
     }
   };
 
+  // Animating blur on ~30 chips at once can't be offloaded to the GPU and stutters on phones,
+  // so small screens get the same slide-and-fade without it.
+  const blurIn = window.matchMedia("(min-width: 1024px)");
   const staggerIn = (chips: HTMLElement[], baseDelay = 0) => {
     if (reduceMotion) return;
-    chips.forEach((chip, i) => {
-      chip.animate(
-        [
+    const keyframes: Keyframe[] = blurIn.matches
+      ? [
           { opacity: 0, transform: "translateY(10px) scale(.96)", filter: "blur(4px)" },
           { opacity: 1, transform: "none", filter: "blur(0)" },
-        ],
+        ]
+      : [
+          { opacity: 0, transform: "translateY(10px) scale(.96)" },
+          { opacity: 1, transform: "none" },
+        ];
+    chips.forEach((chip, i) => {
+      chip.animate(
+        keyframes,
         { duration: 480, delay: baseDelay + i * STAGGER_MS, easing: EASE_OUT, fill: "backwards" },
       );
     });

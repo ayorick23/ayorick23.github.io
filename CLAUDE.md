@@ -81,6 +81,8 @@ Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shor
   - `title` es `{ es, en }`: `es` tal cual aparece en el diploma, `en` traducción para la web en inglés; descripciones "lo que aprendí" en `about.certificates.descriptions` de cada i18n. `verifyUrl` solo donde hay link real (Platzi, Udemy, Credly); `related` enlaza preparación ↔ certificación.
 - **Educación** (`Education.astro` + `src/data/education.ts`): barra de progreso de la carrera; el punto "Hoy" se recalcula en el cliente para no quedar congelado entre deploys.
 
+- **Rendimiento en móvil** (no reintroducir): el vidrio esmerilado (`backdrop-blur`) de tarjetas grandes va con prefijo `lg:` — detrás está `.ambient-wash` fijo, así que en scroll el celular re-desenfocaba cada tarjeta en cada cuadro. Las portadas de proyectos (`scripts/project-covers.ts`) leen los colores del tema una vez (se refrescan al cambiar `data-theme`) y el ciclo de animación duerme si ninguna portada está en pantalla. Los chips de herramientas no animan `blur` en pantallas < 1024px. Las ilustraciones de Capacidades pausan sus animaciones (`animation-play-state`) si su panel está cerrado o la sección fuera de pantalla (`.is-offscreen`). La nebulosa de contacto, en pantallas < 1024px, se dibuja a 0.55 de la resolución CSS (no según `devicePixelRatio`) y a 30 fps: era la causa real del tirón al final de Capacidades, porque arranca justo cuando la tarjeta de contacto asoma.
+
 ## Deploy
 
 `.github/workflows/deploy.yml` hace build y publica `dist/` en cada push a `main`. **Ya configurado y funcionando** — en Settings → Pages del repo, el source ya está en "GitHub Actions" (no "Deploy from a branch").
