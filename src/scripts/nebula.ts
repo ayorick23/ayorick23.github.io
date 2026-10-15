@@ -13,6 +13,11 @@ const TRAIL = 16;
 // Rendered below CSS resolution and upscaled by the browser — smoke is soft by
 // nature, and this keeps the per-pixel noise cost reasonable on big cards.
 const RENDER_SCALE = 0.55;
+// Phones: their dpr pushed the canvas above CSS resolution (2 × 0.55) and the
+// shader ran 60 times a second right as the card scrolled in, stalling scroll.
+// There it renders at a fixed fraction of CSS pixels and at 30fps instead.
+const MOBILE_SCALE = 0.55;
+const MOBILE_FRAME_MS = 1000 / 30;
 
 const VERT = `
 attribute vec2 aPos;
@@ -197,6 +202,7 @@ export function initNebula() {
   const uCompact = u("uCompact");
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const small = window.matchMedia("(max-width: 1023px)");
   const controller = new AbortController();
   const { signal } = controller;
   // The copy sits on top of this layer, so pointer events are read from the
@@ -230,7 +236,7 @@ export function initNebula() {
 
   function resize() {
     const rect = container!.getBoundingClientRect();
-    const scale = Math.min(window.devicePixelRatio || 1, 2) * RENDER_SCALE;
+    const scale = small.matches ? MOBILE_SCALE : Math.min(window.devicePixelRatio || 1, 2) * RENDER_SCALE;
     width = Math.max(1, Math.round(rect.width * scale));
     height = Math.max(1, Math.round(rect.height * scale));
     canvas!.width = width;
@@ -251,9 +257,12 @@ export function initNebula() {
     gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
   }
 
+  let lastFrame = 0;
   function loop(now: number) {
-    render(now);
     raf = requestAnimationFrame(loop);
+    if (small.matches && now - lastFrame < MOBILE_FRAME_MS - 2) return;
+    lastFrame = now;
+    render(now);
   }
 
   function sync() {
@@ -271,6 +280,7 @@ export function initNebula() {
   const themeObserver = new MutationObserver(applyPalette);
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
+  small.addEventListener("change", resize, { signal });
   const ro = new ResizeObserver(resize);
   ro.observe(container);
   resize();
