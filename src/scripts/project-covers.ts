@@ -18,6 +18,9 @@ const covers = new Map<HTMLCanvasElement, MountedCover>();
 let io: IntersectionObserver | null = null;
 let ro: ResizeObserver | null = null;
 let raf = 0;
+let colors: CoverColors | null = null;
+let themeObserver: MutationObserver | null = null;
+let reduceMotionPref = false;
 
 function sizeCover(c: MountedCover) {
   const rect = c.canvas.getBoundingClientRect();
@@ -52,26 +55,35 @@ function readColors(): CoverColors {
   };
 }
 
-function loop(reduceMotion: boolean) {
-  raf = requestAnimationFrame(() => loop(reduceMotion));
-  if (!covers.size) return;
-  const colors = readColors();
+// Only runs while at least one cover is on screen; the IntersectionObserver wakes it up again.
+// Colors are read once and refreshed on theme change: getComputedStyle every frame forced
+// a style recalculation 60 times a second for the whole page.
+function wake() {
+  if (!raf) raf = requestAnimationFrame(loop);
+}
+
+function loop() {
+  raf = 0;
+  const visible = [...covers.values()].filter((c) => c.visible && c.width);
+  // With reduced motion each cover is drawn once (final frame) and the loop sleeps.
+  if (!visible.some((c) => !reduceMotionPref || !c.staticDrawn)) return;
+  raf = requestAnimationFrame(loop);
+  colors ??= readColors();
   const now = performance.now();
-  covers.forEach((c) => {
-    if (!c.visible || !c.width) return;
+  visible.forEach((c) => {
     const def = COVER_KINDS[c.kind];
     if (!def) return;
+    if (reduceMotionPref && c.staticDrawn) return;
     c.ctx.setTransform(c.dpr, 0, 0, c.dpr, 0, 0);
     c.ctx.clearRect(0, 0, c.width, c.height);
-    if (reduceMotion) {
-      if (c.staticDrawn) return;
+    if (reduceMotionPref) {
       c.staticDrawn = true;
-      def.draw(c.ctx, c.state, c.width, c.height, 0, 1, false, colors);
+      def.draw(c.ctx, c.state, c.width, c.height, 0, 1, false, colors!);
       return;
     }
     const elapsedSec = (now - c.startedAt) / 1000;
     const prog = Math.min(1, elapsedSec / 1.9);
-    def.draw(c.ctx, c.state, c.width, c.height, elapsedSec, prog, c.hover, colors);
+    def.draw(c.ctx, c.state, c.width, c.height, elapsedSec, prog, c.hover, colors!);
   });
 }
 
@@ -84,8 +96,16 @@ export function initProjectCovers() {
   io?.disconnect();
   ro?.disconnect();
   covers.clear();
+  themeObserver?.disconnect();
+  colors = null;
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  reduceMotionPref = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  themeObserver = new MutationObserver(() => {
+    colors = null;
+    covers.forEach((c) => (c.staticDrawn = false));
+    wake();
+  });
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
   io = new IntersectionObserver(
     (entries) => {
@@ -97,6 +117,7 @@ export function initProjectCovers() {
           sizeCover(c);
           c.startedAt = performance.now();
         }
+        if (entry.isIntersecting) wake();
       });
     },
     { threshold: 0.12 },
@@ -105,7 +126,11 @@ export function initProjectCovers() {
   ro = new ResizeObserver((entries) => {
     entries.forEach((entry) => {
       const c = covers.get(entry.target as HTMLCanvasElement);
-      if (c) sizeCover(c);
+      if (c) {
+        sizeCover(c);
+        c.staticDrawn = false;
+        wake();
+      }
     });
   });
 
@@ -138,6 +163,7 @@ export function initProjectCovers() {
     } else {
       cover.visible = true;
       cover.startedAt = performance.now();
+      wake();
     }
     ro!.observe(canvas);
 
@@ -148,7 +174,6 @@ export function initProjectCovers() {
     scope?.addEventListener("focusout", () => (cover.hover = false));
   });
 
-  raf = requestAnimationFrame(() => loop(reduceMotion));
 
   document.addEventListener(
     "astro:before-swap",
@@ -157,6 +182,7 @@ export function initProjectCovers() {
       raf = 0;
       io?.disconnect();
       ro?.disconnect();
+      themeObserver?.disconnect();
       covers.clear();
     },
     { once: true },

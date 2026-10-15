@@ -1590,6 +1590,13 @@ body {
 .dm-cap-illus .ci-pulse {
   animation: dm-ci-pulse 2.6s ease-in-out infinite;
 }
+/* The pipe dots repaint the whole SVG (and its drop-shadow/blur filters) every frame,
+   so illustrations only animate while their panel is open and the section is on screen
+   (.is-offscreen comes from scripts/capabilities.ts). */
+.dm-cap:not([data-open]) .dm-cap-illus *,
+.dm-caps.is-offscreen .dm-cap-illus * {
+  animation-play-state: paused;
+}
 @media (prefers-reduced-motion: reduce) {
   .dm-cap,
   .dm-cap__body,

@@ -34,4 +34,11 @@ export function initCapabilities() {
       if (wide.matches) open(panel);
     });
   });
+
+  if ("IntersectionObserver" in window) {
+    root.classList.add("is-offscreen");
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => root.classList.toggle("is-offscreen", !e.isIntersecting));
+    }).observe(root);
+  }
 }
