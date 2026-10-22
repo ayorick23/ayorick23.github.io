@@ -249,7 +249,7 @@ async function renderSiteCard({ locale, kicker, tagline }) {
 
   ctx.fillStyle = COLORS.ink3;
   ctx.font = "500 20px JetBrains Mono";
-  ctx.fillText("ayorick23.github.io", left, H - 56);
+  ctx.fillText("dereckmendez.com", left, H - 56);
 
   const outPath = join(OUT_DIR, `site-${locale}.png`);
   writeFileSync(outPath, canvas.toBuffer("image/png"));
@@ -356,7 +356,7 @@ async function renderProjectCard({
 
   ctx.fillStyle = COLORS.ink3;
   ctx.font = "500 18px JetBrains Mono";
-  ctx.fillText("ayorick23.github.io", left, H - 56);
+  ctx.fillText("dereckmendez.com", left, H - 56);
 
   const outPath = join(OUT_DIR, `${slug}-${locale}.png`);
   writeFileSync(outPath, canvas.toBuffer("image/png"));

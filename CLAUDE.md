@@ -87,6 +87,14 @@ Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shor
 
 `.github/workflows/deploy.yml` hace build y publica `dist/` en cada push a `main`. **Ya configurado y funcionando** — en Settings → Pages del repo, el source ya está en "GitHub Actions" (no "Deploy from a branch").
 
+### Dominio propio: `dereckmendez.com`
+
+- Registrado en **Cloudflare Registrar** (DNS también en Cloudflare). El sitio sigue alojado en GitHub Pages; Cloudflare solo resuelve el nombre.
+- Registros DNS: 4 `A` en `@` (`185.199.108–111.153`), 4 `AAAA` en `@` (`2606:50c0:8000–8003::153`), `CNAME www → ayorick23.github.io` y un `TXT _github-pages-challenge-ayorick23` (verificación del dominio en la cuenta de GitHub, evita que otro lo "secuestre"). **Todos con la nube gris ("DNS only")** — con la nube naranja (proxy) GitHub no puede emitir el certificado HTTPS.
+- El dominio se configura en Settings → Pages → Custom domain del repo. Como el deploy es por GitHub Actions, **no** hace falta (ni sirve) un archivo `public/CNAME`.
+- `ayorick23.github.io` redirige solo al dominio nuevo, así que links viejos no se rompen.
+- La URL del sitio está escrita en: `site` de `astro.config.mjs` (de ahí salen sitemap, canonical y URLs absolutas de og:image), `public/robots.txt`, el pie de las portadas en `scripts/generate-og-images.mjs` (regenerar con `npm run generate:og` si cambia) y `README.md`. Si algún día cambia el dominio, tocar esos cuatro.
+
 ## Pendientes / contenido por completar
 
 - **Próximas tareas de rediseño** (referencias en `desing_reference/`):

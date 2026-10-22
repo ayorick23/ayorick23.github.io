@@ -9,7 +9,7 @@ import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ayorick23.github.io',
+  site: 'https://dereckmendez.com',
 
   i18n: {
     defaultLocale: 'en',

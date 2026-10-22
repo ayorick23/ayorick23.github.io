@@ -83,6 +83,86 @@ const toolFilters = [
   <Constellation ui={ui} />
 </section>
 
+<section id="about" data-reveal class="mx-auto max-w-[1240px] px-8 py-[60px] scroll-mt-[100px]">
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-center gap-11 lg:grid-cols-[1fr_37%]">
+    <div class="max-w-[660px]">
+      <div class="mb-[18px] flex items-center gap-[9px]">
+        <span class="h-1 w-1 rounded-full bg-accent-2"></span>
+        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.about.kicker}</span>
+      </div>
+      <h2 class="mb-6 font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
+        {ui.about.headingLead} <span class="font-semibold">{ui.about.headingAccent}</span>
+      </h2>
+      {ui.about.previewParagraphs.map((p) => (
+        <p class="mb-4 font-display text-[15.5px] leading-[1.68] text-ink-2">{p}</p>
+      ))}
+      <Button href={localizePath("/about", locale)} variant="secondary" class="mt-4">
+        {ui.about.moreLink} <span class="opacity-50">→</span>
+      </Button>
+    </div>
+    <div class="flex items-center justify-center py-6">
+      <div class="relative h-[280px] w-[280px]">
+        <svg
+          class="dm-photo-arc pointer-events-none absolute -inset-[14px] h-[calc(100%+28px)] w-[calc(100%+28px)]"
+          viewBox="0 0 100 100"
+          aria-hidden="true"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="48"
+            fill="none"
+            stroke="var(--accent)"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-dasharray="70 240"
+            transform="rotate(-55 50 50)"
+          />
+        </svg>
+
+        <div
+          class="shadow-elevated relative h-full w-full overflow-hidden rounded-full border border-line-2"
+          style="box-shadow: var(--shadow-elevated);"
+        >
+          <Image
+            src={profilePhoto}
+            alt="Dereck Mendez"
+            width={560}
+            height={560}
+            class="h-full w-full object-cover"
+            style="filter: var(--photo-filter); object-position: 50% 18%"
+          />
+        </div>
+
+        <div
+          class="dm-photo-badge absolute -top-3 -left-5 flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line-2 bg-veil-2 text-ink-2 backdrop-blur-[10px]"
+          style="box-shadow: var(--shadow-elevated); animation-delay: 0.9s; rotate: -10deg"
+          title="Python"
+          aria-hidden="true"
+        >
+          <Icon name="simple-icons--python" class="h-[26px] w-[26px]" />
+        </div>
+        <div
+          class="dm-photo-badge absolute -right-5 bottom-3 flex h-12 w-12 items-center justify-center rounded-full border border-line-2 bg-veil-2 text-ink-2 backdrop-blur-[10px]"
+          style="box-shadow: var(--shadow-elevated); animation-delay: 0s; rotate: 8deg"
+          title="Pandas"
+          aria-hidden="true"
+        >
+          <Icon name="devicon-plain--pandas" class="h-6 w-6" />
+        </div>
+
+        <div
+          class="absolute -bottom-9 left-0 w-[196px] rounded-[16px] border border-line bg-[image:var(--gradient-card)] px-4 py-3 backdrop-blur-[18px]"
+          style="box-shadow: var(--shadow-elevated);"
+        >
+          <div class="font-display text-[22px] leading-none font-light tracking-[-0.02em]">{ui.about.stats[0].value}</div>
+          <div class="mt-1 font-display text-[11px] leading-[1.4] text-ink-2">{ui.about.stats[0].label}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="work" data-reveal class="mx-auto max-w-[1240px] px-8 pt-[70px] pb-10 scroll-mt-[100px]">
   <div class="mb-11 flex flex-wrap items-end justify-between gap-5">
     <div>
@@ -184,86 +264,6 @@ const toolFilters = [
       </div>
     )
   }
-</section>
-
-<section id="about" data-reveal class="mx-auto max-w-[1240px] px-8 py-[60px] scroll-mt-[100px]">
-  <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-center gap-11 lg:grid-cols-[1fr_37%]">
-    <div class="max-w-[660px]">
-      <div class="mb-[18px] flex items-center gap-[9px]">
-        <span class="h-1 w-1 rounded-full bg-accent-2"></span>
-        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.about.kicker}</span>
-      </div>
-      <h2 class="mb-6 font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
-        {ui.about.headingLead} <span class="font-semibold">{ui.about.headingAccent}</span>
-      </h2>
-      {ui.about.previewParagraphs.map((p) => (
-        <p class="mb-4 font-display text-[15.5px] leading-[1.68] text-ink-2">{p}</p>
-      ))}
-      <Button href={localizePath("/about", locale)} variant="secondary" class="mt-4">
-        {ui.about.moreLink} <span class="opacity-50">→</span>
-      </Button>
-    </div>
-    <div class="flex items-center justify-center py-6">
-      <div class="relative h-[280px] w-[280px]">
-        <svg
-          class="dm-photo-arc pointer-events-none absolute -inset-[14px] h-[calc(100%+28px)] w-[calc(100%+28px)]"
-          viewBox="0 0 100 100"
-          aria-hidden="true"
-        >
-          <circle
-            cx="50"
-            cy="50"
-            r="48"
-            fill="none"
-            stroke="var(--accent)"
-            stroke-width="1.4"
-            stroke-linecap="round"
-            stroke-dasharray="70 240"
-            transform="rotate(-55 50 50)"
-          />
-        </svg>
-
-        <div
-          class="shadow-elevated relative h-full w-full overflow-hidden rounded-full border border-line-2"
-          style="box-shadow: var(--shadow-elevated);"
-        >
-          <Image
-            src={profilePhoto}
-            alt="Dereck Mendez"
-            width={560}
-            height={560}
-            class="h-full w-full object-cover"
-            style="filter: var(--photo-filter); object-position: 50% 18%"
-          />
-        </div>
-
-        <div
-          class="dm-photo-badge absolute -top-3 -left-5 flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line-2 bg-veil-2 text-ink-2 backdrop-blur-[10px]"
-          style="box-shadow: var(--shadow-elevated); animation-delay: 0.9s; rotate: -10deg"
-          title="Python"
-          aria-hidden="true"
-        >
-          <Icon name="simple-icons--python" class="h-[26px] w-[26px]" />
-        </div>
-        <div
-          class="dm-photo-badge absolute -right-5 bottom-3 flex h-12 w-12 items-center justify-center rounded-full border border-line-2 bg-veil-2 text-ink-2 backdrop-blur-[10px]"
-          style="box-shadow: var(--shadow-elevated); animation-delay: 0s; rotate: 8deg"
-          title="Pandas"
-          aria-hidden="true"
-        >
-          <Icon name="devicon-plain--pandas" class="h-6 w-6" />
-        </div>
-
-        <div
-          class="absolute -bottom-9 left-0 w-[196px] rounded-[16px] border border-line bg-[image:var(--gradient-card)] px-4 py-3 backdrop-blur-[18px]"
-          style="box-shadow: var(--shadow-elevated);"
-        >
-          <div class="font-display text-[22px] leading-none font-light tracking-[-0.02em]">{ui.about.stats[0].value}</div>
-          <div class="mt-1 font-display text-[11px] leading-[1.4] text-ink-2">{ui.about.stats[0].label}</div>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
 
 <section id="experience" data-reveal class="mx-auto max-w-[1240px] px-8 py-[70px] scroll-mt-[100px]">
