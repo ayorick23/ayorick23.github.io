@@ -2,14 +2,14 @@
 
 _Data Science · Machine Learning · MLOps_
 
-[![Sitio en vivo](https://img.shields.io/badge/sitio_en_vivo-ayorick23.github.io-5b8cff?style=flat-square)](https://ayorick23.github.io)
+[![Sitio en vivo](https://img.shields.io/badge/sitio_en_vivo-dereckmendez.com-5b8cff?style=flat-square)](https://dereckmendez.com)
 ![Deploy](https://img.shields.io/github/actions/workflow/status/ayorick23/ayorick23.github.io/deploy.yml?branch=main&style=flat-square&label=deploy)
 ![Astro](https://img.shields.io/badge/Astro-7-BC52EE?style=flat-square&logo=astro&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
 
-**[→ ayorick23.github.io](https://ayorick23.github.io)**
+**[→ dereckmendez.com](https://dereckmendez.com)**
 
 ---
 
