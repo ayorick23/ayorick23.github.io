@@ -156,11 +156,25 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
   if (!shader) return null;
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    gl.deleteShader(shader);
-    return null;
-  }
+  // No COMPILE_STATUS check here: it would block until compilation ends. A broken shader fails LINK_STATUS instead.
   return shader;
+}
+
+// With KHR_parallel_shader_compile the driver links in the background; asking
+// for LINK_STATUS right away would block the main thread until it finishes.
+function linked(gl: WebGLRenderingContext, program: WebGLProgram, isCancelled: () => boolean) {
+  const ext = gl.getExtension("KHR_parallel_shader_compile");
+  return new Promise<boolean>((resolve) => {
+    const check = () => {
+      if (isCancelled()) return resolve(false);
+      if (ext && !gl.getProgramParameter(program, ext.COMPLETION_STATUS_KHR)) {
+        setTimeout(check, 30);
+        return;
+      }
+      resolve(Boolean(gl.getProgramParameter(program, gl.LINK_STATUS)));
+    };
+    check();
+  });
 }
 
 export function initNebula() {
@@ -169,8 +183,35 @@ export function initNebula() {
   if (!container || !canvas || container.dataset.initialized) return;
   container.dataset.initialized = "true";
 
+  // Creating the WebGL context and compiling the shader froze the page for
+  // ~1s when it ran inside a page transition (returning to the home page),
+  // so it waits until the browser is idle.
+  let cancelled = false;
+  let teardown = () => {};
+  document.addEventListener(
+    "astro:before-swap",
+    () => {
+      cancelled = true;
+      teardown();
+    },
+    { once: true },
+  );
+  const start = () => {
+    if (!cancelled) void setup(container, canvas, () => cancelled, (fn) => (teardown = fn));
+  };
+  if ("requestIdleCallback" in window) requestIdleCallback(start, { timeout: 2500 });
+  else setTimeout(start, 600);
+}
+
+async function setup(
+  container: HTMLElement,
+  canvas: HTMLCanvasElement,
+  isCancelled: () => boolean,
+  onTeardown: (fn: () => void) => void,
+) {
   const gl = canvas.getContext("webgl", { premultipliedAlpha: true, antialias: false, alpha: true });
   if (!gl) return;
+  onTeardown(() => gl.getExtension("WEBGL_lose_context")?.loseContext());
   const vs = compile(gl, gl.VERTEX_SHADER, VERT);
   const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
   const program = gl.createProgram();
@@ -178,7 +219,7 @@ export function initNebula() {
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
   gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+  if (!(await linked(gl, program, isCancelled))) return;
   gl.useProgram(program);
 
   const buffer = gl.createBuffer();
@@ -324,17 +365,13 @@ export function initNebula() {
     card.addEventListener("pointerleave", () => (last = null), { signal });
   }
 
-  document.addEventListener(
-    "astro:before-swap",
-    () => {
-      controller.abort();
-      ro.disconnect();
-      io.disconnect();
-      themeObserver.disconnect();
-      running = false;
-      cancelAnimationFrame(raf);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
-    },
-    { once: true },
-  );
+  onTeardown(() => {
+    controller.abort();
+    ro.disconnect();
+    io.disconnect();
+    themeObserver.disconnect();
+    running = false;
+    cancelAnimationFrame(raf);
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+  });
 }
