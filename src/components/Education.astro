@@ -27,7 +27,7 @@ const today = at(now.getUTCFullYear() * 12 + now.getUTCMonth());
   >
     <div class="flex flex-wrap items-start justify-between gap-4">
       <div class="max-w-[620px]">
-        <div class="font-mono text-[10.5px] tracking-[0.2em] text-ink-3 uppercase">{copy.institution}</div>
+        <div class="font-mono text-[10.5px] tracking-[0.09em] text-ink-3 uppercase">{copy.institution}</div>
         <h3 class="mt-3 font-display text-[clamp(1.2rem,2.3vw,1.6rem)] leading-[1.25] font-semibold tracking-[-0.02em]">
           {copy.degree}
         </h3>
@@ -63,7 +63,7 @@ const today = at(now.getUTCFullYear() * 12 + now.getUTCMonth());
             >
               <span class="dm-edu__dot"></span>
               <span class="dm-edu__label">
-                <span class="font-mono text-[11px] tracking-[0.14em] text-accent uppercase">
+                <span class="font-mono text-[11px] tracking-[0.06em] text-accent uppercase">
                   {formatYearMonth(m.date, locale, m.yearOnly)}
                 </span>
                 <span class="mt-1 block font-display text-[14.5px] font-semibold text-ink">{text.title}</span>
@@ -93,7 +93,7 @@ const today = at(now.getUTCFullYear() * 12 + now.getUTCMonth());
     padding: 4px 11px;
     font-family: var(--font-mono);
     font-size: 10.5px;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--accent);
     white-space: nowrap;
@@ -195,7 +195,7 @@ const today = at(now.getUTCFullYear() * 12 + now.getUTCMonth());
     bottom: 12px;
     font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--ink-2);
     white-space: nowrap;

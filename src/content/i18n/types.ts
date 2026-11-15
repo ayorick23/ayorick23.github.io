@@ -74,7 +74,6 @@ export interface UICopy {
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    scrollHint: string;
     constellation: Record<ConstellationNodeId, { label: string; description: string }>;
     constellationPanel: {
       kicker: string;

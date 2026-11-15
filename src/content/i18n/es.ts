@@ -46,7 +46,6 @@ export const es: UICopy = {
       "Construyo soluciones de datos y Machine Learning que convierten problemas reales en resultados medibles y reproducibles, desde el análisis y la experimentación hasta sistemas confiables.",
     ctaPrimary: "Ver mi trabajo",
     ctaSecondary: "Sobre mí",
-    scrollHint: "DESPLAZA PARA EXPLORAR",
     constellation: {
       machineLearning: {
         label: "Machine Learning",

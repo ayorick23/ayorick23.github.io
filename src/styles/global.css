@@ -1,7 +1,5 @@
 @import "tailwindcss";
 @import "@fontsource-variable/manrope";
-@import "@fontsource/jetbrains-mono/400.css";
-@import "@fontsource/jetbrains-mono/500.css";
 
 /*
   Design tokens — dark is the primary mode (see :root), light is the same
@@ -20,9 +18,9 @@
   --ink: #eef1f6;
   --ink-2: #98a1b2;
   --ink-3: #5c6575;
-  --accent: #5b8cff;
-  --accent-2: #9b7cff;
-  --accent-soft: rgba(91, 140, 255, 0.16);
+  --accent: #ef4d56;
+  --accent-2: #ff8a70;
+  --accent-soft: rgba(239, 77, 86, 0.16);
   --btn-fg: #07090d;
   --btn-bg: #f2f4f8;
   --shadow-elevated: 0 24px 60px -28px rgba(0, 0, 0, 0.85);
@@ -63,9 +61,9 @@
   --ink: #0a0d14;
   --ink-2: #5b6373;
   --ink-3: #8d94a1;
-  --accent: #3860e6;
-  --accent-2: #7a55ea;
-  --accent-soft: rgba(56, 96, 230, 0.1);
+  --accent: #d42a35;
+  --accent-2: #c4452c;
+  --accent-soft: rgba(212, 42, 53, 0.1);
   --btn-fg: #fbfbfd;
   --btn-bg: #12151d;
   --shadow-elevated: 0 22px 50px -26px rgba(20, 28, 50, 0.22);
@@ -108,7 +106,10 @@
   --color-btn-bg: var(--btn-bg);
 
   --font-display: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Labels, dates and numbers. Kept as `font-mono` so every existing class follows,
+     but it is Satoshi now: Dereck dropped the monospace label look (BaseLayout loads it
+     from Fontshare — its license doesn't allow committing the font files). */
+  --font-mono: "Satoshi", ui-sans-serif, system-ui, sans-serif;
 
   --radius-card: 20px;
   --radius-pill: 999px;
@@ -203,7 +204,7 @@
 .dm-pf-label {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
@@ -325,7 +326,7 @@
   padding: 6px 9px 6px;
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
@@ -526,25 +527,6 @@
   }
 }
 
-/* Hero scroll cue — mouse outline with a dot that travels down and fades */
-@keyframes dm-scroll-dot {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, 0);
-  }
-  30% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 0;
-    transform: translate(-50%, 15px);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, 0);
-  }
-}
-
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
@@ -559,6 +541,11 @@ body {
   font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Years, dates and counters line up digit by digit, as they did in the old monospace. */
+.font-mono {
+  font-variant-numeric: tabular-nums;
 }
 
 ::selection {
@@ -755,7 +742,7 @@ body {
   left: 28px;
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.05em;
   color: rgba(238, 241, 246, 0.78);
 }
 .lightbox-close,
@@ -996,7 +983,7 @@ body {
 .dm-cap__num {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   color: var(--ink-3);
 }
 .dm-cap__vtitle {

@@ -30,24 +30,24 @@ Este repositorio es ese sitio: un codebase en Astro + TypeScript + Tailwind CSS,
 
 ![Hero en modo oscuro](docs/screenshots/hero-dark-mode.png)
 
-_Hero — modo oscuro (default)_
+_Hero - modo oscuro (default)_
 
 ![Hero en modo claro](docs/screenshots/hero-light-mode.png)
 
-_Hero — modo claro_
+_Hero - modo claro_
 
 ## Stack técnico
 
-|                    |                                                                                                                                                                             |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Framework**      | [Astro](https://astro.build) 7 — arquitectura de islas, cero JS de cliente por defecto, `<ClientRouter />` para las transiciones entre páginas                              |
-| **Lenguaje**       | TypeScript, con schemas estrictos de content collections vía [Zod](https://zod.dev)                                                                                        |
-| **Estilos**        | [Tailwind CSS v4](https://tailwindcss.com) (`@theme inline`, sin archivo de config — los tokens viven en `src/styles/global.css`)                                          |
-| **Contenido**      | Content collections de Astro (`src/content/projects/{en,es}`) — casos de estudio como Markdown tipado                                                                      |
-| **Íconos**         | [astro-icon](https://github.com/natemoo-re/astro-icon) con un set local de SVGs (`src/assets/icons/`) + [Iconify](https://iconify.design) (`lucide`, `simple-icons`, `logos`) |
-| **Fuentes**        | [Fontsource](https://fontsource.org) — Manrope Variable (display/body) + JetBrains Mono (labels/código)                                                                     |
-| **SEO / Social**   | `@astrojs/sitemap`, más portadas propias para og:image generadas con `@napi-rs/canvas` (ver "Portadas para redes sociales" en Funcionalidades notables)                     |
-| **Hosting / CI**   | GitHub Pages, build y deploy automático vía GitHub Actions en cada push a `main`                                                                                            |
+|                  |                                                                                                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Framework**    | [Astro](https://astro.build) 7 — arquitectura de islas, cero JS de cliente por defecto, `<ClientRouter />` para las transiciones entre páginas                                |
+| **Lenguaje**     | TypeScript, con schemas estrictos de content collections vía [Zod](https://zod.dev)                                                                                           |
+| **Estilos**      | [Tailwind CSS v4](https://tailwindcss.com) (`@theme inline`, sin archivo de config — los tokens viven en `src/styles/global.css`)                                             |
+| **Contenido**    | Content collections de Astro (`src/content/projects/{en,es}`) — casos de estudio como Markdown tipado                                                                         |
+| **Íconos**       | [astro-icon](https://github.com/natemoo-re/astro-icon) con un set local de SVGs (`src/assets/icons/`) + [Iconify](https://iconify.design) (`lucide`, `simple-icons`, `logos`) |
+| **Fuentes**      | [Fontsource](https://fontsource.org) — Manrope Variable (display/body) + JetBrains Mono (labels/código)                                                                       |
+| **SEO / Social** | `@astrojs/sitemap`, más portadas propias para og:image generadas con `@napi-rs/canvas` (ver "Portadas para redes sociales" en Funcionalidades notables)                       |
+| **Hosting / CI** | GitHub Pages, build y deploy automático vía GitHub Actions en cada push a `main`                                                                                              |
 
 No se usa ningún framework de UI (React/Vue/Svelte) — las piezas interactivas (tema, idioma, constelación del hero, timeline, portadas de proyecto) son módulos de TypeScript plano, cargados desde tags `<script>` en los `.astro` que los necesitan.
 
@@ -125,21 +125,21 @@ Algunas decisiones que vale la pena señalar:
 
 ## Secciones
 
-| Sección                     | Para qué sirve                                                                                                                    |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| **Hero**                     | Titular, pitch de una línea, CTAs principales y la constelación interactiva.                                                        |
-| **Proyectos destacados**     | Los casos de estudio más sólidos, como tarjetas que enlazan a la página completa del proyecto.                                      |
-| **Herramientas y tecnologías** | El stack que uso día a día, como una cinta de íconos con scroll.                                                                   |
-| **Sobre mí (preview)**       | Un adelanto corto de "quién soy" con un link a la página completa `/about`.                                                         |
-| **Experiencia**              | Los últimos roles de mi trayectoria profesional, con un link al historial completo.                                                 |
-| **Capacidades**               | En qué se me puede contratar, agrupado en seis áreas concretas (análisis, ML, forecasting, MLOps, visualización, ingeniería de software para ML). |
-| **Contacto**                  | Un llamado a la acción directo con email y links sociales — sin formulario, solo un mailto y perfiles reales.                       |
+| Sección                        | Para qué sirve                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Hero**                       | Titular, pitch de una línea, CTAs principales y la constelación interactiva.                                                                      |
+| **Proyectos destacados**       | Los casos de estudio más sólidos, como tarjetas que enlazan a la página completa del proyecto.                                                    |
+| **Herramientas y tecnologías** | El stack que uso día a día, como una cinta de íconos con scroll.                                                                                  |
+| **Sobre mí (preview)**         | Un adelanto corto de "quién soy" con un link a la página completa `/about`.                                                                       |
+| **Experiencia**                | Los últimos roles de mi trayectoria profesional, con un link al historial completo.                                                               |
+| **Capacidades**                | En qué se me puede contratar, agrupado en seis áreas concretas (análisis, ML, forecasting, MLOps, visualización, ingeniería de software para ML). |
+| **Contacto**                   | Un llamado a la acción directo con email y links sociales — sin formulario, solo un mailto y perfiles reales.                                     |
 
 Cada sección de arriba existe en inglés en `/` y en español en `/es` — mismos componentes, mismo layout, solo cambia la fuente del copy (`src/content/i18n/{en,es}.ts`).
 
 ## Funcionalidades notables
 
-**Selector de idioma (EN ⇄ ES).** El botón del nav siempre muestra el código corto del idioma de _destino_ (`EN` o `ES`), y salta a la página equivalente en ese idioma en vez de volver al inicio — `/es/projects/telco-churn-mlops` cambia a `/projects/telco-churn-mlops`, no a `/`. La elección también se recuerda: se escribe en `localStorage` *antes* de navegar, así que una visita posterior a `/` redirige automáticamente al último idioma elegido, en vez de volver a inglés por defecto cada vez.
+**Selector de idioma (EN ⇄ ES).** El botón del nav siempre muestra el código corto del idioma de _destino_ (`EN` o `ES`), y salta a la página equivalente en ese idioma en vez de volver al inicio — `/es/projects/telco-churn-mlops` cambia a `/projects/telco-churn-mlops`, no a `/`. La elección también se recuerda: se escribe en `localStorage` _antes_ de navegar, así que una visita posterior a `/` redirige automáticamente al último idioma elegido, en vez de volver a inglés por defecto cada vez.
 
 **Toggle de tema (oscuro ⇄ claro).** Un switch en el nav cambia un atributo `data-theme` en `<html>`, contra el cual está definido cada color del sitio — así hay una sola fuente de verdad para "cómo se ve el azul de acento ahora mismo", no una hoja de estilos paralela que mantener sincronizada. La preferencia también se guarda en `localStorage`, y como el sitio usa las transiciones de vista de Astro (navegación sin recarga completa), el script de tema se vuelve a aplicar después de cada cambio de página para que el sitio nunca destelle de vuelta a oscuro a mitad de la navegación.
 

@@ -185,9 +185,9 @@ export function initConstellation() {
   // Theme colors are read once per toggle, not per frame (getComputedStyle in
   // the draw loop forces a style recalc 60x/sec).
   let starRGB: [number, number, number] = [220, 230, 255];
-  let accentRGB: [number, number, number] = [91, 140, 255];
+  let accentRGB: [number, number, number] = [239, 77, 86];
   let star = "#dce6ff";
-  let accent = "#5b8cff";
+  let accent = "#ef4d56";
 
   function toRGB(color: string): [number, number, number] {
     ctx!.fillStyle = "#000";
@@ -201,7 +201,7 @@ export function initConstellation() {
   function readThemeColors() {
     const styles = getComputedStyle(document.documentElement);
     star = styles.getPropertyValue("--star").trim() || "#dce6ff";
-    accent = styles.getPropertyValue("--accent").trim() || "#5b8cff";
+    accent = styles.getPropertyValue("--accent").trim() || "#ef4d56";
     starRGB = toRGB(star);
     accentRGB = toRGB(accent);
     if (!running) frame(performance.now());

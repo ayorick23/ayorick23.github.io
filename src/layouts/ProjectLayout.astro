@@ -32,7 +32,7 @@ const projectsHref = localizePath("/projects", locale);
 
       <div class="mb-5 flex items-center gap-3">
         <span class="font-mono text-[11px] text-ink-3">{String(project.data.order).padStart(2, "0")}</span>
-        <span class="font-mono text-[10px] tracking-[0.18em] text-accent uppercase">{project.data.category}</span>
+        <span class="font-mono text-[10px] tracking-[0.08em] text-accent uppercase">{project.data.category}</span>
         <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
       </div>
       <h1 class="mb-5 font-display text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.08] font-light tracking-[-0.03em]">
@@ -41,7 +41,7 @@ const projectsHref = localizePath("/projects", locale);
       <div class="section-body mb-8 font-display text-[17px] leading-[1.6] text-ink-2" set:html={renderBody(project.data.description)} />
 
       <div class="mb-10">
-        <div class="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">{ui.projects.technologiesLabel}</div>
+        <div class="mb-3 font-mono text-[11px] tracking-[0.08em] text-accent uppercase">{ui.projects.technologiesLabel}</div>
         <div class="flex flex-wrap gap-[8px]">
           {
             project.data.technologies.map((tech) => {
@@ -72,7 +72,7 @@ const projectsHref = localizePath("/projects", locale);
       {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
       {
         !project.data.coverKind && (
-          <span class="absolute bottom-[14px] left-[18px] font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase">
+          <span class="absolute bottom-[14px] left-[18px] font-mono text-[10px] tracking-[0.07em] text-ink-3 uppercase">
             {ui.common.coverPending} — 1440×720
           </span>
         )
@@ -85,7 +85,7 @@ const projectsHref = localizePath("/projects", locale);
           {project.data.metrics.map((metric, i) => (
             <div data-metric class="dm-metric" style={`--i:${i}`}>
               <span class="dm-metric__glow" aria-hidden="true" />
-              <span class="relative font-mono text-[10.5px] tracking-[0.14em] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
+              <span class="relative font-mono text-[10.5px] tracking-[0.06em] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
               <div class="relative mt-auto">
                 <div data-metric-value class="dm-metric__value">{metric.value}</div>
                 <div class="dm-metric__label">{metric.label}</div>

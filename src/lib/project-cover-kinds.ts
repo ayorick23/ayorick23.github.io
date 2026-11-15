@@ -70,7 +70,8 @@ function txt(
   align: CanvasTextAlign = "left",
   weight = 500,
 ) {
-  ctx.font = `${weight} ${size}px "JetBrains Mono", ui-monospace, monospace`;
+  // Satoshi on the site; the og:image generator only registers JetBrains Mono, so it falls back.
+  ctx.font = `${weight} ${size}px "Satoshi", "JetBrains Mono", ui-sans-serif, sans-serif`;
   ctx.fillStyle = color;
   ctx.textAlign = align;
   ctx.textBaseline = "middle";
