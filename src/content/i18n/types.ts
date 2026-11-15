@@ -6,6 +6,10 @@ import type { EducationMilestoneId } from "../../data/education";
 
 export interface TimelineEntry {
   period: string;
+  /** YYYY-MM — drives the Gantt bars and the branch graph; `period` is only the label. */
+  start: string;
+  /** YYYY-MM; omitted while the role is current. */
+  end?: string;
   role: string;
   org: string;
   /** ~3-line condensed version of `description`, shown in the home page timeline. */
@@ -33,6 +37,7 @@ export interface UICopy {
   };
   nav: {
     work: string;
+    tools: string;
     about: string;
     experience: string;
     skills: string;
@@ -69,7 +74,6 @@ export interface UICopy {
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    scrollHint: string;
     constellation: Record<ConstellationNodeId, { label: string; description: string }>;
     constellationPanel: {
       kicker: string;
@@ -81,7 +85,6 @@ export interface UICopy {
     };
   };
   work: {
-    kicker: string;
     headingLead: string;
     headingAccent: string;
     description: string;
@@ -89,15 +92,14 @@ export interface UICopy {
     caseStudyCta: string;
   };
   tools: {
-    kicker: string;
-    headingLead: string;
-    headingAccent: string;
+    heading: string;
     filterLabel: string;
     filterAll: string;
     groups: Record<ToolGroupKey, { name: string; short: string; description: string }>;
     exploringLabel: string;
   };
   about: {
+    /** Only on the dedicated page; the home section uses the nav label. */
     kicker: string;
     headingLead: string;
     headingAccent: string;
@@ -148,6 +150,7 @@ export interface UICopy {
     };
   };
   experience: {
+    /** Only on the dedicated page; the home section uses the nav label. */
     kicker: string;
     headingLead: string;
     headingAccent: string;
@@ -155,9 +158,31 @@ export interface UICopy {
     note: string;
     viewFull: string;
     timeline: TimelineEntry[];
+    chart: {
+      hint: string;
+      workLane: string;
+      studyLane: string;
+      certLane: string;
+      today: string;
+      start: string;
+      planned: string;
+      finished: string;
+      /** End of the year range on the current role's badge ("2026 – Actualidad"). */
+      present: string;
+      period: string;
+      company: string;
+      duration: string;
+      institution: string;
+      status: string;
+      total: string;
+      certificates: string;
+      viewAllCertificates: string;
+      /** `{n}` is replaced with the number of certificates not listed. */
+      moreCertificates: string;
+      units: { year: string; years: string; month: string; months: string };
+    };
   };
   capabilities: {
-    kicker: string;
     headingLead: string;
     headingAccent: string;
     items: CapabilityItem[];
@@ -170,6 +195,8 @@ export interface UICopy {
     cta: string;
   };
   projects: {
+    /** Only on the dedicated /projects page; the home section uses the nav label. */
+    kicker: string;
     headingLead: string;
     headingAccent: string;
     subtitle: string;
@@ -177,6 +204,10 @@ export interface UICopy {
     backLabel: string;
     otherLabel: string;
     technologiesLabel: string;
+    softwareDivider: {
+      label: string;
+      note: string;
+    };
     filter: {
       label: string;
       discipline: string;

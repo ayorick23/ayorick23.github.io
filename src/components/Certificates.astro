@@ -42,7 +42,7 @@ const peekMeta = (c: (typeof certificates)[number]) =>
           <span class="font-display text-[56px] leading-none font-light tracking-[-0.04em] text-ink">
             {certificates.length}
           </span>
-          <span class="font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">{copy.total}</span>
+          <span class="font-mono text-[11px] tracking-[0.08em] text-ink-3 uppercase">{copy.total}</span>
         </div>
         <ul class="mt-6 flex flex-col gap-2 border-t border-line pt-5">
           {counts.map(({ cat, n }) => (
@@ -55,7 +55,7 @@ const peekMeta = (c: (typeof certificates)[number]) =>
             </li>
           ))}
         </ul>
-        <p class="mt-6 font-mono text-[10.5px] leading-[1.7] tracking-[0.08em] text-ink-3 uppercase">{copy.hint}</p>
+        <p class="mt-6 font-mono text-[10.5px] leading-[1.7] tracking-[0.03em] text-ink-3 uppercase">{copy.hint}</p>
       </div>
 
       {certificates.map((c) => {
@@ -69,7 +69,7 @@ const peekMeta = (c: (typeof certificates)[number]) =>
                   {copy.categories[c.category]}
                 </span>
                 {c.series && (
-                  <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-3 uppercase">
+                  <span class="font-mono text-[10.5px] tracking-[0.04em] text-ink-3 uppercase">
                     {copy.module.replace("{part}", String(c.series.part)).replace("{total}", String(c.series.total))}
                   </span>
                 )}
@@ -106,7 +106,7 @@ const peekMeta = (c: (typeof certificates)[number]) =>
             </dl>
             {related && c.related && (
               <button type="button" class="dm-cert-panel__related" data-cert-open={related.id}>
-                <span class="font-mono text-[10px] tracking-[0.14em] text-ink-3 uppercase">{copy[c.related.kind]}</span>
+                <span class="font-mono text-[10px] tracking-[0.06em] text-ink-3 uppercase">{copy[c.related.kind]}</span>
                 <span class="flex items-center justify-between gap-3 font-display text-[13.5px] font-semibold text-ink">
                   {related.title[locale]}
                   <Icon name="lucide:arrow-right" class="h-4 w-4 flex-none text-accent" />
@@ -167,7 +167,7 @@ const peekMeta = (c: (typeof certificates)[number]) =>
 
       <div class="dm-stage__bar">
         <div class="min-w-0" aria-live="polite">
-          <span class="block truncate font-mono text-[10.5px] tracking-[0.14em] text-ink-3 uppercase" data-peek-meta>
+          <span class="block truncate font-mono text-[10.5px] tracking-[0.06em] text-ink-3 uppercase" data-peek-meta>
             {peekMeta(first)}
           </span>
           <span class="mt-1 block truncate font-display text-[14.5px] font-semibold text-ink" data-peek-title>{first.title[locale]}</span>
@@ -328,7 +328,7 @@ const peekMeta = (c: (typeof certificates)[number]) =>
     padding: 3px 10px;
     font-family: var(--font-mono);
     font-size: 10.5px;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--ink-2);
   }

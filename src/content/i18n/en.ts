@@ -8,6 +8,7 @@ export const en: UICopy = {
   },
   nav: {
     work: "Work",
+    tools: "Tools",
     about: "About",
     experience: "Experience",
     skills: "Skills",
@@ -45,7 +46,6 @@ export const en: UICopy = {
       "I build data and machine learning solutions that turn real-world problems into measurable, reproducible outcomes — from analysis and experimentation to reliable systems.",
     ctaPrimary: "Explore my work",
     ctaSecondary: "About me",
-    scrollHint: "SCROLL TO EXPLORE",
     constellation: {
       machineLearning: {
         label: "Machine Learning",
@@ -86,7 +86,6 @@ export const en: UICopy = {
     },
   },
   work: {
-    kicker: "FEATURED PROJECTS",
     headingLead: "End-to-end projects",
     headingAccent: "solving real problems.",
     description:
@@ -95,9 +94,7 @@ export const en: UICopy = {
     caseStudyCta: "View case study",
   },
   tools: {
-    kicker: "Tools & technologies",
-    headingLead: "The stack,",
-    headingAccent: "organised by discipline.",
+    heading: "Tools I use to analyse data, build models and turn experiments into reproducible systems.",
     filterLabel: "Filter tools by discipline",
     filterAll: "All",
     groups: {
@@ -237,9 +234,31 @@ export const en: UICopy = {
     headingTail: "to data and ML.",
     note: "",
     viewFull: "Full experience",
+    chart: {
+      hint: "Hover or tap a bar to see the details.",
+      workLane: "Work",
+      studyLane: "Education",
+      certLane: "Certifications",
+      today: "Today",
+      start: "Start",
+      planned: "Planned",
+      finished: "Finished",
+      present: "Present",
+      period: "Period",
+      company: "Company",
+      duration: "Duration",
+      institution: "Institution",
+      status: "Status",
+      total: "Total",
+      certificates: "certificates",
+      viewAllCertificates: "See all in About",
+      moreCertificates: "See the other {n} in About",
+      units: { year: "year", years: "years", month: "month", months: "months" },
+    },
     timeline: [
       {
         period: "JUN 2026 - PRESENT",
+        start: "2026-06",
         role: "Engineering Consultant",
         org: "ACF Technologies LATAM",
         summary:
@@ -250,6 +269,8 @@ export const en: UICopy = {
       },
       {
         period: "JUL 2023 - JUN 2026",
+        start: "2023-07",
+        end: "2026-06",
         role: "Training & Development Coordinator",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -260,6 +281,8 @@ export const en: UICopy = {
       },
       {
         period: "AUG 2022 - JUL 2023",
+        start: "2022-08",
+        end: "2023-07",
         role: "Operations & Inventory Trainer",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -270,6 +293,8 @@ export const en: UICopy = {
       },
       {
         period: "NOV 2021 - JUL 2022",
+        start: "2021-11",
+        end: "2022-07",
         role: "Inventory Control Supervisor",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -280,6 +305,8 @@ export const en: UICopy = {
       },
       {
         period: "FEB 2021 - OCT 2021",
+        start: "2021-02",
+        end: "2021-10",
         role: "Inventory Analyst",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -290,6 +317,8 @@ export const en: UICopy = {
       },
       {
         period: "OCT 2019 - FEB 2021",
+        start: "2019-10",
+        end: "2021-02",
         role: "Paint Sales Associate",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -301,7 +330,6 @@ export const en: UICopy = {
     ],
   },
   capabilities: {
-    kicker: "CAPABILITIES",
     headingLead: "What I can",
     headingAccent: "actually do.",
     items: [
@@ -353,6 +381,7 @@ export const en: UICopy = {
     cta: "Get in touch",
   },
   projects: {
+    kicker: "FEATURED PROJECTS",
     headingLead: "Selected",
     headingAccent: "work.",
     subtitle: "Case studies covering modelling, engineering and deployment.",
@@ -360,6 +389,10 @@ export const en: UICopy = {
     backLabel: "All projects",
     otherLabel: "Other projects",
     technologiesLabel: "Technologies used",
+    softwareDivider: {
+      label: "Software development",
+      note: "Beyond data: projects from my software engineering background.",
+    },
     filter: {
       label: "Filter projects",
       discipline: "Discipline",

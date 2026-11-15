@@ -10,6 +10,8 @@ const projectSchema = z.object({
   description: z.string(),
   technologies: z.array(z.string()),
   disciplines: z.array(z.enum(DISCIPLINES)).default([]),
+  /** "software" projects sit outside the data disciplines: listed last on /projects, never on the home page. */
+  track: z.enum(["data", "software"]).default("data"),
   githubUrl: z.url().optional(),
   demoUrl: z.url().optional(),
   metrics: z

@@ -4,7 +4,7 @@ import { Icon } from "astro-icon/components";
 import Constellation from "../Constellation.astro";
 import ProjectGrid from "../ProjectGrid.astro";
 import CapabilityIllustration from "../CapabilityIllustration.astro";
-import Timeline from "../Timeline.astro";
+import ExperienceGantt from "../ExperienceGantt.astro";
 import Button from "../Button.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 import { getFeaturedProjects } from "../../lib/projects";
@@ -36,7 +36,7 @@ const toolFilters = [
         class="h-[5px] w-[5px] rounded-full bg-accent"
         style="box-shadow: 0 0 12px var(--accent)"
       ></span>
-      <span class="font-mono text-[11px] tracking-[0.26em] text-ink-2">{ui.hero.kicker}</span>
+      <span class="font-mono text-[11px] tracking-[0.1em] text-ink-2">{ui.hero.kicker}</span>
     </div>
     <h1
       class="mb-[26px] animate-[fade-up_0.6s_ease_0.15s_both] text-[clamp(2.4rem,5.4vw,4.1rem)] leading-[1.06] font-light tracking-[-0.03em] text-wrap-balance"
@@ -72,12 +72,6 @@ const toolFilters = [
         }
       </div>
     </div>
-    <div class="mt-16 flex items-center gap-3 animate-[fade-up_0.6s_ease_0.6s_both]">
-      <span class="dm-scroll-mouse relative block h-[40px] w-[25px] shrink-0 rounded-full border border-line-2">
-        <span class="absolute top-[7px] left-1/2 h-[8px] w-[4px] -translate-x-1/2 rounded-full bg-accent" style="animation: dm-scroll-dot 1.8s ease-in-out infinite"></span>
-      </span>
-      <span class="font-mono text-[12px] tracking-[0.16em] text-ink-3">{ui.hero.scrollHint}</span>
-    </div>
   </div>
 
   <Constellation ui={ui} />
@@ -88,7 +82,7 @@ const toolFilters = [
     <div class="max-w-[660px]">
       <div class="mb-[18px] flex items-center gap-[9px]">
         <span class="h-1 w-1 rounded-full bg-accent-2"></span>
-        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.about.kicker}</span>
+        <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{ui.nav.about}</span>
       </div>
       <h2 class="mb-6 font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
         {ui.about.headingLead} <span class="font-semibold">{ui.about.headingAccent}</span>
@@ -168,7 +162,7 @@ const toolFilters = [
     <div>
       <div class="mb-[18px] flex items-center gap-[9px]">
         <span class="h-1 w-1 rounded-full bg-accent"></span>
-        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.work.kicker}</span>
+        <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{ui.nav.work}</span>
       </div>
       <h2 class="max-w-xl font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
         <span class="font-semibold">{ui.work.headingLead}</span> {ui.work.headingAccent}
@@ -185,15 +179,15 @@ const toolFilters = [
   <ProjectGrid projects={featuredProjects} ui={ui} locale={locale} />
 </section>
 
-<section data-reveal data-tools-root class="mx-auto max-w-[1240px] px-8 pt-[22px] pb-[70px]">
+<section id="tools" data-reveal data-tools-root class="mx-auto max-w-[1240px] px-8 pt-[22px] pb-[70px] scroll-mt-[100px]">
   <div class="mb-7 flex flex-wrap items-end justify-between gap-5">
     <div>
       <div class="mb-[18px] flex items-center gap-[9px]">
         <span class="h-1 w-1 rounded-full bg-accent"></span>
-        <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.tools.kicker}</span>
+        <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{ui.nav.tools}</span>
       </div>
-      <h2 class="m-0 max-w-[520px] font-display text-[clamp(26px,3vw,36px)] leading-[1.16] font-light tracking-[-0.025em]">
-        {ui.tools.headingLead} <span class="font-semibold">{ui.tools.headingAccent}</span>
+      <h2 class="m-0 max-w-[600px] font-display text-[clamp(1.35rem,2.6vw,1.9rem)] leading-[1.2] font-light tracking-[-0.02em]">
+        {ui.tools.heading}
       </h2>
     </div>
     <div
@@ -255,7 +249,7 @@ const toolFilters = [
   {
     exploringTools.length > 0 && (
       <div class="mt-[22px] flex flex-wrap items-center gap-[14px] rounded-[14px] border border-line bg-veil px-5 py-4 lg:backdrop-blur-[16px]">
-        <span class="font-mono text-[10px] tracking-[0.2em] text-accent-2 uppercase">{ui.tools.exploringLabel}</span>
+        <span class="font-mono text-[10px] tracking-[0.09em] text-accent-2 uppercase">{ui.tools.exploringLabel}</span>
         <div class="flex flex-wrap gap-2">
           {exploringTools.map((tool) => (
             <ToolChip tool={tool} dashed />
@@ -269,7 +263,7 @@ const toolFilters = [
 <section id="experience" data-reveal class="mx-auto max-w-[1240px] px-8 py-[70px] scroll-mt-[100px]">
   <div class="mb-[18px] flex items-center gap-[9px]">
     <span class="h-1 w-1 rounded-full bg-accent"></span>
-    <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.experience.kicker}</span>
+    <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{ui.nav.experience}</span>
   </div>
   <div class="mb-3 flex flex-wrap items-end justify-between gap-4">
     <h2 class="font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
@@ -285,14 +279,14 @@ const toolFilters = [
   </div>
   {ui.experience.note && <p class="mb-[46px] font-mono text-[12px] text-ink-3">{ui.experience.note}</p>}
   <div class={ui.experience.note ? "" : "mt-[46px]"}>
-    <Timeline entries={ui.experience.timeline} compact />
+    <ExperienceGantt entries={ui.experience.timeline} />
   </div>
 </section>
 
 <section id="skills" data-reveal class="mx-auto max-w-[1240px] px-8 py-[60px] scroll-mt-[100px]">
   <div class="mb-[18px] flex items-center gap-[9px]">
     <span class="h-1 w-1 rounded-full bg-accent-2"></span>
-    <span class="font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.capabilities.kicker}</span>
+    <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{ui.nav.skills}</span>
   </div>
   <h2 class="mb-[46px] max-w-xl font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
     {ui.capabilities.headingLead} <span class="font-semibold">{ui.capabilities.headingAccent}</span>
@@ -338,6 +332,10 @@ const toolFilters = [
       <canvas data-nebula-canvas aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
     </div>
     <div class="relative max-w-[560px]">
+      <div class="mb-[18px] flex items-center gap-[9px]">
+        <span class="h-1 w-1 rounded-full bg-accent"></span>
+        <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{ui.nav.contact}</span>
+      </div>
       <h2 class="mb-5 font-display text-[clamp(1.9rem,4.2vw,3.1rem)] leading-[1.1] font-light tracking-[-0.03em]">
         {ui.contact.headingLead} <span class="font-semibold text-accent">{ui.contact.headingAccent}</span>
       </h2>
@@ -370,7 +368,6 @@ const toolFilters = [
 </script>
 
 <style>
-  /* Only defined under [data-theme="light"] in global.css — stays invisible in dark mode. */
   .hero-aurora {
     background: var(--gradient-aurora, none);
     filter: blur(50px);

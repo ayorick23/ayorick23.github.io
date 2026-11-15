@@ -8,6 +8,7 @@ export const es: UICopy = {
   },
   nav: {
     work: "Proyectos",
+    tools: "Herramientas",
     about: "Sobre mí",
     experience: "Experiencia",
     skills: "Capacidades",
@@ -45,7 +46,6 @@ export const es: UICopy = {
       "Construyo soluciones de datos y Machine Learning que convierten problemas reales en resultados medibles y reproducibles, desde el análisis y la experimentación hasta sistemas confiables.",
     ctaPrimary: "Ver mi trabajo",
     ctaSecondary: "Sobre mí",
-    scrollHint: "DESPLAZA PARA EXPLORAR",
     constellation: {
       machineLearning: {
         label: "Machine Learning",
@@ -87,7 +87,6 @@ export const es: UICopy = {
     },
   },
   work: {
-    kicker: "PROYECTOS DESTACADOS",
     headingLead: "Proyectos end-to-end",
     headingAccent: "que resuelven problemas reales.",
     description:
@@ -96,9 +95,7 @@ export const es: UICopy = {
     caseStudyCta: "Ver caso de estudio",
   },
   tools: {
-    kicker: "Herramientas y tecnologías",
-    headingLead: "El stack,",
-    headingAccent: "organizado por disciplina.",
+    heading: "Herramientas que utilizo para analizar datos, construir modelos y convertir experimentos en sistemas reproducibles.",
     filterLabel: "Filtrar herramientas por disciplina",
     filterAll: "Todo",
     groups: {
@@ -243,9 +240,31 @@ export const es: UICopy = {
     headingTail: "a los datos y ML.",
     note: "",
     viewFull: "Experiencia completa",
+    chart: {
+      hint: "Pasa el cursor o toca una barra para ver el detalle.",
+      workLane: "Trabajo",
+      studyLane: "Educación",
+      certLane: "Certificaciones",
+      today: "Hoy",
+      start: "Inicio",
+      planned: "Planificado",
+      finished: "Finalizado",
+      present: "Actualidad",
+      period: "Periodo",
+      company: "Empresa",
+      duration: "Duración",
+      institution: "Institución",
+      status: "Estado",
+      total: "Total",
+      certificates: "certificados",
+      viewAllCertificates: "Ver todos en Sobre mí",
+      moreCertificates: "Ver los {n} restantes en Sobre mí",
+      units: { year: "año", years: "años", month: "mes", months: "meses" },
+    },
     timeline: [
       {
         period: "JUN 2026 - ACTUALIDAD",
+        start: "2026-06",
         role: "Consultor de Ingeniería",
         org: "ACF Technologies LATAM",
         summary:
@@ -256,6 +275,8 @@ export const es: UICopy = {
       },
       {
         period: "JUL 2023 - JUN 2026",
+        start: "2023-07",
+        end: "2026-06",
         role: "Coordinador de Formación y Desarrollo",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -266,6 +287,8 @@ export const es: UICopy = {
       },
       {
         period: "AGO 2022 - JUL 2023",
+        start: "2022-08",
+        end: "2023-07",
         role: "Capacitador de Operaciones e Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -276,6 +299,8 @@ export const es: UICopy = {
       },
       {
         period: "NOV 2021 - JUL 2022",
+        start: "2021-11",
+        end: "2022-07",
         role: "Encargado de Control de Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -286,6 +311,8 @@ export const es: UICopy = {
       },
       {
         period: "FEB 2021 - OCT 2021",
+        start: "2021-02",
+        end: "2021-10",
         role: "Analista de Inventarios",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -296,6 +323,8 @@ export const es: UICopy = {
       },
       {
         period: "OCT 2019 - FEB 2021",
+        start: "2019-10",
+        end: "2021-02",
         role: "Vendedor de Pinturas",
         org: "Almacenes Vidrí S.A. de C.V.",
         summary:
@@ -307,7 +336,6 @@ export const es: UICopy = {
     ],
   },
   capabilities: {
-    kicker: "CAPACIDADES",
     headingLead: "Lo que realmente",
     headingAccent: "puedo hacer.",
     items: [
@@ -359,6 +387,7 @@ export const es: UICopy = {
     cta: "Hablemos",
   },
   projects: {
+    kicker: "PROYECTOS DESTACADOS",
     headingLead: "Trabajo",
     headingAccent: "seleccionado.",
     subtitle: "Casos de estudio sobre modelado, ingeniería y despliegue.",
@@ -366,6 +395,10 @@ export const es: UICopy = {
     backLabel: "Todos los proyectos",
     otherLabel: "Otros proyectos",
     technologiesLabel: "Tecnologías utilizadas",
+    softwareDivider: {
+      label: "Desarrollo de software",
+      note: "Fuera del mundo de los datos: proyectos de mi formación en ingeniería de software.",
+    },
     filter: {
       label: "Filtrar proyectos",
       discipline: "Disciplina",

@@ -22,6 +22,7 @@ export function initProjectsFilter() {
   const clearBtn = root.querySelector<HTMLButtonElement>("[data-pf-clear]");
   const result = root.querySelector<HTMLElement>("[data-pf-result]");
   const empty = root.querySelector<HTMLElement>("[data-pf-empty]");
+  const divider = root.querySelector<HTMLElement>("[data-pf-divider]");
   if (!rows.length) return;
 
   rows.forEach((row) => (row._techs = JSON.parse(row.dataset.techs ?? "[]")));
@@ -66,6 +67,7 @@ export function initProjectsFilter() {
     const entering = next.filter((r) => r.hidden);
     const staying = next.filter((r) => !r.hidden);
     syncChrome(next.length);
+    if (divider) divider.hidden = !next.some((r) => r.dataset.track === "software");
 
     if (reduceMotion) {
       rows.forEach((r) => (r.hidden = !next.includes(r)));

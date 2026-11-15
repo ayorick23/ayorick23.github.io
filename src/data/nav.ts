@@ -2,6 +2,7 @@
 export const navItems = [
   { id: "about", href: "#about" },
   { id: "work", href: "#work" },
+  { id: "tools", href: "#tools" },
   { id: "experience", href: "#experience" },
   { id: "skills", href: "#skills" },
   { id: "contact", href: "#contact" },

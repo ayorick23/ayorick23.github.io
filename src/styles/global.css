@@ -1,7 +1,5 @@
 @import "tailwindcss";
 @import "@fontsource-variable/manrope";
-@import "@fontsource/jetbrains-mono/400.css";
-@import "@fontsource/jetbrains-mono/500.css";
 
 /*
   Design tokens — dark is the primary mode (see :root), light is the same
@@ -10,8 +8,9 @@
   so the theme toggle can swap them instantly without a page reload.
 */
 :root {
-  --bg: #050609;
-  --surface: #0a0c12;
+  /* Graphite black taken from OdontoTrack's dark theme. */
+  --bg: #0e1013;
+  --surface: #181b20;
   --veil: rgba(255, 255, 255, 0.028);
   --veil-2: rgba(255, 255, 255, 0.05);
   --line: rgba(255, 255, 255, 0.075);
@@ -19,9 +18,9 @@
   --ink: #eef1f6;
   --ink-2: #98a1b2;
   --ink-3: #5c6575;
-  --accent: #5b8cff;
-  --accent-2: #9b7cff;
-  --accent-soft: rgba(91, 140, 255, 0.16);
+  --accent: #ef4d56;
+  --accent-2: #ff8a70;
+  --accent-soft: rgba(239, 77, 86, 0.16);
   --btn-fg: #07090d;
   --btn-bg: #f2f4f8;
   --shadow-elevated: 0 24px 60px -28px rgba(0, 0, 0, 0.85);
@@ -31,13 +30,19 @@
     rgba(255, 255, 255, 0.012) 42%,
     rgba(91, 140, 255, 0.035)
   );
-  --gradient-ambient:
-    radial-gradient(60% 50% at 78% 18%, rgba(91, 140, 255, 0.16), transparent 70%),
-    radial-gradient(45% 40% at 12% 8%, rgba(155, 124, 255, 0.1), transparent 70%);
+  /* Neutral on purpose: a blue/violet wash here tinted the whole black page. In dark
+     mode the only color glow is the hero aurora. */
+  --gradient-ambient: radial-gradient(60% 50% at 78% 18%, rgba(255, 255, 255, 0.025), transparent 70%);
   /* Deliberately NOT redefined under [data-theme="light"] — Dereck wants the photo's
      own color rendering identical in both themes; only the page background around it
      should change. */
   --photo-filter: grayscale(0.4) contrast(1.05) brightness(0.92);
+  /* Same blob layout as the light-mode aurora, dimmed so it reads as a glow on black. */
+  --gradient-aurora:
+    radial-gradient(38% 42% at 82% 18%, rgba(255, 150, 95, 0.1), transparent 70%),
+    radial-gradient(34% 38% at 58% 46%, rgba(255, 105, 160, 0.07), transparent 70%),
+    radial-gradient(40% 44% at 22% 30%, rgba(140, 110, 255, 0.1), transparent 70%),
+    radial-gradient(36% 40% at 12% 78%, rgba(91, 140, 255, 0.08), transparent 70%);
   --star: #dce6ff;
   --edge: rgba(140, 175, 255, 0.3);
   --nebula-cloud-1: rgba(91, 140, 255, 0.5);
@@ -56,9 +61,9 @@
   --ink: #0a0d14;
   --ink-2: #5b6373;
   --ink-3: #8d94a1;
-  --accent: #3860e6;
-  --accent-2: #7a55ea;
-  --accent-soft: rgba(56, 96, 230, 0.1);
+  --accent: #d42a35;
+  --accent-2: #c4452c;
+  --accent-soft: rgba(212, 42, 53, 0.1);
   --btn-fg: #fbfbfd;
   --btn-bg: #12151d;
   --shadow-elevated: 0 22px 50px -26px rgba(20, 28, 50, 0.22);
@@ -101,7 +106,10 @@
   --color-btn-bg: var(--btn-bg);
 
   --font-display: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Labels, dates and numbers. Kept as `font-mono` so every existing class follows,
+     but it is Satoshi now: Dereck dropped the monospace label look (BaseLayout loads it
+     from Fontshare — its license doesn't allow committing the font files). */
+  --font-mono: "Satoshi", ui-sans-serif, system-ui, sans-serif;
 
   --radius-card: 20px;
   --radius-pill: 999px;
@@ -196,7 +204,7 @@
 .dm-pf-label {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
@@ -318,7 +326,7 @@
   padding: 6px 9px 6px;
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
@@ -519,111 +527,6 @@
   }
 }
 
-/* Timeline connecting lines — created at runtime via createElementNS in
-   scripts/timeline.ts, so they never get Astro's scoped data-astro-cid
-   attribute; must live here, not in Timeline.astro's <style>. */
-.dm-timeline-edge {
-  stroke: var(--line-2);
-  stroke-width: 1;
-  transition: stroke 0.25s ease;
-}
-.dm-timeline-edge.is-lit {
-  stroke: var(--accent);
-  stroke-width: 1.4;
-  filter: drop-shadow(0 0 4px var(--accent-soft));
-}
-/* Scroll-driven fill drawn over each grey edge (scripts/timeline.ts): the line
-   "pours" down as you scroll, and every dot it reaches lights up. */
-.dm-timeline-fill {
-  stroke: var(--accent);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  filter: drop-shadow(0 0 5px var(--accent-soft));
-}
-.dm-timeline-dot {
-  border-color: var(--line-2);
-  background-color: var(--bg);
-  transition:
-    border-color 0.4s ease,
-    background-color 0.4s ease,
-    box-shadow 0.4s ease;
-}
-.dm-timeline-node.is-reached .dm-timeline-dot {
-  border-color: var(--accent);
-  background-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
-}
-.dm-timeline-node.is-active .dm-timeline-dot {
-  border-color: var(--accent);
-  background-color: var(--accent);
-  box-shadow:
-    0 0 0 6px var(--accent-soft),
-    0 0 16px 1px var(--accent);
-}
-.dm-timeline-text,
-.dm-timeline-body {
-  opacity: 0.3;
-  transition:
-    opacity 0.6s ease,
-    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-.dm-timeline-node.is-reached .dm-timeline-text {
-  opacity: 1;
-}
-/* Same as the reference: once the fill reaches a row, its content steps
-   slightly to the right as it lights up. */
-.dm-timeline-node.is-reached .dm-timeline-body {
-  opacity: 1;
-  transform: translateX(10px);
-}
-.dm-timeline-year {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3.4vw, 2.75rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink);
-}
-/* The year and dates drop down out of a slot, scrubbed by scroll position. */
-.dm-rise {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-}
-.dm-rise > [data-rise] {
-  display: inline-block;
-  will-change: transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .dm-timeline-text,
-  .dm-timeline-body,
-  .dm-timeline-dot {
-    transition: none;
-  }
-}
-
-/* Hero scroll cue — mouse outline with a dot that travels down and fades */
-@keyframes dm-scroll-dot {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, 0);
-  }
-  30% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 0;
-    transform: translate(-50%, 15px);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, 0);
-  }
-}
-
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
@@ -638,6 +541,11 @@ body {
   font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Years, dates and counters line up digit by digit, as they did in the old monospace. */
+.font-mono {
+  font-variant-numeric: tabular-nums;
 }
 
 ::selection {
@@ -834,7 +742,7 @@ body {
   left: 28px;
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.05em;
   color: rgba(238, 241, 246, 0.78);
 }
 .lightbox-close,
@@ -1075,7 +983,7 @@ body {
 .dm-cap__num {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   color: var(--ink-3);
 }
 .dm-cap__vtitle {
