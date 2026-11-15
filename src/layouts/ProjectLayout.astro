@@ -1,4 +1,5 @@
 ---
+import Arrow from "../components/Arrow.astro";
 import { Icon } from "astro-icon/components";
 import BaseLayout from "./BaseLayout.astro";
 import ProjectCover from "../components/ProjectCover.astro";
@@ -27,7 +28,7 @@ const projectsHref = localizePath("/projects", locale);
         href={projectsHref}
         class="mb-[34px] inline-flex items-center gap-2 font-mono text-[12px] text-ink-3 transition-colors duration-200 ease-out hover:text-ink"
       >
-        ← {ui.projects.backLabel}
+        <Arrow dir="left" /> {ui.projects.backLabel}
       </a>
 
       <div class="mb-5 flex items-center gap-3">

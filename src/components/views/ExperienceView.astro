@@ -1,4 +1,5 @@
 ---
+import Arrow from "../Arrow.astro";
 import ExperienceBranches from "../ExperienceBranches.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 
@@ -12,7 +13,7 @@ const homeHref = localizePath("/", locale);
     href={homeHref}
     class="mb-[38px] inline-flex items-center gap-2 font-mono text-[12px] text-ink-3 transition-colors duration-200 ease-out hover:text-ink"
   >
-    ← {ui.common.backToHome}
+    <Arrow dir="left" /> {ui.common.backToHome}
   </a>
   <div class="mb-[18px] flex items-center gap-[9px]">
     <span class="h-1 w-1 rounded-full bg-accent"></span>

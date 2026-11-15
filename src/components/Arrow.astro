@@ -1,0 +1,17 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  dir?: "right" | "left" | "up-right";
+  /** Animate when the surrounding `.group` card is hovered instead of the nearest link/button. */
+  group?: boolean;
+  class?: string;
+}
+
+const { dir = "right", group = false, class: className = "" } = Astro.props;
+const icons = { right: "lucide:arrow-right", left: "lucide:arrow-left", "up-right": "lucide:arrow-up-right" };
+---
+
+<span class:list={["dm-arrow", group && "dm-arrow--group", className]} data-dir={dir} aria-hidden="true">
+  <Icon name={icons[dir]} />
+</span>

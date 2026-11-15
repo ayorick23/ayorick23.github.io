@@ -2,9 +2,9 @@ import type { UICopy } from "./types";
 
 export const es: UICopy = {
   meta: {
-    titleSuffix: "Datos · Machine Learning · MLOps",
+    titleSuffix: "Data Analytics · BI · Machine Learning",
     description:
-      "Portafolio de Dereck Mendez — proyectos, casos de estudio y experiencia en Data Science, Machine Learning y MLOps.",
+      "Portafolio de Dereck Mendez, analista de datos: análisis con SQL y Python, dashboards en Power BI y proyectos de Machine Learning de punta a punta.",
   },
   nav: {
     work: "Proyectos",
@@ -38,12 +38,12 @@ export const es: UICopy = {
     switchTo: "EN",
   },
   hero: {
-    kicker: "DATA · MACHINE LEARNING · MLOPS",
-    titleLead: "Construyo sistemas inteligentes que llevan los",
+    kicker: "DATA ANALYTICS · BI · MACHINE LEARNING",
+    titleLead: "Convierto",
     titleAccent: "datos",
-    titleTail: "a la decisión.",
+    titleTail: "en decisiones de negocio.",
     subtitle:
-      "Construyo soluciones de datos y Machine Learning que convierten problemas reales en resultados medibles y reproducibles, desde el análisis y la experimentación hasta sistemas confiables.",
+      "Analista de datos con experiencia en negocio. Uso SQL, Python y Power BI para entender qué está pasando y comunicarlo con claridad, y cuando el problema lo pide, llevo el análisis a modelos de Machine Learning reproducibles.",
     ctaPrimary: "Ver mi trabajo",
     ctaSecondary: "Sobre mí",
     constellation: {
@@ -95,7 +95,7 @@ export const es: UICopy = {
     caseStudyCta: "Ver caso de estudio",
   },
   tools: {
-    heading: "Herramientas que utilizo para analizar datos, construir modelos y convertir experimentos en sistemas reproducibles.",
+    heading: { lead: "Herramientas para", strong: "analizar, visualizar", mid: "y", tail: "modelar datos." },
     filterLabel: "Filtrar herramientas por disciplina",
     filterAll: "Todo",
     groups: {
@@ -113,10 +113,10 @@ export const es: UICopy = {
     headingAccent: "Dereck.",
     previewParagraphs: [
       "Mi camino hacia los datos ha estado marcado por una combinación de experiencia de negocio, analítica y desarrollo de software. Me interesa entender el problema detrás de los datos antes de pensar en el modelo.",
-      "Actualmente estoy enfocado en seguir creciendo como Data Scientist y Machine Learning Engineer, con especial interés en las prácticas de ingeniería que hacen que los sistemas de ML sean reproducibles, mantenibles y útiles más allá de la experimentación.",
+      "Hoy me enfoco en el análisis de datos y la inteligencia de negocio, y sumo Machine Learning y buenas prácticas de ingeniería cuando el problema lo requiere.",
     ],
     moreLink: "Más sobre mí",
-    photoCaption: "DS · ML · MLOPS",
+    photoCaption: "DATA ANALYTICS · BI · ML",
     stats: [
       {
         icon: "◈",
@@ -352,6 +352,12 @@ export const es: UICopy = {
           "Comunicar resultados analíticos mediante dashboards y visualizaciones claras orientadas a la toma de decisiones.",
       },
       {
+        id: "data-engineering",
+        title: "Ingeniería de datos",
+        description:
+          "Diseñar pipelines de datos confiables —ingesta, transformaciones por capas y orquestación— para que la analítica y los modelos trabajen sobre datos limpios y reproducibles.",
+      },
+      {
         id: "machine-learning",
         title: "Machine Learning",
         description:
@@ -369,19 +375,13 @@ export const es: UICopy = {
         description:
           "Construir flujos reproducibles de Machine Learning alrededor del seguimiento de experimentos, versionado, testing, empaquetado y reentrenamiento automatizado.",
       },
-      {
-        id: "data-engineering",
-        title: "Ingeniería de datos",
-        description:
-          "Diseñar pipelines de datos confiables —ingesta, transformaciones por capas y orquestación— para que la analítica y los modelos trabajen sobre datos limpios y reproducibles.",
-      },
     ],
   },
   contact: {
-    headingLead: "Construyamos algo",
-    headingAccent: "que valga la pena.",
+    headingLead: "Hablemos de",
+    headingAccent: "tus datos.",
     subtitle:
-      "Estoy abierto a oportunidades donde pueda aportar desde Data Science, Machine Learning, analítica y la ingeniería necesaria para construir soluciones de datos confiables.",
+      "Busco oportunidades como analista de datos, donde pueda aportar con SQL, Python y BI, y sumar Machine Learning cuando agregue valor.",
     description:
       "Ya sea para analizar un problema, construir un modelo o ayudar a convertir un experimento en un sistema más sólido, estaré encantado de conectar.",
     cta: "Hablemos",

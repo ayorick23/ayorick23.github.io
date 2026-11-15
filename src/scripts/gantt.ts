@@ -1,5 +1,6 @@
 const GAP = 10;
 const NAV_CLEARANCE = 84;
+const CURSOR_OFFSET = 16;
 
 function currentMonth(): number {
   const now = new Date();
@@ -79,11 +80,14 @@ function setupGantt(root: HTMLElement) {
   };
 
   let active: HTMLElement | null = null;
+  // Clicked bars stay selected (others dimmed) until a click elsewhere or on another bar.
+  let pinned = false;
   let lastPointer = "mouse";
   // A tap focuses the button before its click fires; only keyboard focus should open the tip.
   let pressing = false;
 
   const hide = () => {
+    pinned = false;
     if (!active) return;
     active.classList.remove("is-active");
     active = null;
@@ -93,14 +97,20 @@ function setupGantt(root: HTMLElement) {
 
   const show = (bar: HTMLElement) => {
     const detail = bar.querySelector<HTMLElement>("[data-gantt-detail]");
-    if (!detail) return;
-    active?.classList.remove("is-active");
-    active = bar;
-    bar.classList.add("is-active");
+    if (!detail) return false;
+    if (active !== bar) {
+      active?.classList.remove("is-active");
+      active = bar;
+      bar.classList.add("is-active");
+      tip.innerHTML = detail.innerHTML;
+    }
     root.classList.add("is-hovering");
-    tip.innerHTML = detail.innerHTML;
     tip.hidden = false;
+    return true;
+  };
 
+  // Keyboard / touch: no cursor to follow, so the card sits above (or below) the bar.
+  const placeAtBar = (bar: HTMLElement) => {
     const rootBox = root.getBoundingClientRect();
     const barBox = bar.getBoundingClientRect();
     const view = scroller.getBoundingClientRect();
@@ -113,6 +123,20 @@ function setupGantt(root: HTMLElement) {
     const above = barBox.top - tipH - GAP > NAV_CLEARANCE;
     const y = above ? barBox.top - rootBox.top - tipH - GAP : barBox.bottom - rootBox.top + GAP;
     tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+  };
+
+  // Mouse: like a Power BI tooltip, the card follows the cursor and flips to the other
+  // side of it when it would run off the chart or the screen.
+  const placeAtPoint = (clientX: number, clientY: number) => {
+    const rootBox = root.getBoundingClientRect();
+    const tipW = tip.offsetWidth;
+    const tipH = tip.offsetHeight;
+    let x = clientX - rootBox.left + CURSOR_OFFSET;
+    if (x + tipW > rootBox.width - 8) x = clientX - rootBox.left - CURSOR_OFFSET - tipW;
+    let y = clientY - rootBox.top + CURSOR_OFFSET;
+    if (clientY + CURSOR_OFFSET + tipH > window.innerHeight - 8) y = clientY - rootBox.top - CURSOR_OFFSET - tipH;
+    tip.style.left = `${Math.max(8, x)}px`;
     tip.style.top = `${y}px`;
   };
 
@@ -131,42 +155,62 @@ function setupGantt(root: HTMLElement) {
     bar.addEventListener(
       "pointerenter",
       (e) => {
-        if (e.pointerType === "mouse") show(bar);
+        if (e.pointerType !== "mouse" || pinned) return;
+        if (show(bar)) placeAtPoint(e.clientX, e.clientY);
+      },
+      { signal },
+    );
+    bar.addEventListener(
+      "pointermove",
+      (e) => {
+        if (e.pointerType === "mouse" && !pinned && active === bar) placeAtPoint(e.clientX, e.clientY);
       },
       { signal },
     );
     bar.addEventListener(
       "pointerleave",
       (e) => {
-        if (e.pointerType === "mouse") hide();
+        if (e.pointerType === "mouse" && !pinned) hide();
       },
       { signal },
     );
     bar.addEventListener(
       "focus",
       () => {
-        if (!pressing) show(bar);
+        if (!pressing && !pinned && show(bar)) placeAtBar(bar);
       },
       { signal },
     );
-    bar.addEventListener("blur", hide, { signal });
+    bar.addEventListener(
+      "blur",
+      () => {
+        if (!pinned) hide();
+      },
+      { signal },
+    );
     bar.addEventListener(
       "click",
       (e) => {
         pressing = false;
-        if (lastPointer === "mouse") return;
         e.stopPropagation();
-        if (active === bar) hide();
-        else show(bar);
+        if (pinned && active === bar) {
+          hide();
+          return;
+        }
+        if (!show(bar)) return;
+        pinned = true;
+        if (lastPointer === "mouse" && e.detail > 0) placeAtPoint(e.clientX, e.clientY);
+        else placeAtBar(bar);
       },
       { signal },
     );
   });
 
+  // Bar clicks stop propagation, so anything reaching here is a click off the bars.
   document.addEventListener(
     "click",
-    (e) => {
-      if (active && !root.contains(e.target as Node)) hide();
+    () => {
+      if (pinned) hide();
     },
     { signal },
   );
