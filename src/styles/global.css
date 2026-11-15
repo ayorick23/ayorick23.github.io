@@ -572,8 +572,10 @@
   }
 }
 
+/* No global scroll-behavior: smooth — Astro's router restores scroll with
+   plain scrollTo() on back/forward, and the CSS turned that into a visible
+   sweep across the whole page. Smooth anchor scrolling lives in anchor-scroll.ts. */
 html {
-  scroll-behavior: smooth;
   color-scheme: dark;
 }
 :root[data-theme="light"] {

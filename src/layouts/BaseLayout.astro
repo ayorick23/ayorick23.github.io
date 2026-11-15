@@ -121,7 +121,7 @@ const personSchema = {
   <body>
     <div class="ambient-wash"></div>
     <Nav ui={ui} locale={locale} transition:persist />
-    <main id="top" class="relative z-[1]" transition:animate="fade">
+    <main id="top" class="relative z-[1]">
       <slot />
     </main>
     <Footer ui={ui} locale={locale} transition:persist />
@@ -130,6 +130,7 @@ const personSchema = {
       import { initThemeToggle } from "../scripts/theme";
       import { initScrollReveal } from "../scripts/reveal";
       import { initMobileNav } from "../scripts/nav";
+      import { initAnchorScroll } from "../scripts/anchor-scroll";
       import { rememberLanguage, initLanguageSwitchLinks } from "../scripts/language";
 
       // astro:page-load fires on the initial load AND after every client-side
@@ -138,6 +139,7 @@ const personSchema = {
         initThemeToggle();
         initScrollReveal();
         initMobileNav();
+        initAnchorScroll();
         initLanguageSwitchLinks();
         rememberLanguage(document.documentElement.lang === "es" ? "es" : "en");
       });
