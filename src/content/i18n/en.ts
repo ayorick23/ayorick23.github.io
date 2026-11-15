@@ -2,9 +2,9 @@ import type { UICopy } from "./types";
 
 export const en: UICopy = {
   meta: {
-    titleSuffix: "Data · Machine Learning · MLOps",
+    titleSuffix: "Data Analytics · BI · Machine Learning",
     description:
-      "Portfolio of Dereck Mendez — Data Science, Machine Learning and MLOps projects, case studies and experience.",
+      "Portfolio of Dereck Mendez, data analyst: analysis with SQL and Python, Power BI dashboards and end-to-end Machine Learning projects.",
   },
   nav: {
     work: "Work",
@@ -38,12 +38,12 @@ export const en: UICopy = {
     switchTo: "ES",
   },
   hero: {
-    kicker: "DATA · MACHINE LEARNING · MLOPS",
-    titleLead: "Building intelligent systems from",
+    kicker: "DATA ANALYTICS · BI · MACHINE LEARNING",
+    titleLead: "Turning",
     titleAccent: "data",
-    titleTail: "to decisions.",
+    titleTail: "into business decisions.",
     subtitle:
-      "I build data and machine learning solutions that turn real-world problems into measurable, reproducible outcomes — from analysis and experimentation to reliable systems.",
+      "Data analyst with a business background. I use SQL, Python and Power BI to understand what's happening and communicate it clearly, and when the problem calls for it, I take the analysis to reproducible Machine Learning models.",
     ctaPrimary: "Explore my work",
     ctaSecondary: "About me",
     constellation: {
@@ -94,7 +94,7 @@ export const en: UICopy = {
     caseStudyCta: "View case study",
   },
   tools: {
-    heading: "Tools I use to analyse data, build models and turn experiments into reproducible systems.",
+    heading: { lead: "Tools to", strong: "analyse, visualise", mid: "and", tail: "model data." },
     filterLabel: "Filter tools by discipline",
     filterAll: "All",
     groups: {
@@ -112,10 +112,10 @@ export const en: UICopy = {
     headingAccent: "Dereck.",
     previewParagraphs: [
       "My path into data has been shaped by a combination of business experience, analytics and software development. I enjoy understanding the problem behind the data before thinking about the model.",
-      "Today, I'm focused on growing as a Data Scientist and Machine Learning Engineer, with a particular interest in the engineering practices that make ML systems reproducible, maintainable and useful beyond experimentation.",
+      "Today I focus on data analysis and business intelligence, adding Machine Learning and solid engineering practices when the problem calls for it.",
     ],
     moreLink: "More about me",
-    photoCaption: "DS · ML · MLOPS",
+    photoCaption: "DATA ANALYTICS · BI · ML",
     stats: [
       { icon: "◈", value: "3+", label: "Years working with data & analytics" },
       {
@@ -346,6 +346,12 @@ export const en: UICopy = {
           "Communicate analytical results through clear dashboards and visualizations designed for decision-making.",
       },
       {
+        id: "data-engineering",
+        title: "Data Engineering",
+        description:
+          "Design reliable data pipelines — ingestion, layered transformations and orchestration — so analytics and models run on clean, reproducible data.",
+      },
+      {
         id: "machine-learning",
         title: "Machine Learning",
         description:
@@ -363,19 +369,13 @@ export const en: UICopy = {
         description:
           "Build reproducible ML workflows around experiment tracking, versioning, testing, packaging and automated retraining.",
       },
-      {
-        id: "data-engineering",
-        title: "Data Engineering",
-        description:
-          "Design reliable data pipelines — ingestion, layered transformations and orchestration — so analytics and models run on clean, reproducible data.",
-      },
     ],
   },
   contact: {
-    headingLead: "Let's build something",
-    headingAccent: "meaningful together.",
+    headingLead: "Let's talk about",
+    headingAccent: "your data.",
     subtitle:
-      "I'm open to opportunities where I can contribute across Data Science, Machine Learning, analytics and the engineering behind reliable data products.",
+      "I'm looking for data analyst roles where I can contribute with SQL, Python and BI, and bring in Machine Learning when it adds value.",
     description:
       "Whether you're looking for someone to analyse a problem, build a model or help turn an experiment into a more reliable system, I'd be happy to connect.",
     cta: "Get in touch",

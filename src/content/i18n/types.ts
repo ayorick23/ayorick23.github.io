@@ -92,7 +92,8 @@ export interface UICopy {
     caseStudyCta: string;
   };
   tools: {
-    heading: string;
+    /** "lead **strong** mid **tail**" — same light + bold formula as the other section titles. */
+    heading: { lead: string; strong: string; mid: string; tail: string };
     filterLabel: string;
     filterAll: string;
     groups: Record<ToolGroupKey, { name: string; short: string; description: string }>;

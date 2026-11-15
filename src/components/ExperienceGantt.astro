@@ -27,8 +27,12 @@ const edu = ui.about.education;
 const SHORT_ROLE_MONTHS = 18;
 
 // Oldest first, like reading a Gantt left to right / top to bottom.
-const roles = toRoles(Astro.props.entries).sort((a, b) => a.from - b.from);
 const now = currentMonth();
+// Oldest first. Each role is drawn up to the start of the next one: the dates are
+// month-level, and he never held two jobs at once, so bars must neither gap nor overlap.
+const roles = toRoles(Astro.props.entries)
+  .sort((a, b) => a.from - b.from)
+  .map((role, i, all) => ({ ...role, drawTo: all[i + 1]?.from ?? role.to }));
 
 const firstYear = Math.floor(roles[0].from / 12);
 const lastYear = Math.floor(Math.max(studyEnd, now) / 12);
@@ -75,7 +79,7 @@ const certGroups = [...quarters.entries()]
               data-current={role.isCurrent ? "" : undefined}
               data-outside={role.to - role.from < SHORT_ROLE_MONTHS ? "" : undefined}
               class:list={["dm-gantt__bar", role.isCurrent && "is-current", pct(role.from) > 50 && "is-late"]}
-              style={`left: ${pct(role.from)}%; width: ${pct(role.to) - pct(role.from)}%; --i: ${i}`}
+              style={`left: ${pct(role.from)}%; width: ${pct(role.drawTo) - pct(role.from)}%; --i: ${i}`}
             >
               <span data-gantt-label class="dm-gantt__label">
                 {role.role}
@@ -185,15 +189,16 @@ const certGroups = [...quarters.entries()]
     inset: 0;
     pointer-events: none;
   }
+  /* The dashed line runs down beside its year label. */
   .dm-gantt__year {
     position: absolute;
     top: 22px;
-    bottom: 22px;
+    bottom: 0;
     border-left: 1px dashed var(--line-2);
   }
   .dm-gantt__year span {
     position: absolute;
-    bottom: -22px;
+    bottom: 2px;
     left: 6px;
     font-family: var(--font-mono);
     font-size: 11px;
@@ -234,6 +239,7 @@ const certGroups = [...quarters.entries()]
     color: var(--ink-3);
     line-height: 26px;
     margin-bottom: 4px;
+    padding-left: 6px;
     border-bottom: 1px solid var(--line-2);
   }
   .dm-gantt__lane-label.is-gap {
@@ -269,6 +275,7 @@ const certGroups = [...quarters.entries()]
     color: #fff;
   }
   /* Done part solid, planned part as a hatched outline. */
+  /* Done part solid, planned part as a hatched outline. */
   .dm-gantt__bar.is-study {
     background:
       linear-gradient(
@@ -281,8 +288,19 @@ const certGroups = [...quarters.entries()]
         color-mix(in srgb, var(--ink) 7%, transparent) 0 6px,
         transparent 6px 12px
       );
+    /* Stripes: one stripe period (12px at 45° = 16.97px across) wider than the bar and
+       not repeated, so sliding them by exactly that period never shows a seam. The
+       done fill stays put. */
+    background-size: 100% 100%, calc(100% + 16.97px) 100%;
+    background-repeat: no-repeat;
+    background-position: 0 0, -16.97px 0;
     box-shadow: inset 0 0 0 1px var(--line-2);
     color: var(--ink);
+    animation: dm-gantt-stripes 1.2s linear infinite;
+  }
+  .dm-gantt__bar.is-study:hover,
+  .dm-gantt__bar.is-study.is-active {
+    animation-duration: 0.6s;
   }
   .dm-gantt__label {
     display: block;
@@ -358,6 +376,14 @@ const certGroups = [...quarters.entries()]
     padding: 14px 16px;
     pointer-events: none;
     animation: dm-gantt-tip 0.18s ease-out;
+  }
+  @keyframes dm-gantt-stripes {
+    from {
+      background-position: 0 0, -16.97px 0;
+    }
+    to {
+      background-position: 0 0, 0 0;
+    }
   }
   @keyframes dm-gantt-tip {
     from {
@@ -470,6 +496,9 @@ const certGroups = [...quarters.entries()]
     .dm-gantt__bar,
     .dm-gantt__cert {
       transition: opacity 0.25s ease;
+    }
+    .dm-gantt__bar.is-study {
+      animation: none;
     }
     .dm-gantt__tip {
       animation: none;

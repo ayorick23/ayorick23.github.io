@@ -1,4 +1,5 @@
 ---
+import Arrow from "./Arrow.astro";
 import { Icon } from "astro-icon/components";
 import type { TimelineEntry } from "../content/i18n/types";
 import type { Certificate } from "../data/certificates";
@@ -185,7 +186,7 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
                             {item.certs.length > MAX_CERTS
                               ? chart.moreCertificates.replace("{n}", String(item.certs.length - MAX_CERTS))
                               : chart.viewAllCertificates}{" "}
-                            <span aria-hidden="true">→</span>
+                            <Arrow />
                           </a>
                         </>
                       )}

@@ -38,9 +38,9 @@ const COLORS = {
   ink3: "#5c6575",
   line: "rgba(255,255,255,0.075)",
   line2: "rgba(255,255,255,0.13)",
-  accent: "#5b8cff",
-  accent2: "#9b7cff",
-  accentSoft: "rgba(91,140,255,0.16)",
+  accent: "#ef4d56",
+  accent2: "#ff8a70",
+  accentSoft: "rgba(239,77,86,0.16)",
   star: "#dce6ff",
   edge: "rgba(140,175,255,0.3)",
   risk: "#ff5f6d",
@@ -365,16 +365,16 @@ async function renderProjectCard({
 
 await renderSiteCard({
   locale: "es",
-  kicker: "DATOS · MACHINE LEARNING · MLOPS",
+  kicker: "DATA ANALYTICS · BI · MACHINE LEARNING",
   tagline:
-    "Portafolio de Dereck Mendez — proyectos, casos de estudio y experiencia en Data Science, Machine Learning y MLOps.",
+    "Analista de datos: análisis con SQL y Python, dashboards en Power BI y proyectos de Machine Learning de punta a punta.",
 });
 
 await renderSiteCard({
   locale: "en",
-  kicker: "DATA · MACHINE LEARNING · MLOPS",
+  kicker: "DATA ANALYTICS · BI · MACHINE LEARNING",
   tagline:
-    "Portfolio of Dereck Mendez — Data Science, Machine Learning and MLOps projects, case studies and experience.",
+    "Data analyst: analysis with SQL and Python, Power BI dashboards and end-to-end Machine Learning projects.",
 });
 
 await renderProjectCard({
