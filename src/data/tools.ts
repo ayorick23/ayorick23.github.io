@@ -104,6 +104,12 @@ export const projectTechIcons: Record<string, { icon: string; raster?: boolean }
   ruff: { icon: "simple-icons:ruff" },
   optuna: { icon: "simple-icons:optuna" },
   pydantic: { icon: "simple-icons:pydantic" },
+  django: { icon: "simple-icons:django" },
+  "django rest framework": { icon: "simple-icons:django" },
+  react: { icon: "simple-icons:react" },
+  typescript: { icon: "simple-icons:typescript" },
+  vite: { icon: "simple-icons:vite" },
+  "tailwind css": { icon: "simple-icons:tailwindcss" },
 };
 
 /**
@@ -122,4 +128,10 @@ export const projectTechGroups: Record<string, ToolGroupKey> = {
   ruff: "eng",
   mypy: "eng",
   pydantic: "eng",
+  django: "eng",
+  "django rest framework": "eng",
+  react: "eng",
+  typescript: "eng",
+  vite: "eng",
+  "tailwind css": "eng",
 };

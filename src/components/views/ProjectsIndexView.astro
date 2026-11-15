@@ -11,7 +11,12 @@ import { DISCIPLINES } from "../../data/disciplines";
 
 const locale = resolveLocale(Astro.currentLocale);
 const ui = getUI(locale);
-const projects = await getProjects(locale);
+const allProjects = await getProjects(locale);
+const projects = [
+  ...allProjects.filter((p) => p.data.track === "data"),
+  ...allProjects.filter((p) => p.data.track === "software"),
+];
+const firstSoftware = projects.findIndex((p) => p.data.track === "software");
 const homeHref = localizePath("/", locale);
 const f = ui.projects.filter;
 
@@ -44,6 +49,7 @@ const techSections = [
   >
     ← {ui.common.backToHome}
   </a>
+  <div class="mb-[18px] font-mono text-[10.5px] tracking-[0.24em] text-ink-2 uppercase">{ui.projects.kicker}</div>
   <h1 class="mb-[18px] font-display text-[clamp(2.1rem,4.6vw,3.5rem)] leading-[1.08] font-light tracking-[-0.03em]">
     {ui.projects.headingLead} <span class="font-semibold">{ui.projects.headingAccent}</span>
   </h1>
@@ -160,8 +166,21 @@ const techSections = [
     <div class="flex flex-col gap-4">
       {
         projects.map((project, i) => (
+          <>
+          {i === firstSoftware && (
+            <div data-pf-divider class="mt-10 mb-2 flex flex-col gap-2">
+              <div class="flex items-center gap-4">
+                <span class="font-mono text-[10.5px] tracking-[0.24em] whitespace-nowrap text-ink-2 uppercase">
+                  {ui.projects.softwareDivider.label}
+                </span>
+                <span aria-hidden="true" class="h-px flex-1 bg-line-2"></span>
+              </div>
+              <p class="font-display text-[14px] leading-[1.6] text-ink-3">{ui.projects.softwareDivider.note}</p>
+            </div>
+          )}
           <div
             data-project-row
+            data-track={project.data.track}
             data-disciplines={project.data.disciplines.join(" ")}
             data-status={project.data.status}
             data-techs={JSON.stringify(project.data.technologies)}
@@ -215,6 +234,7 @@ const techSections = [
               </div>
             </div>
           </div>
+          </>
         ))
       }
     </div>

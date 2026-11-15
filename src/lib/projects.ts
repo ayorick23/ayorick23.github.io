@@ -10,7 +10,7 @@ export async function getProjects(locale: Locale) {
 
 export async function getFeaturedProjects(locale: Locale, limit = 3) {
   const projects = await getProjects(locale);
-  return projects.filter((p) => p.data.featured).slice(0, limit);
+  return projects.filter((p) => p.data.featured && p.data.track === "data").slice(0, limit);
 }
 
 export async function getProject(locale: Locale, slug: string) {

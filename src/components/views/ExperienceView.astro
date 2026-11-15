@@ -1,5 +1,5 @@
 ---
-import Timeline from "../Timeline.astro";
+import ExperienceBranches from "../ExperienceBranches.astro";
 import { getUI, localizePath, resolveLocale } from "../../lib/i18n";
 
 const locale = resolveLocale(Astro.currentLocale);
@@ -23,5 +23,5 @@ const homeHref = localizePath("/", locale);
     {ui.experience.headingTail}
   </h1>
   {ui.experience.note && <p class="mb-[46px] font-mono text-[12px] text-ink-3">{ui.experience.note}</p>}
-  <Timeline entries={ui.experience.timeline} />
+  <ExperienceBranches entries={ui.experience.timeline} />
 </section>

@@ -1,0 +1,793 @@
+---
+import { Icon } from "astro-icon/components";
+import type { TimelineEntry } from "../content/i18n/types";
+import type { Certificate } from "../data/certificates";
+import { formatYearMonth, monthIndex } from "../lib/dates";
+import {
+  certificatesDuring,
+  currentMonth,
+  formatDuration,
+  formatRange,
+  milestonesDuring,
+  studyPrograms,
+  toRoles,
+  type Role,
+} from "../lib/experience";
+import { educationMilestones } from "../data/education";
+import { getUI, localizePath, resolveLocale } from "../lib/i18n";
+
+interface Props {
+  entries: TimelineEntry[];
+}
+
+const locale = resolveLocale(Astro.currentLocale);
+const ui = getUI(locale);
+const chart = ui.experience.chart;
+const edu = ui.about.education;
+const aboutHref = localizePath("/about", locale);
+const now = currentMonth();
+
+const year = (m: number) => Math.floor(m / 12);
+const yearRange = (from: number, to: number, open = false) =>
+  open ? `${year(from)} – ${chart.present}` : year(from) === year(to) ? `${year(from)}` : `${year(from)} – ${year(to)}`;
+
+type Item =
+  | { kind: "work"; level: 0; role: Role; duration: string }
+  | { kind: "certs"; level: number; certs: Certificate[]; from: number; to: number }
+  | { kind: "study"; level: number };
+
+const MAX_CERTS = 5;
+/* Indent of each branch container: education is the second level of the hierarchy,
+   certificates the third. */
+const LEVEL = { study: 1, certs: 2 } as const;
+
+/* Newest first. Whatever started during a role sits just above it and every branch
+   grows out of that role's dot: education right above the role, certificates above it
+   (Dereck's sketch: desing_reference/elements/Captura de pantalla 2026-11-14 175625.png). */
+const items: Item[] = [];
+for (const role of toRoles(Astro.props.entries).sort((a, b) => b.from - a.from)) {
+  const certs = certificatesDuring(role).sort((a, b) => b.issued.localeCompare(a.issued));
+  if (certs.length) {
+    const months = certs.map((c) => monthIndex(c.issued));
+    items.push({ kind: "certs", level: LEVEL.certs, certs, from: Math.min(...months), to: Math.max(...months) });
+  }
+  if (milestonesDuring(role).some((m) => m.id === "start")) items.push({ kind: "study", level: LEVEL.study });
+  items.push({ kind: "work", level: 0, role, duration: formatDuration(role.to - role.from, chart.units) });
+}
+
+const studyFrom = monthIndex(educationMilestones[0].date);
+const studyTo = Math.max(...studyPrograms.map((p) => p.to));
+---
+
+<div data-branches data-anim class="dm-br relative">
+  <svg data-br-svg class="dm-br__svg" aria-hidden="true"></svg>
+
+  <div data-br-terminal="top" class="dm-br__terminal">
+    <div class="dm-br__date">
+      <span class="dm-br__date-main text-accent">{chart.today}</span>
+    </div>
+    <div class="dm-br__terminal-body">
+      <span class="dm-br__terminal-label text-accent">{chart.today}</span>
+      <ul class="dm-br__legend" aria-hidden="true">
+      <li><span class="dm-br__swatch is-work"></span>{chart.workLane}</li>
+      <li><span class="dm-br__swatch is-study"></span>{chart.studyLane}</li>
+        <li><span class="dm-br__swatch is-certs"></span>{chart.certLane}</li>
+      </ul>
+    </div>
+  </div>
+
+  <ol class="dm-br__list">
+    {
+      items.map((item, i) => {
+        const id = `dm-br-${i}`;
+        const level = item.level;
+        return (
+          <li
+            data-br-row
+            data-kind={item.kind}
+            data-level={level}
+            data-cert-count={item.kind === "certs" ? item.certs.length : undefined}
+            data-current={item.kind === "work" && item.role.isCurrent ? "" : undefined}
+            class="dm-br__row"
+          >
+            <div class="dm-br__date">
+              {item.kind === "work" && (
+                <>
+                  <span class="dm-br__date-main">{formatYearMonth(item.role.start, locale)}</span>
+                  <span class="dm-br__date-sub">{item.duration}</span>
+                </>
+              )}
+            </div>
+            <article class="dm-br__panel" data-br-panel>
+              <h3>
+                <button
+                  type="button"
+                  data-br-toggle
+                  id={`${id}-toggle`}
+                  aria-expanded="false"
+                  aria-controls={`${id}-body`}
+                  class="dm-br__toggle"
+                >
+                  <span class="min-w-0">
+                    {item.kind === "work" && (
+                      <>
+                        <span class="dm-br__date-inline">
+                          {formatYearMonth(item.role.start, locale)} · {item.duration}
+                        </span>
+                        <span class="dm-br__title">{item.role.role}</span>
+                        <span class="dm-br__sub">{item.role.org}</span>
+                      </>
+                    )}
+                    {item.kind === "certs" && (
+                      <>
+                        <span class="dm-br__title">
+                          {item.certs.length} {chart.certificates}
+                        </span>
+                        <span class="dm-br__sub is-clip">{[...new Set(item.certs.flatMap((c) => c.issuer.split(" · ")))].join(" · ")}</span>
+                      </>
+                    )}
+                    {item.kind === "study" && (
+                      <>
+                        <span class="dm-br__title">{edu.degree}</span>
+                        <span class="dm-br__sub">{edu.institution}</span>
+                      </>
+                    )}
+                  </span>
+                  <span class="flex shrink-0 items-center gap-3">
+                    <span
+                      class:list={[
+                        "dm-br__badge",
+                        item.kind === "work" && item.role.isCurrent && "is-current",
+                        item.kind !== "work" && "is-branch",
+                      ]}
+                    >
+                      {item.kind === "work" && yearRange(item.role.from, item.role.to, item.role.isCurrent)}
+                      {item.kind === "certs" && yearRange(item.from, item.to)}
+                      {item.kind === "study" && yearRange(studyFrom, studyTo)}
+                    </span>
+                    <Icon name="lucide:chevron-down" class="dm-br__chevron h-[18px] w-[18px]" aria-hidden="true" />
+                  </span>
+                </button>
+              </h3>
+              <div id={`${id}-body`} role="region" aria-labelledby={`${id}-toggle`} class="dm-br__body">
+                <div class="dm-br__inner">
+                  <div class="dm-br__content">
+                    <div class="min-w-0">
+                      {item.kind === "work" && (
+                        <>
+                          <p class="dm-br__desc">{item.role.description}</p>
+                          {item.role.tags.length > 0 && (
+                            <div class="mt-4 flex flex-wrap gap-[6px]">
+                              {item.role.tags.map((tag) => (
+                                <span class="rounded-[6px] border border-line px-2 py-[5px] font-mono text-[10.5px] text-ink-3">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {item.kind === "certs" && (
+                        <>
+                          <ul class="dm-br__entries">
+                            {item.certs.slice(0, MAX_CERTS).map((cert) => (
+                              <li>
+                                <span class="dm-br__entry-date">{formatYearMonth(cert.issued, locale)}</span>
+                                <span class="min-w-0">
+                                  <span class="dm-br__entry-title">{cert.title[locale]}</span>
+                                  <span class="dm-br__entry-sub">{cert.issuer}</span>
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                          <a href={aboutHref} class="dm-br__link">
+                            {item.certs.length > MAX_CERTS
+                              ? chart.moreCertificates.replace("{n}", String(item.certs.length - MAX_CERTS))
+                              : chart.viewAllCertificates}{" "}
+                            <span aria-hidden="true">→</span>
+                          </a>
+                        </>
+                      )}
+
+                      {item.kind === "study" && (
+                        <ul class="dm-br__programs">
+                          {studyPrograms.map((program) => {
+                            const done = Math.min(1, Math.max(0, (now - program.from) / (program.to - program.from)));
+                            return (
+                              <li>
+                                <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                                  <span class="dm-br__entry-title">
+                                    {program.id === "technician" ? edu.milestones.technician.detail : edu.degree}
+                                  </span>
+                                  <span class="dm-br__entry-date">
+                                    {formatYearMonth(program.start, locale)} –{" "}
+                                    {formatYearMonth(program.end, locale, program.yearOnly)}
+                                  </span>
+                                </div>
+                                <div class="dm-br__progress" style={`--done: ${done}`}>
+                                  <span />
+                                </div>
+                                <span class="dm-br__entry-sub">
+                                  {Math.round(done * 100)}% · {done < 1 ? edu.status : chart.finished}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                    </div>
+
+                    <dl class="dm-br__facts">
+                      {item.kind === "work" && (
+                        <>
+                          <div>
+                            <dt>{chart.period}</dt>
+                            <dd>{formatRange(item.role, locale, chart.present)}</dd>
+                          </div>
+                          <div>
+                            <dt>{chart.company}</dt>
+                            <dd>{item.role.org}</dd>
+                          </div>
+                          <div>
+                            <dt>{chart.duration}</dt>
+                            <dd>{item.duration}</dd>
+                          </div>
+                        </>
+                      )}
+                      {item.kind === "certs" && (
+                        <>
+                          <div>
+                            <dt>{chart.total}</dt>
+                            <dd>
+                              {item.certs.length} {chart.certificates}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>{chart.period}</dt>
+                            <dd>
+                              {item.from === item.to
+                                ? formatYearMonth(item.certs[0].issued, locale)
+                                : `${formatYearMonth(item.certs.at(-1)!.issued, locale)} – ${formatYearMonth(item.certs[0].issued, locale)}`}
+                            </dd>
+                          </div>
+                        </>
+                      )}
+                      {item.kind === "study" && (
+                        <>
+                          <div>
+                            <dt>{chart.institution}</dt>
+                            <dd>{edu.institution}</dd>
+                          </div>
+                          <div>
+                            <dt>{chart.start}</dt>
+                            <dd>{formatYearMonth(educationMilestones[0].date, locale)}</dd>
+                          </div>
+                          <div>
+                            <dt>{chart.status}</dt>
+                            <dd>{edu.status}</dd>
+                          </div>
+                        </>
+                      )}
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </li>
+        );
+      })
+    }
+  </ol>
+
+  <div data-br-terminal="bottom" class="dm-br__terminal">
+    <div class="dm-br__date">
+      <span class="dm-br__date-main">{chart.start}</span>
+    </div>
+    <div class="dm-br__terminal-body">
+      <span class="dm-br__terminal-label">{chart.start}</span>
+    </div>
+  </div>
+</div>
+
+<noscript>
+  <style>
+    .dm-br[data-anim] .dm-br__row > *,
+    .dm-br[data-anim] .dm-br__terminal > * {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  </style>
+</noscript>
+
+<script>
+  import { initBranches } from "../scripts/experience-branches";
+  document.addEventListener("astro:page-load", initBranches);
+</script>
+
+<style>
+  /* Geometry from Dereck's sketch: the main line runs inside the work panels, each
+     branch container is indented a little more and carries its own dot inside. */
+  .dm-br {
+    /* Every container has its dot at --dot from its left edge. Branch containers start
+       right of the main line (--indent-study > --dot) and the work titles start right of
+       the outermost lane (--text-work > --indent-certs + --dot), so no line crosses text. */
+    --dot: 20px;
+    --indent-study: 30px;
+    --indent-certs: 58px;
+    --text: 66px;
+    --text-work: 94px;
+  }
+  @media (max-width: 767px) {
+    .dm-br {
+      --dot: 16px;
+      --indent-study: 26px;
+      --indent-certs: 48px;
+      --text: 56px;
+      --text-work: 78px;
+    }
+  }
+
+  .dm-br__svg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .dm-br__row,
+  .dm-br__terminal {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 768px) {
+    .dm-br__row,
+    .dm-br__terminal {
+      grid-template-columns: 104px minmax(0, 1fr);
+    }
+  }
+  .dm-br__row {
+    padding: 8px 0;
+  }
+  .dm-br__terminal {
+    align-items: center;
+    min-height: 44px;
+  }
+  .dm-br__terminal-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-left: var(--text-work);
+  }
+
+  /* Reveal: everything waits until the rising line reaches its dot (scripts/experience-branches.ts). */
+  .dm-br__row > *,
+  .dm-br__terminal > * {
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .dm-br[data-anim] .dm-br__row:not(.is-reached) > *,
+  .dm-br[data-anim] .dm-br__terminal:not(.is-reached) > * {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .dm-br__date {
+    display: none;
+    padding-top: 21px;
+  }
+  .dm-br__terminal .dm-br__date {
+    padding-top: 0;
+  }
+  @media (min-width: 768px) {
+    .dm-br__date {
+      display: block;
+    }
+  }
+  .dm-br__date-main {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .dm-br__date-sub {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+  }
+  .dm-br__date-inline {
+    display: block;
+    margin-bottom: 4px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  @media (min-width: 768px) {
+    .dm-br__date-inline {
+      display: none;
+    }
+  }
+
+  .dm-br__legend {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px 16px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .dm-br__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .dm-br__swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+  }
+  .dm-br__swatch.is-work {
+    color: var(--accent);
+    background: var(--accent);
+  }
+  .dm-br__swatch.is-study {
+    color: var(--ink-2);
+    background: var(--ink-2);
+  }
+  .dm-br__swatch.is-certs {
+    color: var(--ink-3);
+    background: var(--ink-3);
+  }
+
+  .dm-br__terminal-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  @media (min-width: 768px) {
+    .dm-br__terminal-label {
+      display: none;
+    }
+  }
+
+  .dm-br__panel {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    transition: border-color 0.25s ease;
+  }
+  .dm-br__panel:hover,
+  .dm-br__panel.is-open {
+    border-color: var(--line-2);
+  }
+  /* Branch containers wear the same stroke as their branch line. */
+  .dm-br__row[data-kind="study"] .dm-br__panel {
+    margin-left: var(--indent-study);
+    border-color: color-mix(in srgb, var(--ink-2) 55%, transparent);
+  }
+  .dm-br__row[data-kind="certs"] .dm-br__panel {
+    margin-left: var(--indent-certs);
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--ink-3) 80%, transparent);
+  }
+  .dm-br__row[data-kind="study"] .dm-br__panel:hover,
+  .dm-br__row[data-kind="study"] .dm-br__panel.is-open {
+    border-color: var(--ink-2);
+  }
+  .dm-br__row[data-kind="certs"] .dm-br__panel:hover,
+  .dm-br__row[data-kind="certs"] .dm-br__panel.is-open {
+    border-color: var(--ink-2);
+  }
+  .dm-br__toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 18px 16px var(--text-work);
+    text-align: left;
+    cursor: pointer;
+    border-radius: 14px;
+  }
+  .dm-br__row:not([data-kind="work"]) .dm-br__toggle,
+  .dm-br__row:not([data-kind="work"]) .dm-br__content {
+    padding-left: var(--text);
+  }
+  .dm-br__toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .dm-br__title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .dm-br__row:not([data-kind="work"]) .dm-br__title {
+    font-size: 15.5px;
+  }
+  .dm-br__sub {
+    display: block;
+    margin-top: 2px;
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  .dm-br__sub.is-clip {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dm-br__badge {
+    display: none;
+    align-items: center;
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    padding: 4px 9px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  @media (min-width: 640px) {
+    .dm-br__badge {
+      display: inline-flex;
+    }
+  }
+  .dm-br__badge.is-current {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .dm-br__badge.is-branch {
+    color: var(--ink-3);
+  }
+  .dm-br__chevron {
+    color: var(--ink-3);
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .dm-br__panel.is-open .dm-br__chevron {
+    transform: rotate(180deg);
+  }
+
+  .dm-br__body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .dm-br__panel.is-open .dm-br__body {
+    grid-template-rows: 1fr;
+  }
+  .dm-br__inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+  /* Description takes the room; the facts column only as wide as its values need. */
+  .dm-br__content {
+    display: grid;
+    gap: 18px;
+    border-top: 1px solid var(--line);
+    padding: 18px 18px 20px var(--text-work);
+  }
+  @media (min-width: 768px) {
+    .dm-br__content {
+      grid-template-columns: minmax(0, 1fr) minmax(170px, max-content);
+      gap: 36px;
+    }
+  }
+  .dm-br__desc {
+    max-width: 68ch;
+    font-family: var(--font-display);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink-2);
+  }
+
+  .dm-br__facts {
+    max-width: 260px;
+  }
+  @media (min-width: 768px) {
+    .dm-br__facts {
+      border-left: 1px solid var(--line);
+      padding-left: 22px;
+    }
+  }
+  .dm-br__facts > div {
+    border-bottom: 1px solid var(--line);
+    padding: 9px 0;
+  }
+  .dm-br__facts > div:first-child {
+    padding-top: 0;
+  }
+  .dm-br__facts > div:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .dm-br__facts dt {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .dm-br__facts dd {
+    margin-top: 3px;
+    font-family: var(--font-display);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .dm-br__entries li {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+    border-bottom: 1px solid var(--line);
+    padding: 9px 0;
+  }
+  .dm-br__entries li:first-child {
+    padding-top: 0;
+  }
+  .dm-br__entry-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .dm-br__entry-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+  .dm-br__entry-sub {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-display);
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+  .dm-br__link {
+    display: inline-flex;
+    gap: 6px;
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-2);
+    transition: color 0.2s ease;
+  }
+  .dm-br__link:hover {
+    color: var(--ink);
+  }
+
+  .dm-br__programs {
+    display: grid;
+    gap: 18px;
+  }
+  .dm-br__progress {
+    position: relative;
+    height: 4px;
+    margin: 10px 0 6px;
+    border-radius: 4px;
+    background: var(--line-2);
+    overflow: hidden;
+  }
+  .dm-br__progress span {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ink-2);
+    transform-origin: left center;
+    transform: scaleX(var(--done));
+  }
+
+  /* The graph is drawn at runtime, so its elements never get Astro's scoped attribute. */
+  .dm-br :global(.dm-br__track) {
+    fill: none;
+    stroke: var(--line-2);
+    stroke-width: 2;
+  }
+  .dm-br :global(.dm-br__fill) {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .dm-br :global(.dm-br__branch) {
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .dm-br :global(.dm-br__branch.is-study) {
+    stroke: var(--ink-2);
+  }
+  .dm-br :global(.dm-br__branch.is-certs) {
+    stroke: var(--ink-3);
+    stroke-dasharray: 4 4;
+  }
+  /* Growth is drawn through a mask so the dotted line can grow too. */
+  .dm-br :global(.dm-br__grow) {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 8;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.4s ease-out;
+  }
+  .dm-br :global(.dm-br__grow.is-drawn) {
+    stroke-dashoffset: 0;
+  }
+  .dm-br :global(.dm-br__node) {
+    fill: var(--surface);
+    stroke: var(--line-2);
+    stroke-width: 2;
+    transition:
+      fill 0.35s ease,
+      stroke 0.35s ease;
+  }
+  .dm-br :global(.dm-br__node.is-on) {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+  .dm-br :global(.dm-br__node.is-ring.is-on) {
+    fill: var(--surface);
+  }
+  /* As in the sketch: education's dot is filled, certificates' dot is hollow. */
+  .dm-br :global(.dm-br__node.is-certs.is-on) {
+    fill: var(--surface);
+    stroke: var(--ink-3);
+  }
+  .dm-br :global(.dm-br__node.is-study.is-on) {
+    fill: var(--ink-2);
+    stroke: var(--ink-2);
+  }
+  .dm-br :global(.dm-br__node.is-end.is-on) {
+    fill: var(--ink-3);
+    stroke: var(--ink-3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dm-br__body,
+    .dm-br__chevron,
+    .dm-br :global(.dm-br__grow),
+    .dm-br__row > *,
+    .dm-br__terminal > * {
+      transition: none;
+    }
+    .dm-br[data-anim] .dm-br__row:not(.is-reached) > *,
+    .dm-br[data-anim] .dm-br__terminal:not(.is-reached) > * {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
