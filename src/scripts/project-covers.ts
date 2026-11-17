@@ -47,7 +47,8 @@ function readColors(): CoverColors {
     accent2: get("--accent-2", "#ff8a70"),
     star: get("--star", "#dce6ff"),
     edge: get("--edge", "rgba(140,175,255,.3)"),
-    risk: light ? "#d93a4d" : "#ff5f6d",
+    // Amber, not red: red is the site accent, so "at risk" needs its own hue.
+    risk: light ? "#c58a12" : "#f0b544",
     green: light ? "#1f9d78" : "#34d399",
     amber: light ? "#c58a12" : "#f0b544",
     panel: light ? "rgba(255,255,255,.86)" : "rgba(18,22,32,.72)",

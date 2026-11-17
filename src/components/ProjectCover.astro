@@ -1,14 +1,26 @@
 ---
-import type { CoverKind } from "../lib/project-cover-kinds";
+import { COVER_TINTS, type CoverKind } from "../lib/project-cover-kinds";
 
 interface Props {
   kind: CoverKind;
 }
 
 const { kind } = Astro.props;
+const tint = COVER_TINTS[kind];
 ---
 
+{tint && <div class="cover-tint" style={`--cover-tint: ${tint}`} aria-hidden="true"></div>}
 <canvas data-project-cover={kind} aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
+
+<style>
+  .cover-tint {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(90% 120% at 85% 0%, color-mix(in srgb, var(--cover-tint) 20%, transparent), transparent 65%),
+      radial-gradient(80% 100% at 0% 100%, color-mix(in srgb, var(--cover-tint) 9%, transparent), transparent 70%);
+  }
+</style>
 
 <script>
   import { initProjectCovers } from "../scripts/project-covers";

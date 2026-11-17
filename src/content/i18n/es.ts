@@ -104,6 +104,7 @@ export const es: UICopy = {
       de: { name: "Ingeniería de datos", short: "Ingeniería de datos", description: "Almacenamiento, transformación y orquestación." },
       ml: { name: "Machine Learning y MLOps", short: "Machine Learning", description: "Entrenar, registrar, versionar y servir modelos." },
       eng: { name: "Prácticas de ingeniería", short: "Prácticas de ingeniería", description: "Control de versiones, testing, CI y contenedores." },
+      ai: { name: "Desarrollo con agentes de IA", short: "Agentes de IA", description: "Agentes, contexto y herramientas conectadas para desarrollar y aprender más rápido." },
     },
     exploringLabel: "Explorando ahora",
   },
@@ -113,7 +114,7 @@ export const es: UICopy = {
     headingAccent: "Dereck.",
     previewParagraphs: [
       "Mi camino hacia los datos ha estado marcado por una combinación de experiencia de negocio, analítica y desarrollo de software. Me interesa entender el problema detrás de los datos antes de pensar en el modelo.",
-      "Hoy me enfoco en el análisis de datos y la inteligencia de negocio, y sumo Machine Learning y buenas prácticas de ingeniería cuando el problema lo requiere.",
+      "Hoy me enfoco en el análisis de datos y la inteligencia de negocio, y sumo Machine Learning y buenas prácticas de ingeniería cuando el problema lo requiere. En mi día a día desarrollo con agentes de IA como Claude Code, sin delegar el criterio: reviso y entiendo todo lo que producen.",
     ],
     moreLink: "Más sobre mí",
     photoCaption: "DATA ANALYTICS · BI · ML",
@@ -145,9 +146,10 @@ export const es: UICopy = {
         "Soy Dereck Mendez, un profesional que está construyendo su carrera en la intersección entre datos, software y Machine Learning.",
         "Mi trayectoria profesional comenzó fuera de los roles tradicionales de datos, donde desarrollé experiencia trabajando con personas, procesos y necesidades de negocio. Esa experiencia ha influido en la forma en que abordo los problemas técnicos actualmente: no veo los datos como un ejercicio técnico aislado, sino como una herramienta para comprender problemas y tomar mejores decisiones.",
         "A medida que fui profundizando en analítica, comencé a trabajar con SQL, Excel, Power BI y Python, y progresivamente avancé hacia estadística, Data Science y Machine Learning. Ese camino me llevó también a explorar el lado de ingeniería del ML: experimentos reproducibles, versionado de datos, testing, contenedores, seguimiento de modelos y despliegue.",
-        "Actualmente mis principales áreas de interés son Data Science, Machine Learning y MLOps. Me interesa especialmente el espacio que existe entre un modelo que funciona en un notebook y un sistema que puede mantenerse, evaluarse y generar confianza en un entorno real.",
+        "El desarrollo asistido con agentes de IA es parte de mi día a día. Trabajo con Claude Code para implementar más rápido y para aprender herramientas nuevas sobre la marcha, y le doy contexto estructurado de mis proyectos (convenciones, decisiones, reglas) para que trabaje como un integrante más del equipo. Nunca acepto un resultado sin revisarlo, y cuando no entiendo algo le pido que me lo explique: esa práctica constante me ha ayudado a formar criterio técnico.",
+        "Hoy me enfoco en el análisis de datos y la inteligencia de negocio: entender qué está pasando con SQL y Python, y comunicarlo con claridad en dashboards que la gente realmente use. El Machine Learning, el MLOps y la ingeniería de datos son mis diferenciales: los sumo cuando el problema lo pide, para que un análisis no se quede en un notebook y pueda mantenerse, evaluarse y generar confianza en un entorno real.",
         "No considero que aprender sea algo que se completa una sola vez. Prefiero aprender construyendo proyectos, probando ideas, entendiendo los errores y mejorando el sistema en cada iteración.",
-        "Mi objetivo es seguir creciendo hacia roles donde pueda combinar pensamiento analítico, ingeniería de software y Machine Learning para resolver problemas que realmente importen.",
+        "Mi objetivo es crecer como analista de datos en equipos donde el análisis se convierta en decisiones, aportando también Machine Learning e ingeniería cuando agreguen valor.",
       ],
       beyondHeading: "Más allá de la tecnología",
       beyondParagraphs: [
@@ -423,9 +425,12 @@ export const es: UICopy = {
     },
   },
   footer: {
-    tagline: "Datos · Machine Learning · MLOps",
+    tagline: "Data Analytics · BI · Machine Learning",
     subtitle: "Construyendo, aprendiendo y mejorando — un proyecto a la vez.",
     rights: "Todos los derechos reservados.",
+    builtWithLead: "Diseñado y construido con",
+    builtWithTools: "Astro y Claude Code",
+    sourceCode: "Ver el código",
     backToTop: "Volver arriba",
   },
 };

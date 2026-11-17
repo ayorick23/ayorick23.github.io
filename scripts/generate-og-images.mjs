@@ -43,7 +43,7 @@ const COLORS = {
   accentSoft: "rgba(239,77,86,0.16)",
   star: "#dce6ff",
   edge: "rgba(140,175,255,0.3)",
-  risk: "#ff5f6d",
+  risk: "#f0b544",
   green: "#34d399",
   amber: "#f0b544",
   panel: "rgba(18,22,32,0.72)",
@@ -469,4 +469,38 @@ await renderProjectCard({
   statusLabel: "IN PROGRESS",
   statusVariant: "draft",
   techs: ["Polars", "DuckDB", "Airflow"],
+});
+
+await renderProjectCard({
+  slug: "odontotrack-fouees",
+  locale: "es",
+  kind: "odontogram",
+  category: "Desarrollo de software · Full-stack",
+  title: "OdontoTrack FOUEES",
+  tagline:
+    "Banco digital de pacientes para la Facultad de Odontología: registro de pacientes, asignación de casos a estudiantes y expediente clínico con odontograma.",
+  statusLabel: "EN DESARROLLO",
+  statusVariant: "draft",
+  metrics: [
+    { value: "5", label: "Roles de usuario" },
+    { value: "300+", label: "Pruebas backend" },
+    { value: "3", label: "Integrantes" },
+  ],
+});
+
+await renderProjectCard({
+  slug: "odontotrack-fouees",
+  locale: "en",
+  kind: "odontogram",
+  category: "Software development · Full-stack",
+  title: "OdontoTrack FOUEES",
+  tagline:
+    "Digital patient bank for a School of Dentistry: patient intake, case assignment to students, and clinical records with an odontogram.",
+  statusLabel: "IN PROGRESS",
+  statusVariant: "draft",
+  metrics: [
+    { value: "5", label: "User roles" },
+    { value: "300+", label: "Backend tests" },
+    { value: "3", label: "Team members" },
+  ],
 });
