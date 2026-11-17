@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Check, audit & build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check (astro check)
+        run: npx astro check
+
+      # Only what ships to visitors; dev-only tools (OG generator, checker) don't reach the site.
+      - name: Security audit (production deps)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify key pages were generated
+        run: |
+          for page in index.html 404.html es/index.html about/index.html es/about/index.html \
+                      experience/index.html projects/index.html es/projects/index.html sitemap-index.xml; do
+            test -f "dist/$page" || { echo "::error::Missing dist/$page"; exit 1; }
+          done
