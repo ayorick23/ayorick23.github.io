@@ -20,6 +20,8 @@ track: "software"
 featured: false
 status: "draft"
 date: 2026-09-16
+coverKind: "odontogram"
+ogImage: "/og/odontotrack-fouees-es.png"
 order: 10
 metrics:
   - value: "5"
@@ -37,6 +39,8 @@ sections:
     body: "Backend y frontend están desacoplados. El backend es una **API REST pura en Django + Django REST Framework** (sin templates), autenticada con **JWT** y documentada con OpenAPI/Swagger. El frontend es una SPA en **React + Vite + TypeScript**, con Tailwind CSS. La base de datos es **PostgreSQL**, y todo el entorno local se levanta con **Docker Compose** (base de datos, backend y frontend), para que los 3 desarrolladores trabajen con exactamente el mismo entorno.\n\nEl control de acceso es un sistema de permisos propio con **5 roles** (administrador, docente supervisor, estudiante, recepción y soporte técnico): cada pantalla y cada endpoint de la API exige un permiso, y la matriz de cada rol se puede ajustar desde la propia aplicación."
   - heading: "Forma de trabajo"
     body: "- `main` protegida: todo cambio entra por Pull Request con al menos una aprobación de otro integrante.\n- Tareas gestionadas en **Linear**.\n- Pruebas automatizadas en ambos lados: el test runner de Django en el backend y **Vitest + Testing Library** en el frontend.\n- Migraciones y datos semilla se corren a mano y de forma explícita: el contenedor nunca modifica la base de datos al arrancar."
+  - heading: "Desarrollo asistido con IA"
+    body: "Como desarrollador principal, trabajé con **Claude Code** como agente de desarrollo: para avanzar más rápido en la implementación y para aprender sobre la marcha herramientas que eran nuevas para mí. Ningún cambio entra sin que yo lo revise, y cuando no entiendo una decisión le pido que me la explique antes de aceptarla. Además, todo pasa igual por Pull Request y la aprobación de otro integrante del equipo: el agente acelera el trabajo, no se salta el proceso."
   - heading: "Estado del proyecto"
     body: "En desarrollo activo. Este caso de estudio se irá actualizando a medida que el sistema avance."
 ---

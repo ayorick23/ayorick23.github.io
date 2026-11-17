@@ -20,6 +20,8 @@ track: "software"
 featured: false
 status: "draft"
 date: 2026-09-16
+coverKind: "odontogram"
+ogImage: "/og/odontotrack-fouees-en.png"
 order: 10
 metrics:
   - value: "5"
@@ -37,6 +39,8 @@ sections:
     body: "Backend and frontend are fully decoupled. The backend is a **pure REST API in Django + Django REST Framework** (no templates), authenticated with **JWT** and documented with OpenAPI/Swagger. The frontend is a **React + Vite + TypeScript** SPA styled with Tailwind CSS. The database is **PostgreSQL**, and the whole local environment runs on **Docker Compose** (database, backend and frontend), so all 3 developers work on exactly the same setup.\n\nAccess control is a custom permission system with **5 roles** (administrator, supervising faculty, student, reception and technical support): every screen and every API endpoint requires a permission, and each role's permission matrix can be adjusted from within the app."
   - heading: "How we work"
     body: "- Protected `main`: every change goes through a Pull Request with at least one approval from another team member.\n- Tasks tracked in **Linear**.\n- Automated tests on both sides: Django's test runner on the backend and **Vitest + Testing Library** on the frontend.\n- Migrations and seed data are run manually and explicitly: the container never changes the database on startup."
+  - heading: "AI-assisted development"
+    body: "As lead developer, I worked with **Claude Code** as a development agent: to move faster on implementation and to learn tools that were new to me along the way. No change goes in without my review, and when I don't understand a decision I ask it to explain before accepting it. On top of that, everything still goes through a Pull Request and another team member's approval: the agent speeds up the work, it doesn't skip the process."
   - heading: "Project status"
     body: "In active development. This case study will be updated as the system progresses."
 ---

@@ -26,7 +26,7 @@ export interface Tool {
   brandOnDark?: string;
 }
 
-export type ToolGroupKey = "data" | "bi" | "de" | "ml" | "eng";
+export type ToolGroupKey = "data" | "bi" | "de" | "ml" | "eng" | "ai";
 
 export interface ToolGroup {
   key: ToolGroupKey;
@@ -83,6 +83,16 @@ export const toolGroups: ToolGroup[] = [
       { name: "Docker", icon: "devicon-plain--docker", colorIcon: "selfhst--docker", brand: "#2396ed" },
       { name: "pytest", icon: "simple-icons--pytest", colorIcon: "vscode-icons--file-type-pytest", brand: "#009fe3" },
       { name: "Kubernetes", icon: "devicon-plain--kubernetes", colorIcon: "devicon--kubernetes", brand: "#326ce5" },
+    ],
+  },
+  {
+    key: "ai",
+    tools: [
+      { name: "Claude Code", icon: "simple-icons--claudecode", brand: "#d97757" },
+      { name: "MCP", icon: "simple-icons--modelcontextprotocol", brand: "var(--ink)" },
+      { name: "Agent Skills", icon: "simple-icons--agentskills", brand: "#d97757" },
+      { name: "Claude", icon: "simple-icons--claude", colorIcon: "logos--claude-icon", brand: "#d97757" },
+      { name: "NotebookLM", icon: "simple-icons--notebooklm", brand: "var(--ink)" },
     ],
   },
 ];

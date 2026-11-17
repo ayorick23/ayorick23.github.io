@@ -103,6 +103,7 @@ export const en: UICopy = {
       de: { name: "Data Engineering", short: "Data Engineering", description: "Storage, transformation and orchestration." },
       ml: { name: "Machine Learning & MLOps", short: "Machine Learning", description: "Training, tracking, versioning and serving models." },
       eng: { name: "Engineering Practices", short: "Engineering Practices", description: "Version control, testing, CI and containers." },
+      ai: { name: "AI-Assisted Development", short: "AI Agents", description: "Agents, context and connected tools to build and learn faster." },
     },
     exploringLabel: "Currently exploring",
   },
@@ -112,7 +113,7 @@ export const en: UICopy = {
     headingAccent: "Dereck.",
     previewParagraphs: [
       "My path into data has been shaped by a combination of business experience, analytics and software development. I enjoy understanding the problem behind the data before thinking about the model.",
-      "Today I focus on data analysis and business intelligence, adding Machine Learning and solid engineering practices when the problem calls for it.",
+      "Today I focus on data analysis and business intelligence, adding Machine Learning and solid engineering practices when the problem calls for it. Day to day I build with AI agents like Claude Code, without outsourcing judgment: I review and understand everything they produce.",
     ],
     moreLink: "More about me",
     photoCaption: "DATA ANALYTICS · BI · ML",
@@ -140,9 +141,10 @@ export const en: UICopy = {
         "I'm Dereck Mendez, a professional building my career at the intersection of data, software and Machine Learning.",
         "My professional background started outside of traditional data roles, where I developed experience working with people, processes and business needs. That experience shaped the way I approach technical problems today: I don't see data as an isolated technical exercise, but as a tool for understanding problems and making better decisions.",
         "As I moved deeper into analytics, I began working with SQL, Excel, Power BI and Python, gradually expanding toward statistics, Data Science and Machine Learning. That progression eventually led me to explore the engineering side of ML: reproducible experiments, versioned data, testing, containers, model tracking and deployment.",
-        "Today, my main interests are Data Science, Machine Learning and MLOps. I'm particularly interested in the space between a model that works in a notebook and a system that can be maintained, evaluated and trusted in the real world.",
+        "AI-assisted development with agents is part of my daily work. I use Claude Code to implement faster and to learn new tools along the way, and I give it structured context about my projects (conventions, decisions, rules) so it works like another member of the team. I never accept a result without reviewing it, and when I don't understand something I ask it to explain: that constant practice has helped me build technical judgment.",
+        "Today I focus on data analysis and business intelligence: understanding what is happening with SQL and Python, and communicating it clearly through dashboards people actually use. Machine Learning, MLOps and data engineering are my differentiators: I bring them in when the problem calls for it, so an analysis doesn't stay in a notebook and can be maintained, evaluated and trusted in the real world.",
         "I don't consider learning something I complete once. I prefer learning by building projects, testing ideas, understanding failures and improving the system with every iteration.",
-        "My goal is to keep growing toward roles where I can combine analytical thinking, software engineering and Machine Learning to solve meaningful problems.",
+        "My goal is to grow as a data analyst in teams where analysis turns into decisions, also bringing Machine Learning and engineering when they add value.",
       ],
       beyondHeading: "Beyond technology",
       beyondParagraphs: [
@@ -417,9 +419,12 @@ export const en: UICopy = {
     },
   },
   footer: {
-    tagline: "Data · Machine Learning · MLOps",
+    tagline: "Data Analytics · BI · Machine Learning",
     subtitle: "Building, learning and improving — one project at a time.",
     rights: "All rights reserved.",
+    builtWithLead: "Designed and built with",
+    builtWithTools: "Astro and Claude Code",
+    sourceCode: "View source",
     backToTop: "Back to top",
   },
 };

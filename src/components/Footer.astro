@@ -1,6 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
+import Arrow from "./Arrow.astro";
 import { navItems } from "../data/nav";
+import { siteRepoUrl } from "../data/social-links";
 import { localizePath, type Locale } from "../lib/i18n";
 import type { UICopy } from "../content/i18n/types";
 
@@ -24,6 +26,18 @@ const year = new Date().getFullYear();
         {ui.footer.tagline}<br />
         {ui.footer.subtitle}<br />
         © {year} Dereck Mendez. {ui.footer.rights}
+      </p>
+      <p class="mt-3 font-mono text-[11.5px] leading-[1.7] text-ink-3">
+        {ui.footer.builtWithLead} <span class="text-ink-2">{ui.footer.builtWithTools}</span> ·{" "}
+        <a
+          href={siteRepoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 text-ink-2 transition-colors duration-200 ease-out hover:text-accent"
+        >
+          {ui.footer.sourceCode}
+          <Arrow dir="up-right" />
+        </a>
       </p>
     </div>
     <div class="flex flex-wrap items-center justify-end gap-x-5 gap-y-1.5">

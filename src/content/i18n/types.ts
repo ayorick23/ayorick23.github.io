@@ -238,6 +238,9 @@ export interface UICopy {
     tagline: string;
     subtitle: string;
     rights: string;
+    builtWithLead: string;
+    builtWithTools: string;
+    sourceCode: string;
     backToTop: string;
   };
 }
