@@ -424,6 +424,15 @@ export const es: UICopy = {
       next: "Imagen siguiente",
     },
   },
+  notFound: {
+    pageTitle: "Página no encontrada",
+    kicker: "Error 404",
+    headingLead: "Esta página",
+    headingAccent: "no existe.",
+    body: "Puede que el enlace esté desactualizado o mal escrito. Todo lo demás sigue aquí.",
+    home: "Volver al inicio",
+    projects: "Ver proyectos",
+  },
   footer: {
     tagline: "Data Analytics · BI · Machine Learning",
     subtitle: "Construyendo, aprendiendo y mejorando — un proyecto a la vez.",

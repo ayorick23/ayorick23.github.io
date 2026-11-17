@@ -234,6 +234,15 @@ export interface UICopy {
       next: string;
     };
   };
+  notFound: {
+    pageTitle: string;
+    kicker: string;
+    headingLead: string;
+    headingAccent: string;
+    body: string;
+    home: string;
+    projects: string;
+  };
   footer: {
     tagline: string;
     subtitle: string;

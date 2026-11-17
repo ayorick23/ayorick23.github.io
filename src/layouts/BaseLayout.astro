@@ -12,9 +12,11 @@ interface Props {
   description?: string;
   /** Absolute path under /public to a page-specific social preview image, e.g. a project's og cover. Defaults to the site's brand card. */
   ogImage?: string;
+  /** Keep the page out of search results and skip canonical/hreflang (e.g. the 404 page, served at any missing URL). */
+  noindex?: boolean;
 }
 
-const { pageTitle, description, ogImage } = Astro.props;
+const { pageTitle, description, ogImage, noindex = false } = Astro.props;
 const locale = resolveLocale(Astro.currentLocale);
 const ui = getUI(locale);
 
@@ -57,10 +59,18 @@ const personSchema = {
 
     <title>{title}</title>
     <meta name="description" content={metaDescription} />
-    <link rel="canonical" href={canonicalURL} />
-    <link rel="alternate" hreflang={locale} href={new URL(Astro.url.pathname, Astro.site)} />
-    <link rel="alternate" hreflang={alternateLocale} href={new URL(alternatePath, Astro.site)} />
-    <link rel="alternate" hreflang="x-default" href={new URL(localizePath("/", "en"), Astro.site)} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <>
+          <link rel="canonical" href={canonicalURL} />
+          <link rel="alternate" hreflang={locale} href={new URL(Astro.url.pathname, Astro.site)} />
+          <link rel="alternate" hreflang={alternateLocale} href={new URL(alternatePath, Astro.site)} />
+          <link rel="alternate" hreflang="x-default" href={new URL(localizePath("/", "en"), Astro.site)} />
+        </>
+      )
+    }
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />

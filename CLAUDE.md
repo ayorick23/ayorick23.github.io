@@ -68,6 +68,7 @@ Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shor
 ## Diseño / interacciones no obvias
 
 - **Theming**: dark es el modo primario. Toggle es un switch horizontal (`ThemeToggle.astro`, `role="switch"`), no un botón con ícono. El estado vive en `localStorage("theme")` + atributo `data-theme` en `<html>`. El `color-scheme` de `<html>` se sincroniza con `:root[data-theme="light"]` en `global.css` — si algún día "el modo claro se ve raro en scrollbars/inputs nativos", es lo primero a revisar (ya hubo un bug real acá: un selector `:has()` mal escrito nunca hacía match).
+- **Página 404** (`src/pages/404.astro`): GitHub Pages sirve un único `404.html` para toda URL inexistente (también `/es/...`), así que la página renderiza ambos idiomas y un script inline elige cuál mostrar por la ruta (`/es/`) o la preferencia guardada. El nav queda en inglés (limitación aceptada). Usa `noindex` de `BaseLayout`, que además omite canonical/hreflang.
 - **View Transitions**: el sitio usa `<ClientRouter />` de Astro (`astro:transitions`) para las transiciones entre páginas. Esto tiene una trampa: el `<html>` que genera el servidor **nunca** incluye `data-theme` (lo agrega solo el script inline del cliente), así que en cada swap de página Astro puede borrar ese atributo. Por eso el script de tema en `BaseLayout.astro` corre tanto al cargar como en el evento `astro:after-swap` — si tocas ese script, no rompas ese doble-enganche o el tema se resetea a oscuro al navegar.
 - **Desplazamiento y transiciones** (no reintroducir): no poner `scroll-behavior: smooth` global en `html` — Astro restaura el scroll con `scrollTo()` al navegar/atrás/adelante y el CSS lo convertía en un barrido visible de toda la página. El scroll suave de anclas vive en `scripts/anchor-scroll.ts` (centra el contenido de la sección bajo el nav, o pega su inicio bajo el nav si no cabe; escucha en fase de captura para adelantarse al router). Tampoco poner `transition:animate` en `<main>`: la View Transition fotografía el elemento nombrado **completo** (~5.400 px en la home) y congelaba ~650 ms al volver al inicio; el fundido por defecto de la raíz alcanza. La nebulosa de contacto arranca en `requestIdleCallback` con compilación de shader en paralelo, porque crear el contexto WebGL dentro de la transición congelaba ~1 s.
 - Componentes con `transition:persist` (Nav, Footer) no se re-montan entre páginas — cualquier script que los inicialice debe ser **idempotente** (usa el patrón `if (el.dataset.initialized) return; el.dataset.initialized = "true";` que ya está en `theme.ts`, `nav.ts`, `language.ts`) o vas a duplicar listeners en cada navegación.
@@ -94,6 +95,9 @@ Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shor
 ## Deploy
 
 `.github/workflows/deploy.yml` hace build y publica `dist/` en cada push a `main`. **Ya configurado y funcionando** — en Settings → Pages del repo, el source ya está en "GitHub Actions" (no "Deploy from a branch").
+
+- `.github/workflows/ci.yml` corre en cada PR hacia `main`: `astro check`, `npm audit --omit=dev --audit-level=high`, build y verificación de que existan las páginas clave en `dist/` (si se agrega o renombra una ruta principal, actualizar esa lista). `deploy.yml` también corre `astro check` antes del build.
+- `.github/dependabot.yml`: npm semanal (menores/parches agrupados en un solo PR) y GitHub Actions mensual.
 
 ### Dominio propio: `dereckmendez.com`
 
