@@ -15,11 +15,23 @@ npm run build          # build de producción a ./dist/
 npm run preview        # previsualizar el build
 npx astro check         # type-check completo (correr antes de dar algo por terminado)
 npx astro dev stop       # detener el dev server (queda corriendo en background aunque el comando "termine")
+npm test                # tests unitarios + de contenido (Vitest, < 1 s)
+npm run test:e2e         # tests en navegador real (Playwright) contra el build: correr `npm run build` antes
+npm run verify           # todo junto: check + Vitest + build + Playwright
+npm run audit:ci         # filtro de seguridad del CI (ver audit-allowlist.json)
 ```
 
 Node no viene preinstalado en esta máquina por defecto — si `node`/`npm` no están en PATH, ya se instaló vía `winget install OpenJS.NodeJS.LTS`; puede que haga falta anteponer `$env:Path += ";C:\Program Files\nodejs"` en PowerShell si la sesión es nueva.
 
 **Gotcha importante**: `astro-icon` (los íconos locales de `src/assets/icons/`) escanea la carpeta y cachea el contenido de cada SVG **una sola vez, al arrancar** el dev server. Si agregas, renombras o editas el contenido de un ícono local mientras el servidor ya está corriendo, no vas a ver el cambio hasta hacer `npx astro dev stop` + `npm run dev` de nuevo — un simple refresh del navegador no alcanza.
+
+## Tests
+
+- `tests/unit/`: funciones de `src/lib/` (fechas, rutas i18n, duraciones de experiencia, `renderBody`, íconos).
+- `tests/content/`: integridad del contenido. Paridad en/es de los diccionarios (estructura, largo de arrays, textos traducidos en un solo idioma; vacío en ambos = oculto a propósito), proyectos en ambos idiomas con los mismos campos estructurales (tecnologías, estado, orden, imágenes…), archivos referenciados que existen en `public/`, certificados con PDF + JPG + descripción en ambos idiomas, timeline sin solapes y más reciente primero, nodos de la constelación con herramientas/proyectos reales. Si un test de contenido falla tras un cambio intencional, arreglar el dato, no relajar el test, salvo que la regla haya cambiado.
+- `tests/e2e/` (Playwright, desktop + móvil Pixel 7): todas las rutas EN/ES responden 200 sin errores de JS, la 404 en ambos idiomas, el switcher de idioma (incluye la regresión del rebote a `/es/`), el tema claro sobreviviendo a las View Transitions y el menú móvil. Corre contra `astro preview` en el puerto 4329; si choca con otro preview abierto: `npx astro preview stop`.
+- `scripts/audit.mjs` + `audit-allowlist.json`: el CI bloquea alertas altas/críticas de dependencias de producción salvo las listadas con motivo y `reviewBy`; una excepción vencida también falla.
+- El job del CI se llama "Check, audit & build" aunque ahora corre tests: es el nombre requerido por la protección de `main`, no renombrarlo.
 
 ## Arquitectura
 
@@ -122,5 +134,5 @@ Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shor
 - No inventar contenido: nombres de empresas, métricas, URLs de repos, capturas de pantalla. Si falta un dato real, se deja oculto/placeholder y se avisa — nunca se rellena con algo inventado.
 - Nada de comentarios explicando qué hace el código (el código ya lo dice); solo comentarios cuando hay una razón no obvia (como el del `astro:after-swap` arriba).
 - Responder a Dereck en español en este proyecto.
-- Antes de dar por terminado un cambio visual: `npx astro check` + `npm run build` limpios, y probarlo en el navegador (no basta con que compile).
+- Antes de dar por terminado un cambio: `npm run verify` limpio; si es visual, además probarlo en el navegador (no basta con que compile).
 - Si el cambio toca íconos locales (`src/assets/icons/`), reiniciar el dev server antes de verificar en el navegador (ver gotcha de `astro-icon` arriba).
