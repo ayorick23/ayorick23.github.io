@@ -146,9 +146,26 @@ type RGB = [number, number, number];
 // Dark: the reference palette (golden core, blue-white wisps, violet edges).
 // Light: same structure in the site's light-mode aurora colors, deeper so it
 // still reads over a white card.
-const PALETTES: Record<"dark" | "light", { core: RGB; mid: RGB; edge: RGB; spark: RGB; intensity: number; opacity: number }> = {
-  dark: { core: [1.0, 0.62, 0.28], mid: [0.66, 0.78, 1.0], edge: [0.4, 0.32, 0.86], spark: [1.0, 0.9, 0.72], intensity: 1.55, opacity: 0.2 },
-  light: { core: [1.0, 0.52, 0.28], mid: [0.95, 0.42, 0.62], edge: [0.42, 0.3, 0.9], spark: [0.3, 0.38, 0.9], intensity: 1.05, opacity: 1 },
+const PALETTES: Record<
+  "dark" | "light",
+  { core: RGB; mid: RGB; edge: RGB; spark: RGB; intensity: number; opacity: number }
+> = {
+  dark: {
+    core: [1.0, 0.62, 0.28],
+    mid: [0.66, 0.78, 1.0],
+    edge: [0.4, 0.32, 0.86],
+    spark: [1.0, 0.9, 0.72],
+    intensity: 1.55,
+    opacity: 0.2,
+  },
+  light: {
+    core: [1.0, 0.52, 0.28],
+    mid: [0.95, 0.42, 0.62],
+    edge: [0.42, 0.3, 0.9],
+    spark: [0.3, 0.38, 0.9],
+    intensity: 1.05,
+    opacity: 1,
+  },
 };
 
 function compile(gl: WebGLRenderingContext, type: number, source: string) {
@@ -197,7 +214,13 @@ export function initNebula() {
     { once: true },
   );
   const start = () => {
-    if (!cancelled) void setup(container, canvas, () => cancelled, (fn) => (teardown = fn));
+    if (!cancelled)
+      void setup(
+        container,
+        canvas,
+        () => cancelled,
+        (fn) => (teardown = fn),
+      );
   };
   if ("requestIdleCallback" in window) requestIdleCallback(start, { timeout: 2500 });
   else setTimeout(start, 600);

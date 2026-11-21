@@ -9,33 +9,29 @@ const en = getUI("en");
 
 <BaseLayout pageTitle={en.notFound.pageTitle} noindex>
   <section class="mx-auto flex min-h-[78vh] max-w-[1100px] items-center px-8 pt-[150px] pb-[80px]">
-    {
-      locales.map((locale) => {
-        const ui = getUI(locale);
-        return (
-          <div data-404-lang={locale} data-title={ui.notFound.pageTitle} hidden={locale !== "en"}>
-            <div class="mb-[18px] flex items-center gap-[9px]">
-              <span class="h-1 w-1 rounded-full bg-accent" />
-              <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">
-                {ui.notFound.kicker}
-              </span>
-            </div>
-            <h1 class="max-w-2xl font-display text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.08] font-light tracking-[-0.03em]">
-              {ui.notFound.headingLead} <span class="font-semibold">{ui.notFound.headingAccent}</span>
-            </h1>
-            <p class="mt-6 max-w-lg text-[16px] leading-relaxed text-ink-2">{ui.notFound.body}</p>
-            <div class="mt-10 flex flex-wrap gap-3">
-              <Button href={localizePath("/", locale)}>
-                <Arrow dir="left" /> {ui.notFound.home}
-              </Button>
-              <Button href={localizePath("/projects", locale)} variant="secondary">
-                {ui.notFound.projects} <Arrow />
-              </Button>
-            </div>
+    {locales.map((locale) => {
+      const ui = getUI(locale);
+      return (
+        <div data-404-lang={locale} data-title={ui.notFound.pageTitle} hidden={locale !== "en"}>
+          <div class="mb-[18px] flex items-center gap-[9px]">
+            <span class="h-1 w-1 rounded-full bg-accent" />
+            <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{ui.notFound.kicker}</span>
           </div>
-        );
-      })
-    }
+          <h1 class="max-w-2xl font-display text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.08] font-light tracking-[-0.03em]">
+            {ui.notFound.headingLead} <span class="font-semibold">{ui.notFound.headingAccent}</span>
+          </h1>
+          <p class="mt-6 max-w-lg text-[16px] leading-relaxed text-ink-2">{ui.notFound.body}</p>
+          <div class="mt-10 flex flex-wrap gap-3">
+            <Button href={localizePath("/", locale)}>
+              <Arrow dir="left" /> {ui.notFound.home}
+            </Button>
+            <Button href={localizePath("/projects", locale)} variant="secondary">
+              {ui.notFound.projects} <Arrow />
+            </Button>
+          </div>
+        </div>
+      );
+    })}
   </section>
 
   <!--
@@ -44,19 +40,21 @@ const en = getUI("en");
   -->
   <script is:inline>
     (function () {
-      var lang = "en";
+      let lang = "en";
       if (/^\/es(\/|$)/.test(location.pathname)) {
         lang = "es";
       } else {
         try {
-          var stored = localStorage.getItem("lang");
-          var preferred = stored || (navigator.language || "").slice(0, 2);
+          const stored = localStorage.getItem("lang");
+          const preferred = stored || (navigator.language || "").slice(0, 2);
           if (preferred === "es") lang = "es";
-        } catch (e) {}
+        } catch {
+          // localStorage blocked (private mode, disabled storage): keep the default.
+        }
       }
       if (lang === "en") return;
       document.querySelectorAll("[data-404-lang]").forEach(function (el) {
-        var active = el.getAttribute("data-404-lang") === lang;
+        const active = el.getAttribute("data-404-lang") === lang;
         el.hidden = !active;
         if (active) document.title = document.title.replace(/^[^·]+/, el.getAttribute("data-title") + " ");
       });

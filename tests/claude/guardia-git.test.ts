@@ -16,13 +16,12 @@ describe("guardia-git: violation()", () => {
     expect(violation(command, branch)).toMatch(/main/);
   });
 
-  it.each([
-    "git push origin main",
-    "git push origin HEAD:main",
-    "git push origin +feat/x:refs/heads/main",
-  ])("bloquea push a main desde cualquier rama: %s", (command) => {
-    expect(violation(command, "feat/x")).not.toBeNull();
-  });
+  it.each(["git push origin main", "git push origin HEAD:main", "git push origin +feat/x:refs/heads/main"])(
+    "bloquea push a main desde cualquier rama: %s",
+    (command) => {
+      expect(violation(command, "feat/x")).not.toBeNull();
+    },
+  );
 
   it.each(["git commit --no-verify -m x", "git commit -n -m x", "git push --no-verify"])(
     "bloquea saltear hooks: %s",

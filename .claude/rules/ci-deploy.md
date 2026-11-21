@@ -27,6 +27,15 @@ paths:
 - `dependabot.yml`: npm semanal (menores/parches agrupados) y Actions mensual. Ignora los
   saltos mayores de TypeScript hasta que `@astrojs/check` los soporte.
 
+## Calidad ([ADR 0015](../../docs/decisions/0015-calidad-automatica-lint-formato-accesibilidad-links.md))
+
+- `ci.yml` corre además ESLint, Prettier (`format:check`), links internos (`npm run links`) y
+  Lighthouse (`lighthouserc.json`: accesibilidad, buenas prácticas y SEO bloquean bajo 0,9;
+  rendimiento solo avisa). El reporte de Lighthouse queda como artefacto de la corrida.
+- `links-external.yml`: lychee semanal sobre los links externos; no bloquea PRs. Acepta 403, 429 y
+  999 (LinkedIn responde 999 a cualquier robot).
+- Excepciones de links internos en `ALLOWED` de `scripts/check-links.mjs`, cada una con motivo.
+
 ## Audit
 
 `npm run audit:ci` (`scripts/audit.mjs`) bloquea alertas altas/críticas de dependencias de

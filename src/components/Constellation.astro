@@ -28,96 +28,106 @@ const projectBySlug = new Map(projects.map((p) => [p.id, p]));
   class="dm-sphere relative aspect-[1/0.92] min-h-[380px] w-full touch-pan-y overflow-hidden select-none"
 >
   <canvas data-constellation-canvas aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
-  {
-    constellationNodes.map((node, i) => {
-      const copy = labels[node.id];
-      return (
-        <div data-constellation-node data-lat={node.lat} data-lon={node.lon} class="dm-sphere-node absolute top-0 left-0 h-0 w-0">
-          <button
-            type="button"
-            data-constellation-hit
-            aria-label={`${copy.label} — ${copy.description}`}
-            aria-controls={`sphere-panel-${node.id}`}
-            aria-expanded="false"
-            class="absolute -top-6 -left-6 h-12 w-12 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            data-index={i}
-          />
-          <div data-constellation-label class="dm-sphere-label pointer-events-none absolute top-[-8px] w-[150px] sm:w-[170px]">
-            <div data-label-title class="font-display text-[13px] leading-[1.2] font-semibold">
-              {copy.label}
-            </div>
+  {constellationNodes.map((node, i) => {
+    const copy = labels[node.id];
+    return (
+      <div
+        data-constellation-node
+        data-lat={node.lat}
+        data-lon={node.lon}
+        class="dm-sphere-node absolute top-0 left-0 h-0 w-0"
+      >
+        <button
+          type="button"
+          data-constellation-hit
+          aria-label={`${copy.label} — ${copy.description}`}
+          aria-controls={`sphere-panel-${node.id}`}
+          aria-expanded="false"
+          class="absolute -top-6 -left-6 h-12 w-12 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          data-index={i}
+        />
+        <div
+          data-constellation-label
+          class="dm-sphere-label pointer-events-none absolute top-[-8px] w-[150px] sm:w-[170px]"
+        >
+          <div data-label-title class="font-display text-[13px] leading-[1.2] font-semibold">
+            {copy.label}
           </div>
         </div>
-      );
-    })
-  }
+      </div>
+    );
+  })}
 
-  {
-    constellationNodes.map((node, i) => {
-      const copy = labels[node.id];
-      const related = node.projects.map((slug) => projectBySlug.get(slug)).filter((p) => p !== undefined);
-      return (
-        <aside id={`sphere-panel-${node.id}`} data-sphere-panel={i} hidden class="dm-sphere-panel">
-          <div class="dm-sphere-panel__head">
-            <span class="flex items-center gap-2 font-mono text-[10px] tracking-[0.07em] text-ink-3 uppercase">
-              <span class="h-[6px] w-[6px] rounded-full bg-accent" />
-              {panelCopy.kicker} · {String(i + 1).padStart(2, "0")}
-            </span>
-            <button type="button" data-sphere-close aria-label={panelCopy.close} class="dm-sphere-panel__close">
-              <Icon name="lucide:x" class="h-[14px] w-[14px]" />
-            </button>
+  {constellationNodes.map((node, i) => {
+    const copy = labels[node.id];
+    const related = node.projects.map((slug) => projectBySlug.get(slug)).filter((p) => p !== undefined);
+    return (
+      <aside id={`sphere-panel-${node.id}`} data-sphere-panel={i} hidden class="dm-sphere-panel">
+        <div class="dm-sphere-panel__head">
+          <span class="flex items-center gap-2 font-mono text-[10px] tracking-[0.07em] text-ink-3 uppercase">
+            <span class="h-[6px] w-[6px] rounded-full bg-accent" />
+            {panelCopy.kicker} · {String(i + 1).padStart(2, "0")}
+          </span>
+          <button type="button" data-sphere-close aria-label={panelCopy.close} class="dm-sphere-panel__close">
+            <Icon name="lucide:x" class="h-[14px] w-[14px]" />
+          </button>
+        </div>
+        <h3 class="mt-3 font-display text-[20px] leading-[1.2] font-semibold tracking-[-0.015em] text-ink">
+          {copy.label}
+        </h3>
+        <p class="mt-2 font-display text-[13.5px] leading-[1.6] text-ink-2">{copy.description}</p>
+
+        <div class="dm-sphere-panel__section">
+          <div class="dm-sphere-panel__title">
+            <Icon name="lucide:wrench" class="h-[12px] w-[12px]" />
+            {panelCopy.tools}
           </div>
-          <h3 class="mt-3 font-display text-[20px] leading-[1.2] font-semibold tracking-[-0.015em] text-ink">{copy.label}</h3>
-          <p class="mt-2 font-display text-[13.5px] leading-[1.6] text-ink-2">{copy.description}</p>
+          <div class="flex flex-wrap gap-[6px]">
+            {node.tools.map((tool) => {
+              const icon = techIcon(tool);
+              return (
+                <span class="inline-flex items-center gap-[6px] rounded-[7px] border border-line bg-veil px-[8px] py-[5px] font-mono text-[11px] text-ink-2">
+                  {icon &&
+                    (icon.raster ? (
+                      <span class="h-[13px] w-[13px] shrink-0 bg-current text-ink" style={maskStyle(icon.icon)} />
+                    ) : (
+                      <Icon name={icon.icon} class="h-[13px] w-[13px] shrink-0 text-ink" />
+                    ))}
+                  {tool}
+                </span>
+              );
+            })}
+          </div>
+        </div>
 
+        {related.length > 0 && (
           <div class="dm-sphere-panel__section">
             <div class="dm-sphere-panel__title">
-              <Icon name="lucide:wrench" class="h-[12px] w-[12px]" />
-              {panelCopy.tools}
+              <Icon name="lucide:folder-open" class="h-[12px] w-[12px]" />
+              {panelCopy.projects}
             </div>
-            <div class="flex flex-wrap gap-[6px]">
-              {node.tools.map((tool) => {
-                const icon = techIcon(tool);
-                return (
-                  <span class="inline-flex items-center gap-[6px] rounded-[7px] border border-line bg-veil px-[8px] py-[5px] font-mono text-[11px] text-ink-2">
-                    {icon &&
-                      (icon.raster ? (
-                        <span class="h-[13px] w-[13px] shrink-0 bg-current text-ink" style={maskStyle(icon.icon)} />
-                      ) : (
-                        <Icon name={icon.icon} class="h-[13px] w-[13px] shrink-0 text-ink" />
-                      ))}
-                    {tool}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          {related.length > 0 && (
-            <div class="dm-sphere-panel__section">
-              <div class="dm-sphere-panel__title">
-                <Icon name="lucide:folder-open" class="h-[12px] w-[12px]" />
-                {panelCopy.projects}
-              </div>
-              <ul class="flex flex-col">
-                {related.map((project) => (
-                  <li>
-                    <a href={localizePath(`/projects/${project.id}`, locale)} class="dm-sphere-panel__link">
-                      <span class="min-w-0">
-                        <span class="block truncate font-display text-[13px] font-semibold text-ink">{project.data.title}</span>
-                        <span class="block truncate font-mono text-[10px] tracking-[0.03em] text-ink-3 uppercase">{project.data.category}</span>
+            <ul class="flex flex-col">
+              {related.map((project) => (
+                <li>
+                  <a href={localizePath(`/projects/${project.id}`, locale)} class="dm-sphere-panel__link">
+                    <span class="min-w-0">
+                      <span class="block truncate font-display text-[13px] font-semibold text-ink">
+                        {project.data.title}
                       </span>
-                      <Arrow dir="up-right" class="text-[14px]" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </aside>
-      );
-    })
-  }
+                      <span class="block truncate font-mono text-[10px] tracking-[0.03em] text-ink-3 uppercase">
+                        {project.data.category}
+                      </span>
+                    </span>
+                    <Arrow dir="up-right" class="text-[14px]" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
+    );
+  })}
 </div>
 
 <style>

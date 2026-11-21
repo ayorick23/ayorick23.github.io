@@ -39,7 +39,11 @@ export function currentBranch(cwd) {
 function pushesToProtected(args) {
   const targets = args.split(/\s+/).filter((a) => a && !a.startsWith("-"));
   return targets.slice(1).some((refspec) => {
-    const dest = refspec.replace(/^\+/, "").split(":").pop().replace(/^refs\/heads\//, "");
+    const dest = refspec
+      .replace(/^\+/, "")
+      .split(":")
+      .pop()
+      .replace(/^refs\/heads\//, "");
     return PROTECTED.has(dest);
   });
 }

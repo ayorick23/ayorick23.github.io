@@ -28,6 +28,9 @@ paths:
   ([ADR 0010](../../docs/decisions/0010-satoshi-desde-fontshare.md)).
 - Acento Carmesí (`#ef4d56` oscuro / `#d42a35` claro), `--accent-2` coral. `BaseLayout` lleva
   `<meta name="darkreader-lock">`: Dereck usa Dark Reader y repintaba los colores.
+- Contraste: todo texto debe cumplir WCAG AA (4,5:1; lo verifica axe en los e2e). `--ink-3` se
+  aclaró por eso el 2026-11-20 (`#7e8592` oscuro / `#686e77` claro). Única excepción aceptada: la
+  píldora "Hoy" del Gantt.
 - **Nunca escribir `**` ni nada que forme `*/` dentro de un comentario CSS** `/* */`: cierra
   el comentario antes de tiempo y rompe el build (ya pasó con `/* **bold** */`).
 

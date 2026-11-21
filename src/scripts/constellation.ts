@@ -245,7 +245,15 @@ export function initConstellation() {
     return { cx, cy, R };
   }
 
-  function project(v: Vec3, cy0: number, sy0: number, cp: number, sp: number, L: { cx: number; cy: number; R: number }, out: Projected) {
+  function project(
+    v: Vec3,
+    cy0: number,
+    sy0: number,
+    cp: number,
+    sp: number,
+    L: { cx: number; cy: number; R: number },
+    out: Projected,
+  ) {
     const x1 = v.x * cy0 + v.z * sy0;
     const z1 = -v.x * sy0 + v.z * cy0;
     const y2 = v.y * cp - z1 * sp;
@@ -263,7 +271,9 @@ export function initConstellation() {
     ctx!.clearRect(0, 0, width, height);
 
     dust.forEach((d) => {
-      ctx!.globalAlpha = reduceMotion ? 0.32 : (0.18 + 0.42 * (0.5 + 0.5 * Math.sin(elapsed * d.speed + d.phase))) * entrance;
+      ctx!.globalAlpha = reduceMotion
+        ? 0.32
+        : (0.18 + 0.42 * (0.5 + 0.5 * Math.sin(elapsed * d.speed + d.phase))) * entrance;
       ctx!.fillStyle = star;
       ctx!.beginPath();
       ctx!.arc(d.x * width, d.y * height, d.r, 0, Math.PI * 2);
@@ -563,9 +573,9 @@ export function initConstellation() {
     n.hit.addEventListener("blur", () => hovered === i && (hovered = -1), { signal });
   });
 
-  container.querySelectorAll<HTMLButtonElement>("[data-sphere-close]").forEach((btn) =>
-    btn.addEventListener("click", () => closeFocus(true), { signal }),
-  );
+  container
+    .querySelectorAll<HTMLButtonElement>("[data-sphere-close]")
+    .forEach((btn) => btn.addEventListener("click", () => closeFocus(true), { signal }));
   document.addEventListener(
     "keydown",
     (e) => {

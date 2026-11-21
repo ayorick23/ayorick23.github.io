@@ -49,28 +49,23 @@ export const en: UICopy = {
     constellation: {
       machineLearning: {
         label: "Machine Learning",
-        description:
-          "Building predictive models that support real-world decisions.",
+        description: "Building predictive models that support real-world decisions.",
       },
       dataScience: {
         label: "Data Science",
-        description:
-          "Turning questions into evidence through data, statistics and modelling.",
+        description: "Turning questions into evidence through data, statistics and modelling.",
       },
       dataAnalytics: {
         label: "Data Analytics",
-        description:
-          "Finding the patterns that help people understand what is happening.",
+        description: "Finding the patterns that help people understand what is happening.",
       },
       mlops: {
         label: "MLOps",
-        description:
-          "Making machine learning reproducible, maintainable and ready for production.",
+        description: "Making machine learning reproducible, maintainable and ready for production.",
       },
       peopleAnalytics: {
         label: "People Analytics",
-        description:
-          "Unlocking insights from workforce data to drive better talent decisions.",
+        description: "Unlocking insights from workforce data to drive better talent decisions.",
       },
       python: {
         label: "Python",
@@ -98,12 +93,36 @@ export const en: UICopy = {
     filterLabel: "Filter tools by discipline",
     filterAll: "All",
     groups: {
-      data: { name: "Data & Analytics", short: "Data", description: "Wrangling, exploring and modelling data in code." },
-      bi: { name: "BI & Visualization", short: "BI", description: "Turning analysis into something people read and use." },
-      de: { name: "Data Engineering", short: "Data Engineering", description: "Storage, transformation and orchestration." },
-      ml: { name: "Machine Learning & MLOps", short: "Machine Learning", description: "Training, tracking, versioning and serving models." },
-      eng: { name: "Engineering Practices", short: "Engineering Practices", description: "Version control, testing, CI and containers." },
-      ai: { name: "AI-Assisted Development", short: "AI Agents", description: "Agents, context and connected tools to build and learn faster." },
+      data: {
+        name: "Data & Analytics",
+        short: "Data",
+        description: "Wrangling, exploring and modelling data in code.",
+      },
+      bi: {
+        name: "BI & Visualization",
+        short: "BI",
+        description: "Turning analysis into something people read and use.",
+      },
+      de: {
+        name: "Data Engineering",
+        short: "Data Engineering",
+        description: "Storage, transformation and orchestration.",
+      },
+      ml: {
+        name: "Machine Learning & MLOps",
+        short: "Machine Learning",
+        description: "Training, tracking, versioning and serving models.",
+      },
+      eng: {
+        name: "Engineering Practices",
+        short: "Engineering Practices",
+        description: "Version control, testing, CI and containers.",
+      },
+      ai: {
+        name: "AI-Assisted Development",
+        short: "AI Agents",
+        description: "Agents, context and connected tools to build and learn faster.",
+      },
     },
     exploringLabel: "Currently exploring",
   },
@@ -179,8 +198,7 @@ export const en: UICopy = {
       kicker: "CERTIFICATES",
       headingLead: "Continuous",
       headingAccent: "learning.",
-      intro:
-        "Courses, specializations and certifications that have shaped my path into data and Machine Learning.",
+      intro: "Courses, specializations and certifications that have shaped my path into data and Machine Learning.",
       hint: "Scroll over the stack to browse it; click one to see it in full.",
       total: "certificates",
       previous: "Previous certificate",
@@ -216,7 +234,8 @@ export const en: UICopy = {
           "HR metrics —turnover, absenteeism, performance— and using data to make people decisions.",
         "udemy-docker": "Images, containers, Dockerfiles, Docker Compose and application deployment.",
         "udemy-claude": "Practical use of Claude as a generative AI assistant and prompting techniques.",
-        "udemy-git-github": "Version control with Git: branches, merges, conflict resolution and collaboration on GitHub.",
+        "udemy-git-github":
+          "Version control with Git: branches, merges, conflict resolution and collaboration on GitHub.",
         "fepade-python-mod-4": "Advanced Python programming concepts.",
         "fepade-python-mod-3": "Python libraries to manipulate and analyze data.",
         "fepade-python-mod-2": "Classes, inheritance, encapsulation and polymorphism in Python.",
@@ -224,7 +243,8 @@ export const en: UICopy = {
         "udemy-power-bi": "Power Query, data modeling, DAX and business intelligence reports.",
         "certiport-it-specialist-databases":
           "Official exam-based certification: relational database design, SQL and data manipulation.",
-        "academia-europea-bases-de-datos": "36-hour preparation course for the IT Specialist – Databases certification.",
+        "academia-europea-bases-de-datos":
+          "36-hour preparation course for the IT Specialist – Databases certification.",
         "a2-sql": "Queries, joins, aggregations and subqueries in SQL.",
       },
     },

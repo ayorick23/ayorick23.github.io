@@ -32,6 +32,12 @@ jobs:
       - name: Type-check (astro check)
         run: npx astro check
 
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Format (Prettier)
+        run: npm run format:check
+
       # Only what ships to visitors; dev-only tools (OG generator, tests) don't reach the site.
       # High/critical advisories block unless listed, with a reason and review date, in audit-allowlist.json.
       - name: Security audit (production deps)
@@ -50,6 +56,9 @@ jobs:
             test -f "dist/$page" || { echo "::error::Missing dist/$page"; exit 1; }
           done
 
+      - name: Internal links
+        run: npm run links
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
@@ -62,4 +71,16 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
+          retention-days: 7
+
+      # Performance only warns: a shared CI runner is noisy. Accessibility, best practices and SEO block.
+      - name: Lighthouse
+        run: npx --yes @lhci/cli@0.15.1 autorun
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-report
+          path: lighthouse-report/
           retention-days: 7

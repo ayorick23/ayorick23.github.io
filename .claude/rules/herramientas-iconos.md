@@ -26,7 +26,7 @@ Contexto: [ADR 0005](../../docs/decisions/0005-iconos-propios-monocromos.md).
 - Íconos que vienen a color con degradados (ej. Power BI): aplanar a `currentColor` y variar
   `fill-opacity` por capa (Power BI 1 / .7 / .45, mismo patrón que Excel).
 - Raster (`XGBoost`, `Pandera`, `Seaborn`): PNG vía `mask-image` + `background-color:
-  currentColor` (`raster: true` en `tools.ts`, `rasterSrc()`). El SVG de Seaborn tenía miles
+currentColor` (`raster: true` en `tools.ts`, `rasterSrc()`). El SVG de Seaborn tenía miles
   de segmentos y trababa el marquee; por eso es PNG.
 - `simple-icons--n8n.svg` está **sin usar a propósito**: Dereck pidió no agregarlo todavía.
 

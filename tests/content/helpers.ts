@@ -7,6 +7,8 @@ export const exists = (...parts: string[]) => existsSync(fromRoot(...parts));
 
 export interface ProjectFile {
   slug: string;
+  // Raw YAML frontmatter: tests assert on its shape, so it stays untyped on purpose.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, any>;
 }
 

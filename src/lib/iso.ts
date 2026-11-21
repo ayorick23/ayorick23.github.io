@@ -32,7 +32,14 @@ const icons = (lucide as { icons: Record<string, { body: string }> }).icons;
 
 export function createIso(ox: number, oy: number) {
   const pt = (x: number, y: number, z: number): [number, number] => [ox + (x - y) * COS, oy + (x + y) * SIN - z];
-  const pts = (list: P[]) => list.map((p) => pt(...p).map(f).join(",")).join(" ");
+  const pts = (list: P[]) =>
+    list
+      .map((p) =>
+        pt(...p)
+          .map(f)
+          .join(","),
+      )
+      .join(" ");
 
   const poly = (list: P[], cls: string) => `<polygon class="${cls}" points="${pts(list)}"/>`;
   const path = (list: P[], cls: string) => `<polyline class="${cls}" points="${pts(list)}"/>`;
@@ -61,9 +68,33 @@ export function createIso(ox: number, oy: number) {
     const t = z + h;
     return [
       `<g class="ci-box ${cls}">`,
-      poly([[x + w, y, z], [x + w, y + d, z], [x + w, y + d, t], [x + w, y, t]], "ci-r"),
-      poly([[x, y + d, z], [x + w, y + d, z], [x + w, y + d, t], [x, y + d, t]], "ci-l"),
-      poly([[x, y, t], [x + w, y, t], [x + w, y + d, t], [x, y + d, t]], "ci-t"),
+      poly(
+        [
+          [x + w, y, z],
+          [x + w, y + d, z],
+          [x + w, y + d, t],
+          [x + w, y, t],
+        ],
+        "ci-r",
+      ),
+      poly(
+        [
+          [x, y + d, z],
+          [x + w, y + d, z],
+          [x + w, y + d, t],
+          [x, y + d, t],
+        ],
+        "ci-l",
+      ),
+      poly(
+        [
+          [x, y, t],
+          [x + w, y, t],
+          [x + w, y + d, t],
+          [x, y + d, t],
+        ],
+        "ci-t",
+      ),
       `</g>`,
     ].join("");
   };
@@ -104,16 +135,26 @@ export function createIso(ox: number, oy: number) {
 
   /** Database: stacked cylinder segments with a small gap, like the classic DB glyph. */
   const database = (cx: number, cy: number, r: number, segments: number, segH: number, gap: number, cls = "") =>
-    Array.from({ length: segments }, (_, i) => cylinder(cx, cy, i * (segH + gap), r, segH, i === segments - 1 ? cls : "")).join("");
+    Array.from({ length: segments }, (_, i) =>
+      cylinder(cx, cy, i * (segH + gap), r, segH, i === segments - 1 ? cls : ""),
+    ).join("");
 
   /** Server rack: stacked units with status LEDs and vents on the +x face. */
   const rack = (x: number, y: number, w: number, d: number, units: number, unitH: number, cls = "", litUnit = -1) =>
     Array.from({ length: units }, (_, i) => {
       const z = i * unitH;
       const leds = [0, 1, 2]
-        .map((k) => `<circle class="${i === litUnit && k === 0 ? "ci-led ci-led--on" : "ci-led"}" cx="${5 + k * 5}" cy="${unitH / 2}" r="1.4"/>`)
+        .map(
+          (k) =>
+            `<circle class="${i === litUnit && k === 0 ? "ci-led ci-led--on" : "ci-led"}" cx="${5 + k * 5}" cy="${unitH / 2}" r="1.4"/>`,
+        )
         .join("");
-      const vents = [0, 1, 2].map((k) => `<line class="ci-vent" x1="${d - 16 + k * 4}" y1="${unitH * 0.3}" x2="${d - 16 + k * 4}" y2="${unitH * 0.7}"/>`).join("");
+      const vents = [0, 1, 2]
+        .map(
+          (k) =>
+            `<line class="ci-vent" x1="${d - 16 + k * 4}" y1="${unitH * 0.3}" x2="${d - 16 + k * 4}" y2="${unitH * 0.7}"/>`,
+        )
+        .join("");
       return box(x, y, z, w, d, unitH, cls) + onPlane("right", [x + w, y + d, z + unitH], leds + vents);
     }).join("");
 
@@ -138,7 +179,12 @@ export function createIso(ox: number, oy: number) {
   /** Pipeline along the given corners, with small ring joints where it turns. */
   const pipe = (list: P[], cls = "", joints = true) =>
     path(list, `ci-pipe ${cls}`) +
-    (joints ? list.slice(1, -1).map((p) => node(...p, 2.6, "ci-joint")).join("") : "") +
+    (joints
+      ? list
+          .slice(1, -1)
+          .map((p) => node(...p, 2.6, "ci-joint"))
+          .join("")
+      : "") +
     node(...list[list.length - 1], 2.2, "ci-joint ci-joint--end");
 
   /** Dashed floor grid, faded out toward the edges with `maskId`. */

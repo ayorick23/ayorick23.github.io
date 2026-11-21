@@ -64,7 +64,10 @@ const NODES = [
   { x: 100, y: 10 },
 ];
 const EDGES = [
-  [0, 1], [1, 2], [1, 3], [2, 4],
+  [0, 1],
+  [1, 2],
+  [1, 3],
+  [2, 4],
 ];
 
 function drawConstellation(ctx, originX, originY, w, h, alpha) {
@@ -373,8 +376,7 @@ await renderSiteCard({
 await renderSiteCard({
   locale: "en",
   kicker: "DATA ANALYTICS · BI · MACHINE LEARNING",
-  tagline:
-    "Data analyst: analysis with SQL and Python, Power BI dashboards and end-to-end Machine Learning projects.",
+  tagline: "Data analyst: analysis with SQL and Python, Power BI dashboards and end-to-end Machine Learning projects.",
 });
 
 await renderProjectCard({

@@ -20,14 +20,10 @@ const { kicker, headingLead, headingAccent, id, dot = "accent", align = "left" }
 >
   <div>
     <div class="mb-[18px] flex items-center gap-[9px]">
-      <span
-        class:list={["h-1 w-1 rounded-full", dot === "accent" ? "bg-accent" : "bg-accent-2"]}
-      ></span>
+      <span class:list={["h-1 w-1 rounded-full", dot === "accent" ? "bg-accent" : "bg-accent-2"]}></span>
       <span class="font-mono text-[10.5px] tracking-[0.1em] text-ink-2 uppercase">{kicker}</span>
     </div>
-    <h2
-      class="max-w-xl font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]"
-    >
+    <h2 class="max-w-xl font-display text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.14] font-light tracking-[-0.025em]">
       {headingLead} <span class="font-semibold">{headingAccent}</span>
     </h2>
   </div>

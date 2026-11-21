@@ -40,7 +40,7 @@ function readColors(): CoverColors {
   return {
     ink: get("--ink", "#eef1f6"),
     ink2: get("--ink-2", "#98a1b2"),
-    ink3: get("--ink-3", "#5c6575"),
+    ink3: get("--ink-3", "#7e8592"),
     line: get("--line", "rgba(255,255,255,.075)"),
     line2: get("--line-2", "rgba(255,255,255,.13)"),
     accent: get("--accent", "#ef4d56"),
@@ -174,7 +174,6 @@ export function initProjectCovers() {
     scope?.addEventListener("focusin", () => (cover.hover = true));
     scope?.addEventListener("focusout", () => (cover.hover = false));
   });
-
 
   document.addEventListener(
     "astro:before-swap",

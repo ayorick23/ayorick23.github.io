@@ -2,12 +2,7 @@ import type { Locale } from "../lib/i18n";
 
 export type CertificateCategory = "certification" | "specialization" | "course" | "diploma";
 
-export const certificateCategories: CertificateCategory[] = [
-  "certification",
-  "specialization",
-  "course",
-  "diploma",
-];
+export const certificateCategories: CertificateCategory[] = ["certification", "specialization", "course", "diploma"];
 
 export interface Certificate {
   /** Also the file name of the PDF in public/certificates/ and the preview in src/assets/certificates/. */
@@ -110,7 +105,10 @@ export const certificates: Certificate[] = [
   },
   {
     id: "udemy-claude",
-    title: { es: "IA Generativa Claude. La competencia de ChatGPT. ¿Es Mejor?", en: "Generative AI with Claude: ChatGPT's Competitor. Is It Better?" },
+    title: {
+      es: "IA Generativa Claude. La competencia de ChatGPT. ¿Es Mejor?",
+      en: "Generative AI with Claude: ChatGPT's Competitor. Is It Better?",
+    },
     issuer: "Udemy",
     category: "course",
     issued: "2025-08",
@@ -160,7 +158,10 @@ export const certificates: Certificate[] = [
   },
   {
     id: "udemy-power-bi",
-    title: { es: "Power BI - Análisis de Datos e Inteligencia de Negocios", en: "Power BI - Data Analysis and Business Intelligence" },
+    title: {
+      es: "Power BI - Análisis de Datos e Inteligencia de Negocios",
+      en: "Power BI - Data Analysis and Business Intelligence",
+    },
     issuer: "Udemy",
     category: "course",
     issued: "2024-08",

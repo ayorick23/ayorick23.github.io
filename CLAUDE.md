@@ -23,7 +23,11 @@ npm run dev            # localhost:4321 (queda en background: `npx astro dev sto
 npm run build          # build de producción a ./dist/
 npm test               # Vitest: unitarios, contenido y hook de git (< 1 s)
 npm run test:e2e       # Playwright contra el build (correr `npm run build` antes)
-npm run verify         # todo: astro check + Vitest + build + Playwright
+npm run lint           # ESLint
+npm run format         # Prettier (format:check solo revisa)
+npm run links          # links internos y anclas del build
+npm run lighthouse     # Lighthouse CI sobre el build (mismo umbral que el CI)
+npm run verify         # todo: check + lint + formato + Vitest + build + links + Playwright (incluye axe)
 npm run audit:ci       # filtro de seguridad del CI (audit-allowlist.json)
 npm run generate:og    # regenerar las og:image (manual, se commitean)
 ```
@@ -69,7 +73,7 @@ npm run generate:og    # regenerar las og:image (manual, se commitean)
 - Si ves un camino técnico claramente mejor que lo que pidió, dilo con el porqué antes de
   ejecutar; no lo sigas ni lo cambies en silencio.
 - **No sumes cambios que no pidió**, aunque sean técnicamente necesarios: plantéalos como
-  pregunta *antes* de escribir el código.
+  pregunta _antes_ de escribir el código.
 - **Bocetos y "tal cual" se siguen al pie de la letra.** Si lo literal choca con algo técnico,
   nombra el conflicto y pregunta ofreciendo primero la versión literal. Antes de un cambio de
   diseño, resume lo que entendiste.

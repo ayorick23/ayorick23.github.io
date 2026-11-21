@@ -3,14 +3,7 @@ import { Icon } from "astro-icon/components";
 import type { TimelineEntry } from "../content/i18n/types";
 import { certificates } from "../data/certificates";
 import { formatYearMonth, monthIndex } from "../lib/dates";
-import {
-  currentMonth,
-  formatDuration,
-  formatRange,
-  studyEnd,
-  studyPrograms,
-  toRoles,
-} from "../lib/experience";
+import { currentMonth, formatDuration, formatRange, studyEnd, studyPrograms, toRoles } from "../lib/experience";
 import { getUI, resolveLocale } from "../lib/i18n";
 
 interface Props {
@@ -56,104 +49,100 @@ const certGroups = [...quarters.entries()]
   <div data-gantt-scroll class="dm-gantt__scroll">
     <div class="dm-gantt__chart">
       <div class="dm-gantt__grid" aria-hidden="true">
-        {
-          years.map((y) => (
-            <div class="dm-gantt__year" style={`left: ${pct(y * 12)}%`}>
-              <span>{y}</span>
-            </div>
-          ))
-        }
+        {years.map((y) => (
+          <div class="dm-gantt__year" style={`left: ${pct(y * 12)}%`}>
+            <span>{y}</span>
+          </div>
+        ))}
         <div data-gantt-today class="dm-gantt__today" style={`left: ${pct(now)}%`}>
           <span>{chart.today}</span>
         </div>
       </div>
 
       <div class="dm-gantt__lane-label">{chart.workLane}</div>
-      {
-        roles.map((role, i) => (
+      {roles.map((role, i) => (
+        <div class="dm-gantt__row">
+          <button
+            type="button"
+            data-gantt-bar
+            data-from={role.from}
+            data-current={role.isCurrent ? "" : undefined}
+            data-outside={role.to - role.from < SHORT_ROLE_MONTHS ? "" : undefined}
+            class:list={["dm-gantt__bar", role.isCurrent && "is-current", pct(role.from) > 50 && "is-late"]}
+            style={`left: ${pct(role.from)}%; width: ${pct(role.drawTo) - pct(role.from)}%; --i: ${i}`}
+          >
+            <span data-gantt-label class="dm-gantt__label">
+              {role.role}
+            </span>
+            <span data-gantt-detail hidden>
+              <span class="dm-gantt__tip-kicker">{formatRange(role, locale, chart.today)}</span>
+              <span class="dm-gantt__tip-title">{role.role}</span>
+              <span class="dm-gantt__tip-org">
+                {role.org} · {formatDuration(role.to - role.from, chart.units)}
+              </span>
+              <span class="dm-gantt__tip-body">{role.summary}</span>
+            </span>
+          </button>
+        </div>
+      ))}
+
+      <div class="dm-gantt__lane-label is-gap">{chart.studyLane}</div>
+      {studyPrograms.map((program, i) => {
+        const name = program.id === "technician" ? edu.milestones.technician.detail : edu.degree;
+        const done = Math.min(100, Math.max(0, ((now - program.from) / (program.to - program.from)) * 100));
+        return (
           <div class="dm-gantt__row">
             <button
               type="button"
               data-gantt-bar
-              data-from={role.from}
-              data-current={role.isCurrent ? "" : undefined}
-              data-outside={role.to - role.from < SHORT_ROLE_MONTHS ? "" : undefined}
-              class:list={["dm-gantt__bar", role.isCurrent && "is-current", pct(role.from) > 50 && "is-late"]}
-              style={`left: ${pct(role.from)}%; width: ${pct(role.drawTo) - pct(role.from)}%; --i: ${i}`}
+              class:list={["dm-gantt__bar is-study", pct(program.from) > 50 && "is-late"]}
+              style={`left: ${pct(program.from)}%; width: ${pct(program.to) - pct(program.from)}%; --i: ${roles.length + i}; --done: ${done}%`}
             >
               <span data-gantt-label class="dm-gantt__label">
-                {role.role}
+                {name}
               </span>
               <span data-gantt-detail hidden>
-                <span class="dm-gantt__tip-kicker">{formatRange(role, locale, chart.today)}</span>
-                <span class="dm-gantt__tip-title">{role.role}</span>
+                <span class="dm-gantt__tip-kicker">{edu.institution}</span>
+                <span class="dm-gantt__tip-title">{name}</span>
                 <span class="dm-gantt__tip-org">
-                  {role.org} · {formatDuration(role.to - role.from, chart.units)}
+                  {formatYearMonth(program.start, locale)} – {formatYearMonth(program.end, locale, program.yearOnly)}
+                  {" · "}
+                  {program.to > now ? edu.status : chart.finished}
                 </span>
-                <span class="dm-gantt__tip-body">{role.summary}</span>
               </span>
             </button>
           </div>
-        ))
-      }
+        );
+      })}
 
-      <div class="dm-gantt__lane-label is-gap">{chart.studyLane}</div>
-      {
-        studyPrograms.map((program, i) => {
-          const name = program.id === "technician" ? edu.milestones.technician.detail : edu.degree;
-          const done = Math.min(100, Math.max(0, ((now - program.from) / (program.to - program.from)) * 100));
-          return (
-            <div class="dm-gantt__row">
-              <button
-                type="button"
-                data-gantt-bar
-                class:list={["dm-gantt__bar is-study", pct(program.from) > 50 && "is-late"]}
-                style={`left: ${pct(program.from)}%; width: ${pct(program.to) - pct(program.from)}%; --i: ${roles.length + i}; --done: ${done}%`}
-              >
-                <span data-gantt-label class="dm-gantt__label">{name}</span>
-                <span data-gantt-detail hidden>
-                  <span class="dm-gantt__tip-kicker">{edu.institution}</span>
-                  <span class="dm-gantt__tip-title">{name}</span>
-                  <span class="dm-gantt__tip-org">
-                    {formatYearMonth(program.start, locale)} – {formatYearMonth(program.end, locale, program.yearOnly)}
-                    {" · "}
-                    {program.to > now ? edu.status : chart.finished}
-                  </span>
-                </span>
-              </button>
-            </div>
-          );
-        })
-      }
-
-      <div class="dm-gantt__lane-label is-gap">{chart.certLane} · {certificates.length}</div>
+      <div class="dm-gantt__lane-label is-gap">
+        {chart.certLane} · {certificates.length}
+      </div>
       <div class="dm-gantt__row is-certs">
-        {
-          certGroups.map((group) => (
-            <button
-              type="button"
-              data-gantt-bar
-              class="dm-gantt__cert"
-              style={`left: ${group.at}%; --size: ${8 + Math.min(group.list.length, 4) * 3}px`}
-              aria-label={`${group.list.length} ${chart.certificates}`}
-            >
-              {group.list.length > 1 && <span class="dm-gantt__cert-count">{group.list.length}</span>}
-              <span data-gantt-detail hidden>
-                <span class="dm-gantt__tip-kicker">
-                  {group.list.length} {chart.certificates}
-                </span>
-                <span class="dm-gantt__tip-list">
-                  {group.list.map((cert) => (
-                    <span class="dm-gantt__tip-item">
-                      <span class="dm-gantt__tip-date">{formatYearMonth(cert.issued, locale)}</span>
-                      {cert.title[locale]} <em>· {cert.issuer}</em>
-                    </span>
-                  ))}
-                </span>
+        {certGroups.map((group) => (
+          <button
+            type="button"
+            data-gantt-bar
+            class="dm-gantt__cert"
+            style={`left: ${group.at}%; --size: ${8 + Math.min(group.list.length, 4) * 3}px`}
+            aria-label={`${group.list.length} ${chart.certificates}`}
+          >
+            {group.list.length > 1 && <span class="dm-gantt__cert-count">{group.list.length}</span>}
+            <span data-gantt-detail hidden>
+              <span class="dm-gantt__tip-kicker">
+                {group.list.length} {chart.certificates}
               </span>
-            </button>
-          ))
-        }
+              <span class="dm-gantt__tip-list">
+                {group.list.map((cert) => (
+                  <span class="dm-gantt__tip-item">
+                    <span class="dm-gantt__tip-date">{formatYearMonth(cert.issued, locale)}</span>
+                    {cert.title[locale]} <em>· {cert.issuer}</em>
+                  </span>
+                ))}
+              </span>
+            </span>
+          </button>
+        ))}
       </div>
     </div>
   </div>
@@ -278,22 +267,18 @@ const certGroups = [...quarters.entries()]
   /* Done part solid, planned part as a hatched outline. */
   .dm-gantt__bar.is-study {
     background:
-      linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--ink) 16%, transparent) var(--done),
-        transparent var(--done)
-      ),
-      repeating-linear-gradient(
-        -45deg,
-        color-mix(in srgb, var(--ink) 7%, transparent) 0 6px,
-        transparent 6px 12px
-      );
+      linear-gradient(90deg, color-mix(in srgb, var(--ink) 16%, transparent) var(--done), transparent var(--done)),
+      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 6px, transparent 6px 12px);
     /* Stripes: one stripe period (12px at 45° = 16.97px across) wider than the bar and
        not repeated, so sliding them by exactly that period never shows a seam. The
        done fill stays put. */
-    background-size: 100% 100%, calc(100% + 16.97px) 100%;
+    background-size:
+      100% 100%,
+      calc(100% + 16.97px) 100%;
     background-repeat: no-repeat;
-    background-position: 0 0, -16.97px 0;
+    background-position:
+      0 0,
+      -16.97px 0;
     box-shadow: inset 0 0 0 1px var(--line-2);
     color: var(--ink);
     animation: dm-gantt-stripes 1.2s linear infinite;
@@ -379,10 +364,14 @@ const certGroups = [...quarters.entries()]
   }
   @keyframes dm-gantt-stripes {
     from {
-      background-position: 0 0, -16.97px 0;
+      background-position:
+        0 0,
+        -16.97px 0;
     }
     to {
-      background-position: 0 0, 0 0;
+      background-position:
+        0 0,
+        0 0;
     }
   }
   @keyframes dm-gantt-tip {
