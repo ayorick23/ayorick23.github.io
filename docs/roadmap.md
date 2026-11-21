@@ -15,8 +15,8 @@ Plan de 5 fases acordado el 2026-11-17.
 ### Fase 2: tests
 
 - [x] Vitest (unitarios + contenido), Playwright e2e, filtro de audit con excepciones (PR #13).
-- [ ] Activar la protección de `main` exigiendo "Check, audit & build" (lo hace Dereck en
-      Settings → Branches, después de fusionar #13).
+- [x] Protección de `main`: ruleset `main-secure` (exige "Check, audit & build", prohíbe
+      push forzado y borrar la rama).
 - [ ] Revisar la excepción de picomatch antes del **2027-01-17** (`audit-allowlist.json`).
 
 ### Fase 3: calidad automática
@@ -88,6 +88,6 @@ Plan de 5 fases acordado el 2026-11-17.
 
 ## Mantenimiento
 
-- [ ] PRs de Dependabot de GitHub Actions (#8–#11): `@dependabot rebase` y fusionar de a uno
-      con el CI en verde; después de #8 y #11, revisar que el deploy siga funcionando.
-- [ ] Cerrar el PR #12 (TypeScript 7): `@astrojs/check` todavía no lo soporta.
+- [x] PRs de Dependabot de GitHub Actions (#8–#11, #15) fusionados; los deploys siguen en verde.
+- [x] PR #12 (TypeScript 7) cerrado; Dependabot ignora los saltos mayores de TypeScript hasta
+      que `@astrojs/check` los soporte.

@@ -17,8 +17,12 @@ paths:
   GitHub Pages (Settings → Pages = "GitHub Actions", ya configurado).
 - `ci.yml`: en cada PR hacia `main`. Check, audit, Vitest, build, verificación de páginas clave
   en `dist/` y Playwright. Si se agrega o renombra una ruta principal, actualizar esa lista.
-- El job se llama **"Check, audit & build"** aunque corre más cosas: es el nombre que exige la
-  protección de `main`. No renombrarlo
+- `main` está protegida por el ruleset **`main-secure`** (Settings → Rules → Rulesets, no la
+  protección clásica: `gh api .../branches/main/protection` responde 404 aunque esté activa;
+  consultar `gh api repos/ayorick23/ayorick23.github.io/rulesets`). Exige el check, prohíbe
+  push forzado y borrar la rama; sin excepciones.
+- El job se llama **"Check, audit & build"** aunque corre más cosas: es el nombre que exige el
+  ruleset. No renombrarlo
   ([ADR 0013](../../docs/decisions/0013-nombre-fijo-del-job-de-ci.md)).
 - `dependabot.yml`: npm semanal (menores/parches agrupados) y Actions mensual. Ignora los
   saltos mayores de TypeScript hasta que `@astrojs/check` los soporte.
