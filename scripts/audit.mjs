@@ -29,13 +29,16 @@ for (const vuln of Object.values(report.vulnerabilities ?? {})) {
 const failures = [];
 for (const advisory of advisories.values()) {
   const entry = allowlist.find((a) => a.id === advisory.id);
-  if (!entry) failures.push(`${advisory.severity.toUpperCase()} ${advisory.package}: ${advisory.title} (${advisory.url})`);
-  else if (entry.reviewBy < today) failures.push(`Allowlist entry ${entry.id} (${entry.package}) expired on ${entry.reviewBy} — review it.`);
+  if (!entry)
+    failures.push(`${advisory.severity.toUpperCase()} ${advisory.package}: ${advisory.title} (${advisory.url})`);
+  else if (entry.reviewBy < today)
+    failures.push(`Allowlist entry ${entry.id} (${entry.package}) expired on ${entry.reviewBy} — review it.`);
   else console.log(`Allowed until ${entry.reviewBy}: ${advisory.id} ${advisory.package} — ${entry.reason}`);
 }
 
 for (const entry of allowlist) {
-  if (!advisories.has(entry.id)) console.log(`Allowlist entry ${entry.id} (${entry.package}) no longer matches anything — remove it.`);
+  if (!advisories.has(entry.id))
+    console.log(`Allowlist entry ${entry.id} (${entry.package}) no longer matches anything — remove it.`);
 }
 
 if (failures.length) {

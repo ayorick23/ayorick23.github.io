@@ -70,215 +70,224 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
     <div class="dm-br__terminal-body">
       <span class="dm-br__terminal-label text-accent">{chart.today}</span>
       <ul class="dm-br__legend" aria-hidden="true">
-      <li><span class="dm-br__swatch is-work"></span>{chart.workLane}</li>
-      <li><span class="dm-br__swatch is-study"></span>{chart.studyLane}</li>
-        <li><span class="dm-br__swatch is-certs"></span>{chart.certLane}</li>
+        <li>
+          <span class="dm-br__swatch is-work"></span>
+          {chart.workLane}
+        </li>
+        <li>
+          <span class="dm-br__swatch is-study"></span>
+          {chart.studyLane}
+        </li>
+        <li>
+          <span class="dm-br__swatch is-certs"></span>
+          {chart.certLane}
+        </li>
       </ul>
     </div>
   </div>
 
   <ol class="dm-br__list">
-    {
-      items.map((item, i) => {
-        const id = `dm-br-${i}`;
-        const level = item.level;
-        return (
-          <li
-            data-br-row
-            data-kind={item.kind}
-            data-level={level}
-            data-cert-count={item.kind === "certs" ? item.certs.length : undefined}
-            data-current={item.kind === "work" && item.role.isCurrent ? "" : undefined}
-            class="dm-br__row"
-          >
-            <div class="dm-br__date">
-              {item.kind === "work" && (
-                <>
-                  <span class="dm-br__date-main">{formatYearMonth(item.role.start, locale)}</span>
-                  <span class="dm-br__date-sub">{item.duration}</span>
-                </>
-              )}
-            </div>
-            <article class="dm-br__panel" data-br-panel>
-              <h3>
-                <button
-                  type="button"
-                  data-br-toggle
-                  id={`${id}-toggle`}
-                  aria-expanded="false"
-                  aria-controls={`${id}-body`}
-                  class="dm-br__toggle"
-                >
-                  <span class="min-w-0">
+    {items.map((item, i) => {
+      const id = `dm-br-${i}`;
+      const level = item.level;
+      return (
+        <li
+          data-br-row
+          data-kind={item.kind}
+          data-level={level}
+          data-cert-count={item.kind === "certs" ? item.certs.length : undefined}
+          data-current={item.kind === "work" && item.role.isCurrent ? "" : undefined}
+          class="dm-br__row"
+        >
+          <div class="dm-br__date">
+            {item.kind === "work" && (
+              <>
+                <span class="dm-br__date-main">{formatYearMonth(item.role.start, locale)}</span>
+                <span class="dm-br__date-sub">{item.duration}</span>
+              </>
+            )}
+          </div>
+          <article class="dm-br__panel" data-br-panel>
+            <h3>
+              <button
+                type="button"
+                data-br-toggle
+                id={`${id}-toggle`}
+                aria-expanded="false"
+                aria-controls={`${id}-body`}
+                class="dm-br__toggle"
+              >
+                <span class="min-w-0">
+                  {item.kind === "work" && (
+                    <>
+                      <span class="dm-br__date-inline">
+                        {formatYearMonth(item.role.start, locale)} · {item.duration}
+                      </span>
+                      <span class="dm-br__title">{item.role.role}</span>
+                      <span class="dm-br__sub">{item.role.org}</span>
+                    </>
+                  )}
+                  {item.kind === "certs" && (
+                    <>
+                      <span class="dm-br__title">
+                        {item.certs.length} {chart.certificates}
+                      </span>
+                      <span class="dm-br__sub is-clip">
+                        {[...new Set(item.certs.flatMap((c) => c.issuer.split(" · ")))].join(" · ")}
+                      </span>
+                    </>
+                  )}
+                  {item.kind === "study" && (
+                    <>
+                      <span class="dm-br__title">{edu.degree}</span>
+                      <span class="dm-br__sub">{edu.institution}</span>
+                    </>
+                  )}
+                </span>
+                <span class="flex shrink-0 items-center gap-3">
+                  <span
+                    class:list={[
+                      "dm-br__badge",
+                      item.kind === "work" && item.role.isCurrent && "is-current",
+                      item.kind !== "work" && "is-branch",
+                    ]}
+                  >
+                    {item.kind === "work" && yearRange(item.role.from, item.role.to, item.role.isCurrent)}
+                    {item.kind === "certs" && yearRange(item.from, item.to)}
+                    {item.kind === "study" && yearRange(studyFrom, studyTo)}
+                  </span>
+                  <Icon name="lucide:chevron-down" class="dm-br__chevron h-[18px] w-[18px]" aria-hidden="true" />
+                </span>
+              </button>
+            </h3>
+            <div id={`${id}-body`} role="region" aria-labelledby={`${id}-toggle`} class="dm-br__body">
+              <div class="dm-br__inner">
+                <div class="dm-br__content">
+                  <div class="min-w-0">
                     {item.kind === "work" && (
                       <>
-                        <span class="dm-br__date-inline">
-                          {formatYearMonth(item.role.start, locale)} · {item.duration}
-                        </span>
-                        <span class="dm-br__title">{item.role.role}</span>
-                        <span class="dm-br__sub">{item.role.org}</span>
+                        <p class="dm-br__desc">{item.role.description}</p>
+                        {item.role.tags.length > 0 && (
+                          <div class="mt-4 flex flex-wrap gap-[6px]">
+                            {item.role.tags.map((tag) => (
+                              <span class="rounded-[6px] border border-line px-2 py-[5px] font-mono text-[10.5px] text-ink-3">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {item.kind === "certs" && (
+                      <>
+                        <ul class="dm-br__entries">
+                          {item.certs.slice(0, MAX_CERTS).map((cert) => (
+                            <li>
+                              <span class="dm-br__entry-date">{formatYearMonth(cert.issued, locale)}</span>
+                              <span class="min-w-0">
+                                <span class="dm-br__entry-title">{cert.title[locale]}</span>
+                                <span class="dm-br__entry-sub">{cert.issuer}</span>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                        <a href={aboutHref} class="dm-br__link">
+                          {item.certs.length > MAX_CERTS
+                            ? chart.moreCertificates.replace("{n}", String(item.certs.length - MAX_CERTS))
+                            : chart.viewAllCertificates}{" "}
+                          <Arrow />
+                        </a>
+                      </>
+                    )}
+
+                    {item.kind === "study" && (
+                      <ul class="dm-br__programs">
+                        {studyPrograms.map((program) => {
+                          const done = Math.min(1, Math.max(0, (now - program.from) / (program.to - program.from)));
+                          return (
+                            <li>
+                              <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                                <span class="dm-br__entry-title">
+                                  {program.id === "technician" ? edu.milestones.technician.detail : edu.degree}
+                                </span>
+                                <span class="dm-br__entry-date">
+                                  {formatYearMonth(program.start, locale)} –{" "}
+                                  {formatYearMonth(program.end, locale, program.yearOnly)}
+                                </span>
+                              </div>
+                              <div class="dm-br__progress" style={`--done: ${done}`}>
+                                <span />
+                              </div>
+                              <span class="dm-br__entry-sub">
+                                {Math.round(done * 100)}% · {done < 1 ? edu.status : chart.finished}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </div>
+
+                  <dl class="dm-br__facts">
+                    {item.kind === "work" && (
+                      <>
+                        <div>
+                          <dt>{chart.period}</dt>
+                          <dd>{formatRange(item.role, locale, chart.present)}</dd>
+                        </div>
+                        <div>
+                          <dt>{chart.company}</dt>
+                          <dd>{item.role.org}</dd>
+                        </div>
+                        <div>
+                          <dt>{chart.duration}</dt>
+                          <dd>{item.duration}</dd>
+                        </div>
                       </>
                     )}
                     {item.kind === "certs" && (
                       <>
-                        <span class="dm-br__title">
-                          {item.certs.length} {chart.certificates}
-                        </span>
-                        <span class="dm-br__sub is-clip">{[...new Set(item.certs.flatMap((c) => c.issuer.split(" · ")))].join(" · ")}</span>
+                        <div>
+                          <dt>{chart.total}</dt>
+                          <dd>
+                            {item.certs.length} {chart.certificates}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>{chart.period}</dt>
+                          <dd>
+                            {item.from === item.to
+                              ? formatYearMonth(item.certs[0].issued, locale)
+                              : `${formatYearMonth(item.certs.at(-1)!.issued, locale)} – ${formatYearMonth(item.certs[0].issued, locale)}`}
+                          </dd>
+                        </div>
                       </>
                     )}
                     {item.kind === "study" && (
                       <>
-                        <span class="dm-br__title">{edu.degree}</span>
-                        <span class="dm-br__sub">{edu.institution}</span>
+                        <div>
+                          <dt>{chart.institution}</dt>
+                          <dd>{edu.institution}</dd>
+                        </div>
+                        <div>
+                          <dt>{chart.start}</dt>
+                          <dd>{formatYearMonth(educationMilestones[0].date, locale)}</dd>
+                        </div>
+                        <div>
+                          <dt>{chart.status}</dt>
+                          <dd>{edu.status}</dd>
+                        </div>
                       </>
                     )}
-                  </span>
-                  <span class="flex shrink-0 items-center gap-3">
-                    <span
-                      class:list={[
-                        "dm-br__badge",
-                        item.kind === "work" && item.role.isCurrent && "is-current",
-                        item.kind !== "work" && "is-branch",
-                      ]}
-                    >
-                      {item.kind === "work" && yearRange(item.role.from, item.role.to, item.role.isCurrent)}
-                      {item.kind === "certs" && yearRange(item.from, item.to)}
-                      {item.kind === "study" && yearRange(studyFrom, studyTo)}
-                    </span>
-                    <Icon name="lucide:chevron-down" class="dm-br__chevron h-[18px] w-[18px]" aria-hidden="true" />
-                  </span>
-                </button>
-              </h3>
-              <div id={`${id}-body`} role="region" aria-labelledby={`${id}-toggle`} class="dm-br__body">
-                <div class="dm-br__inner">
-                  <div class="dm-br__content">
-                    <div class="min-w-0">
-                      {item.kind === "work" && (
-                        <>
-                          <p class="dm-br__desc">{item.role.description}</p>
-                          {item.role.tags.length > 0 && (
-                            <div class="mt-4 flex flex-wrap gap-[6px]">
-                              {item.role.tags.map((tag) => (
-                                <span class="rounded-[6px] border border-line px-2 py-[5px] font-mono text-[10.5px] text-ink-3">
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </>
-                      )}
-
-                      {item.kind === "certs" && (
-                        <>
-                          <ul class="dm-br__entries">
-                            {item.certs.slice(0, MAX_CERTS).map((cert) => (
-                              <li>
-                                <span class="dm-br__entry-date">{formatYearMonth(cert.issued, locale)}</span>
-                                <span class="min-w-0">
-                                  <span class="dm-br__entry-title">{cert.title[locale]}</span>
-                                  <span class="dm-br__entry-sub">{cert.issuer}</span>
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                          <a href={aboutHref} class="dm-br__link">
-                            {item.certs.length > MAX_CERTS
-                              ? chart.moreCertificates.replace("{n}", String(item.certs.length - MAX_CERTS))
-                              : chart.viewAllCertificates}{" "}
-                            <Arrow />
-                          </a>
-                        </>
-                      )}
-
-                      {item.kind === "study" && (
-                        <ul class="dm-br__programs">
-                          {studyPrograms.map((program) => {
-                            const done = Math.min(1, Math.max(0, (now - program.from) / (program.to - program.from)));
-                            return (
-                              <li>
-                                <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                                  <span class="dm-br__entry-title">
-                                    {program.id === "technician" ? edu.milestones.technician.detail : edu.degree}
-                                  </span>
-                                  <span class="dm-br__entry-date">
-                                    {formatYearMonth(program.start, locale)} –{" "}
-                                    {formatYearMonth(program.end, locale, program.yearOnly)}
-                                  </span>
-                                </div>
-                                <div class="dm-br__progress" style={`--done: ${done}`}>
-                                  <span />
-                                </div>
-                                <span class="dm-br__entry-sub">
-                                  {Math.round(done * 100)}% · {done < 1 ? edu.status : chart.finished}
-                                </span>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      )}
-                    </div>
-
-                    <dl class="dm-br__facts">
-                      {item.kind === "work" && (
-                        <>
-                          <div>
-                            <dt>{chart.period}</dt>
-                            <dd>{formatRange(item.role, locale, chart.present)}</dd>
-                          </div>
-                          <div>
-                            <dt>{chart.company}</dt>
-                            <dd>{item.role.org}</dd>
-                          </div>
-                          <div>
-                            <dt>{chart.duration}</dt>
-                            <dd>{item.duration}</dd>
-                          </div>
-                        </>
-                      )}
-                      {item.kind === "certs" && (
-                        <>
-                          <div>
-                            <dt>{chart.total}</dt>
-                            <dd>
-                              {item.certs.length} {chart.certificates}
-                            </dd>
-                          </div>
-                          <div>
-                            <dt>{chart.period}</dt>
-                            <dd>
-                              {item.from === item.to
-                                ? formatYearMonth(item.certs[0].issued, locale)
-                                : `${formatYearMonth(item.certs.at(-1)!.issued, locale)} – ${formatYearMonth(item.certs[0].issued, locale)}`}
-                            </dd>
-                          </div>
-                        </>
-                      )}
-                      {item.kind === "study" && (
-                        <>
-                          <div>
-                            <dt>{chart.institution}</dt>
-                            <dd>{edu.institution}</dd>
-                          </div>
-                          <div>
-                            <dt>{chart.start}</dt>
-                            <dd>{formatYearMonth(educationMilestones[0].date, locale)}</dd>
-                          </div>
-                          <div>
-                            <dt>{chart.status}</dt>
-                            <dd>{edu.status}</dd>
-                          </div>
-                        </>
-                      )}
-                    </dl>
-                  </div>
+                  </dl>
                 </div>
               </div>
-            </article>
-          </li>
-        );
-      })
-    }
+            </div>
+          </article>
+        </li>
+      );
+    })}
   </ol>
 
   <div data-br-terminal="bottom" class="dm-br__terminal">

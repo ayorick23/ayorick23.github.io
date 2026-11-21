@@ -42,10 +42,12 @@ export function initToolsFilter() {
           { opacity: 1, transform: "none" },
         ];
     chips.forEach((chip, i) => {
-      chip.animate(
-        keyframes,
-        { duration: 480, delay: baseDelay + i * STAGGER_MS, easing: EASE_OUT, fill: "backwards" },
-      );
+      chip.animate(keyframes, {
+        duration: 480,
+        delay: baseDelay + i * STAGGER_MS,
+        easing: EASE_OUT,
+        fill: "backwards",
+      });
     });
   };
 

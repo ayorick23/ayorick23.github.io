@@ -175,7 +175,6 @@ export function initProjectCovers() {
     scope?.addEventListener("focusout", () => (cover.hover = false));
   });
 
-
   document.addEventListener(
     "astro:before-swap",
     () => {

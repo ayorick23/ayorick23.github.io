@@ -555,16 +555,28 @@
   animation-name: dm-arrow-up-right;
 }
 @keyframes dm-arrow-right {
-  45% { transform: translateX(110%); }
-  45.01% { transform: translateX(-110%); }
+  45% {
+    transform: translateX(110%);
+  }
+  45.01% {
+    transform: translateX(-110%);
+  }
 }
 @keyframes dm-arrow-left {
-  45% { transform: translateX(-110%); }
-  45.01% { transform: translateX(110%); }
+  45% {
+    transform: translateX(-110%);
+  }
+  45.01% {
+    transform: translateX(110%);
+  }
 }
 @keyframes dm-arrow-up-right {
-  45% { transform: translate(110%, -110%); }
-  45.01% { transform: translate(-110%, 110%); }
+  45% {
+    transform: translate(110%, -110%);
+  }
+  45.01% {
+    transform: translate(-110%, 110%);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .dm-arrow > svg {

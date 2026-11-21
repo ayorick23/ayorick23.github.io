@@ -8,7 +8,11 @@ async function clickLanguageSwitch(page: Page, target: "en" | "es", isMobile: bo
 }
 
 test.describe("language", () => {
-  test("the switcher goes to the same page in the other language and remembers it", async ({ page, isMobile, jsErrors }) => {
+  test("the switcher goes to the same page in the other language and remembers it", async ({
+    page,
+    isMobile,
+    jsErrors,
+  }) => {
     await page.addInitScript(() => {
       if (!sessionStorage.getItem("seeded")) {
         localStorage.setItem("lang", "en");

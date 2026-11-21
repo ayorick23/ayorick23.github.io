@@ -47,7 +47,17 @@ const projectSchema = z.object({
   /** Social-preview (og:image) for this case study's link. Falls back to the site's default brand card when unset. */
   ogImage: z.string().optional(),
   coverKind: z
-    .enum(["churn", "forecast", "clusters", "pipeline", "lifecycle", "semantic", "benchmark", "medallion", "odontogram"])
+    .enum([
+      "churn",
+      "forecast",
+      "clusters",
+      "pipeline",
+      "lifecycle",
+      "semantic",
+      "benchmark",
+      "medallion",
+      "odontogram",
+    ])
     .optional(),
 });
 

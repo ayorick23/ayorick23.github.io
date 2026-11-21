@@ -56,13 +56,13 @@ están ahí se asignan en `projectTechGroups`). Varias tecnologías combinan con
 
 - Métricas (`metrics.ts`): cards con resplandor, conteo y blur-in al entrar en pantalla. El
   conteo anima solo el primer número y conserva prefijos/sufijos (`+84%`, `85,088`, `0.99`).
-- `sections[].body` admite `code`, **negrita**, *cursiva* y listas (`renderBody` en
+- `sections[].body` admite `code`, **negrita**, _cursiva_ y listas (`renderBody` en
   `format-text.ts`). Se inyecta con `set:html`, así que sus estilos van en `global.css` bajo
   `.section-body` (los `<style>` con scope no alcanzan HTML inyectado).
 - Cada imagen de sección necesita su propio `alt`/`caption`: ya pasó que se copiaron iguales
   en todas.
 - Lightbox (`lightbox.ts`): el zoom cambia el `width` real de la imagen, no `transform:
-  scale` (con scale el contenedor no ganaba área de scroll).
+scale` (con scale el contenedor no ganaba área de scroll).
 
 ## Estado del contenido
 

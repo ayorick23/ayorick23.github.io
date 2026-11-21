@@ -15,25 +15,24 @@ const brandVars = `--brand:${tool.brand};${tool.brandOnDark ? `--brand-on-dark:$
 
 <div
   data-tool-chip
-  class:list={["dm-tool-chip flex items-center gap-[10px] rounded-xl border bg-veil py-[7px] pr-[14px] pl-[9px]", dashed && "border-dashed"]}
+  class:list={[
+    "dm-tool-chip flex items-center gap-[10px] rounded-xl border bg-veil py-[7px] pr-[14px] pl-[9px]",
+    dashed && "border-dashed",
+  ]}
   style={brandVars}
 >
   <span class="dm-tool-logo" data-has-color={tool.colorIcon ? "true" : undefined}>
-    {
-      tool.raster ? (
-        <span class="dm-tool-mono h-full w-full bg-current" style={maskStyle(tool.icon)} />
+    {tool.raster ? (
+      <span class="dm-tool-mono h-full w-full bg-current" style={maskStyle(tool.icon)} />
+    ) : (
+      <Icon name={tool.icon} class="dm-tool-mono h-full w-full" />
+    )}
+    {tool.colorIcon &&
+      (isBitmap(tool.colorIcon) ? (
+        <img src={rasterSrc(tool.colorIcon)} alt="" class="dm-tool-color h-full w-full object-contain" />
       ) : (
-        <Icon name={tool.icon} class="dm-tool-mono h-full w-full" />
-      )
-    }
-    {
-      tool.colorIcon &&
-        (isBitmap(tool.colorIcon) ? (
-          <img src={rasterSrc(tool.colorIcon)} alt="" class="dm-tool-color h-full w-full object-contain" />
-        ) : (
-          <Icon name={tool.colorIcon} class="dm-tool-color h-full w-full" />
-        ))
-    }
+        <Icon name={tool.colorIcon} class="dm-tool-color h-full w-full" />
+      ))}
   </span>
   <span class="font-display text-[13px] leading-none font-medium whitespace-nowrap text-ink">{tool.name}</span>
 </div>

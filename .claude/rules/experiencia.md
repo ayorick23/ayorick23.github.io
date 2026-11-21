@@ -40,7 +40,7 @@ Referencia: `desing_reference/elements/descarga (7).jpg`.
 `desing_reference/elements/Captura de pantalla 2026-11-14 175625.png`. No reinterpretarlo**:
 ya hubo rondas rechazadas (ramas en cascada y en escuadra/escalera).
 
-- La línea principal azul pasa *por dentro* de los paneles de trabajo (`--main` desde su borde
+- La línea principal azul pasa _por dentro_ de los paneles de trabajo (`--main` desde su borde
   izquierdo), con el nodo a la izquierda del título.
 - Encima de cada puesto: Certificaciones arriba (`--indent-certs`) y Educación justo encima
   (`--indent-study`). Todos los contenedores con el nodo a `--dot` del borde y el texto a

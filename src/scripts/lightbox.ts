@@ -96,7 +96,8 @@ function layout(overlay: HTMLDivElement) {
   positionSlides(overlay);
 
   const counter = overlay.querySelector(".lightbox-counter");
-  if (counter) counter.textContent = `${String(active + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+  if (counter)
+    counter.textContent = `${String(active + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
 
   const caption = overlay.querySelector<HTMLParagraphElement>(".lightbox-caption");
   if (caption) caption.textContent = slides[active]?.alt ?? "";

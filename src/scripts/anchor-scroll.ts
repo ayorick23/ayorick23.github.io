@@ -28,9 +28,7 @@ export function framedScrollY(target: HTMLElement) {
   const areaHeight = window.innerHeight - areaTop - EDGE_GAP;
 
   const y =
-    contentHeight <= areaHeight
-      ? contentTop - areaTop - (areaHeight - contentHeight) / 2
-      : contentTop - areaTop;
+    contentHeight <= areaHeight ? contentTop - areaTop - (areaHeight - contentHeight) / 2 : contentTop - areaTop;
 
   const max = document.documentElement.scrollHeight - window.innerHeight;
   return Math.max(0, Math.min(max, Math.round(y)));
@@ -46,7 +44,8 @@ function onClick(e: MouseEvent) {
   if (!link || link.target || link.hasAttribute("download")) return;
 
   const url = new URL(link.href, location.href);
-  if (url.origin !== location.origin || url.pathname !== location.pathname || !link.getAttribute("href")?.includes("#")) return;
+  if (url.origin !== location.origin || url.pathname !== location.pathname || !link.getAttribute("href")?.includes("#"))
+    return;
 
   const id = decodeURIComponent(url.hash.slice(1));
   const target = id ? document.getElementById(id) : null;

@@ -29,7 +29,11 @@ const disciplineFilters = DISCIPLINES.map((id) => ({
 })).filter((d) => d.count > 0);
 
 const statusFilters = (["published", "draft", "placeholder"] as const)
-  .map((key) => ({ key, label: ui.common.statusLabel[key], count: projects.filter((p) => p.data.status === key).length }))
+  .map((key) => ({
+    key,
+    label: ui.common.statusLabel[key],
+    count: projects.filter((p) => p.data.status === key).length,
+  }))
   .filter((s) => s.count > 0);
 
 const techCounts = new Map<string, number>();
@@ -38,7 +42,11 @@ const techs = [...techCounts.entries()]
   .map(([name, count]) => ({ name, count, icon: techIcon(name), group: techGroup(name) }))
   .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
 const techSections = [
-  ...toolGroups.map((g) => ({ key: g.key as string, label: ui.tools.groups[g.key].name, items: techs.filter((t) => t.group === g.key) })),
+  ...toolGroups.map((g) => ({
+    key: g.key as string,
+    label: ui.tools.groups[g.key].name,
+    items: techs.filter((t) => t.group === g.key),
+  })),
   { key: "other", label: f.techOther, items: techs.filter((t) => !t.group) },
 ].filter((section) => section.items.length > 0);
 ---
@@ -57,11 +65,7 @@ const techSections = [
   <p class="mb-3 max-w-[520px] font-display text-[16px] leading-[1.6] text-ink-2">{ui.projects.subtitle}</p>
   <p class="mb-12 font-mono text-[11.5px] text-ink-3">{ui.projects.note}</p>
 
-  <div
-    data-projects-root
-    data-label-one={f.resultOne}
-    data-label-many={f.resultMany}
-  >
+  <div data-projects-root data-label-one={f.resultOne} data-label-many={f.resultMany}>
     <div
       role="group"
       aria-label={f.label}
@@ -69,24 +73,36 @@ const techSections = [
     >
       <div class="dm-pf-row">
         <span class="dm-pf-label">{f.discipline}</span>
-        <div data-pf-segment="discipline" class="dm-tools-filter relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-veil p-1">
+        <div
+          data-pf-segment="discipline"
+          class="dm-tools-filter relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-veil p-1"
+        >
           <span data-pf-indicator aria-hidden="true" class="dm-tools-indicator"></span>
-          <button type="button" data-pf-value="all" aria-pressed="true" class="dm-tools-tab dm-pf-tab">{f.allDisciplines}</button>
+          <button type="button" data-pf-value="all" aria-pressed="true" class="dm-tools-tab dm-pf-tab">
+            {f.allDisciplines}
+          </button>
           {disciplineFilters.map((d) => (
             <button type="button" data-pf-value={d.key} aria-pressed="false" class="dm-tools-tab dm-pf-tab">
-              {d.label}<span class="dm-pf-count">{d.count}</span>
+              {d.label}
+              <span class="dm-pf-count">{d.count}</span>
             </button>
           ))}
         </div>
       </div>
       <div class="dm-pf-row">
         <span class="dm-pf-label">{f.status}</span>
-        <div data-pf-segment="status" class="dm-tools-filter relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-veil p-1">
+        <div
+          data-pf-segment="status"
+          class="dm-tools-filter relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-veil p-1"
+        >
           <span data-pf-indicator aria-hidden="true" class="dm-tools-indicator"></span>
-          <button type="button" data-pf-value="all" aria-pressed="true" class="dm-tools-tab dm-pf-tab">{f.allStatuses}</button>
+          <button type="button" data-pf-value="all" aria-pressed="true" class="dm-tools-tab dm-pf-tab">
+            {f.allStatuses}
+          </button>
           {statusFilters.map((st) => (
             <button type="button" data-pf-value={st.key} aria-pressed="false" class="dm-tools-tab dm-pf-tab">
-              {st.label}<span class="dm-pf-count">{st.count}</span>
+              {st.label}
+              <span class="dm-pf-count">{st.count}</span>
             </button>
           ))}
         </div>
@@ -103,7 +119,9 @@ const techSections = [
               class="dm-pf-trigger"
             >
               <Icon name="lucide:layers" class="h-[14px] w-[14px] shrink-0 text-ink-3" />
-              <span data-pf-trigger-label data-empty={f.techPlaceholder} data-some={f.techSelected}>{f.techPlaceholder}</span>
+              <span data-pf-trigger-label data-empty={f.techPlaceholder} data-some={f.techSelected}>
+                {f.techPlaceholder}
+              </span>
               <Icon name="lucide:chevron-down" class="dm-pf-chevron h-[14px] w-[14px] shrink-0" />
             </button>
             <div id="pf-tech-menu" data-pf-menu hidden class="dm-pf-menu">
@@ -136,7 +154,13 @@ const techSections = [
             </div>
           </div>
           {techs.map((tech) => (
-            <button type="button" data-pf-selected={tech.name} hidden class="dm-pf-chip" aria-label={`${f.techRemove}: ${tech.name}`}>
+            <button
+              type="button"
+              data-pf-selected={tech.name}
+              hidden
+              class="dm-pf-chip"
+              aria-label={`${f.techRemove}: ${tech.name}`}
+            >
               {tech.icon &&
                 (tech.icon.raster ? (
                   <span class="h-[14px] w-[14px] shrink-0 bg-current" style={maskStyle(tech.icon.icon)} />
@@ -160,14 +184,17 @@ const techSections = [
       </div>
     </div>
 
-    <p data-pf-empty hidden class="rounded-[20px] border border-dashed border-line-2 px-6 py-10 text-center font-display text-[14.5px] text-ink-2">
+    <p
+      data-pf-empty
+      hidden
+      class="rounded-[20px] border border-dashed border-line-2 px-6 py-10 text-center font-display text-[14.5px] text-ink-2"
+    >
       {f.empty}
     </p>
 
     <div class="flex flex-col gap-4">
-      {
-        projects.map((project, i) => (
-          <>
+      {projects.map((project, i) => (
+        <>
           {i === firstSoftware && (
             <div data-pf-divider class="mt-10 mb-2 flex flex-col gap-2">
               <div class="flex items-center gap-4">
@@ -194,31 +221,44 @@ const techSections = [
               class="absolute inset-0 z-0"
               aria-label={project.data.title}
             />
-            <div class:list={["project-row-cover relative h-full min-h-[150px] w-full overflow-hidden rounded-[14px] border border-line", !project.data.coverKind && "project-row-cover--empty"]}>
+            <div
+              class:list={[
+                "project-row-cover relative h-full min-h-[150px] w-full overflow-hidden rounded-[14px] border border-line",
+                !project.data.coverKind && "project-row-cover--empty",
+              ]}
+            >
               {project.data.coverKind && <ProjectCover kind={project.data.coverKind} />}
-              {
-                !project.data.coverKind && (
-                  <span class="absolute bottom-[10px] left-3 font-mono text-[9.5px] tracking-[0.06em] text-ink-3 uppercase">
-                    {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
-                  </span>
-                )
-              }
+              {!project.data.coverKind && (
+                <span class="absolute bottom-[10px] left-3 font-mono text-[9.5px] tracking-[0.06em] text-ink-3 uppercase">
+                  {project.data.coverImage ? ui.common.caseStudyLabel : ui.common.coverPending}
+                </span>
+              )}
             </div>
             <div class="flex flex-col gap-[11px]">
               <div class="flex items-center gap-3">
                 <span class="font-mono text-[11px] text-ink-3">{String(i + 1).padStart(2, "0")}</span>
-                <span class="font-mono text-[10px] tracking-[0.07em] text-accent uppercase">{project.data.category}</span>
+                <span class="font-mono text-[10px] tracking-[0.07em] text-accent uppercase">
+                  {project.data.category}
+                </span>
                 <StatusBadge status={project.data.status} ui={ui} class="ml-auto" />
               </div>
-              <div class="font-display text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">{project.data.title}</div>
-              <div class="max-w-[520px] font-display text-[14px] leading-[1.58] text-ink-2">{project.data.shortDescription}</div>
+              <div class="font-display text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">
+                {project.data.title}
+              </div>
+              <div class="max-w-[520px] font-display text-[14px] leading-[1.58] text-ink-2">
+                {project.data.shortDescription}
+              </div>
               <div class="mt-[2px] flex flex-wrap gap-[6px]">
                 {project.data.technologies.slice(0, 4).map((tech) => (
-                  <span class="rounded-[7px] border border-line px-[9px] py-[6px] font-mono text-[10.5px] text-ink-2">{tech}</span>
+                  <span class="rounded-[7px] border border-line px-[9px] py-[6px] font-mono text-[10.5px] text-ink-2">
+                    {tech}
+                  </span>
                 ))}
               </div>
               <div class="mt-2 flex items-center justify-between">
-                <span class="font-display text-[12.5px] font-medium text-ink">{ui.work.caseStudyCta} <Arrow group /></span>
+                <span class="font-display text-[12.5px] font-medium text-ink">
+                  {ui.work.caseStudyCta} <Arrow group />
+                </span>
                 {project.data.githubUrl && (
                   <a
                     href={project.data.githubUrl}
@@ -235,9 +275,8 @@ const techSections = [
               </div>
             </div>
           </div>
-          </>
-        ))
-      }
+        </>
+      ))}
     </div>
   </div>
 </section>

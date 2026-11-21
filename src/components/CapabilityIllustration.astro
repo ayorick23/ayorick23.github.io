@@ -45,14 +45,32 @@ function dataAnalysis() {
   ].join("");
   return [
     floor(),
-    iso.pipe([[-67, -78, 0], [-67, 4, 0], [-34, 4, 0]]),
-    iso.pipe([[-50, 64, 0], [-12, 64, 0], [-12, 40, 0]]),
-    iso.pipe([[40, 8, 0], [72, 8, 0], [72, 34, 0]], "ci-pipe--accent"),
+    iso.pipe([
+      [-67, -78, 0],
+      [-67, 4, 0],
+      [-34, 4, 0],
+    ]),
+    iso.pipe([
+      [-50, 64, 0],
+      [-12, 64, 0],
+      [-12, 40, 0],
+    ]),
+    iso.pipe(
+      [
+        [40, 8, 0],
+        [72, 8, 0],
+        [72, 34, 0],
+      ],
+      "ci-pipe--accent",
+    ),
     iso.box(-96, -86, 0, 58, 4, 64),
     iso.onPlane("left", [-96, -82, 64], table),
     pad(-34, -34, 74, 74, 6),
     ...bars.map((b) => iso.box(b.x, -2, 6, 14, 14, b.h, b.accent ? "ci-accent" : "")),
-    iso.path(bars.map((b) => [b.x + 7, 5, b.h + 18] as P), "ci-trend"),
+    iso.path(
+      bars.map((b) => [b.x + 7, 5, b.h + 18] as P),
+      "ci-trend",
+    ),
     ...bars.map((b) => iso.node(b.x + 7, 5, b.h + 18, 2.8, b.accent ? "ci-node ci-node--accent" : "ci-node")),
     pad(-96, 46, 50, 40, 3),
     iso.onPlane("top", [-96, 46, 3], `${scatter}<line class="ci-ui-accent-line" x1="6" y1="32" x2="46" y2="8"/>`),
@@ -101,8 +119,19 @@ function dataVisualization() {
     .join("");
   return [
     floor(),
-    iso.pipe([[-24, -64, 0], [-24, 30, 0]], "", false),
-    iso.pipe([[56, -22, 0], [30, -22, 0], [30, 30, 0]]),
+    iso.pipe(
+      [
+        [-24, -64, 0],
+        [-24, 30, 0],
+      ],
+      "",
+      false,
+    ),
+    iso.pipe([
+      [56, -22, 0],
+      [30, -22, 0],
+      [30, 30, 0],
+    ]),
     iso.box(-86, -78, 0, 124, 14, 6),
     iso.box(-80, -74, 6, W, 4, H),
     iso.onPlane("left", [-80, -70, 6 + H], monitor),
@@ -118,35 +147,62 @@ function dataVisualization() {
 
 function machineLearning() {
   const pins = (n: number, len: number) =>
-    Array.from({ length: n }, (_, i) => `<line class="ci-ui-line" x1="${8 + i * 8}" y1="1" x2="${8 + i * 8}" y2="${len}"/>`).join("");
+    Array.from(
+      { length: n },
+      (_, i) => `<line class="ci-ui-line" x1="${8 + i * 8}" y1="1" x2="${8 + i * 8}" y2="${len}"/>`,
+    ).join("");
   const chipTop = [
     `<rect class="ci-ui" x="8" y="8" width="44" height="44" rx="3"/>`,
     `<rect class="ci-ui-glow" x="13" y="13" width="34" height="34" rx="2"/>`,
     `<text class="ci-ui-text" x="30" y="37" text-anchor="middle">AI</text>`,
   ].join("");
-  const layers = [
-    [16, 34, 52, 70],
-    [25, 43, 61],
-    [43],
-  ];
+  const layers = [[16, 34, 52, 70], [25, 43, 61], [43]];
   const lx = [14, 40, 66];
   const net: string[] = [];
   for (let l = 0; l < layers.length - 1; l++) {
     layers[l].forEach((a) =>
       layers[l + 1].forEach((b) =>
-        net.push(`<line class="${l === 1 ? "ci-ui-accent-line" : "ci-ui-line"}" x1="${lx[l]}" y1="${a}" x2="${lx[l + 1]}" y2="${b}"/>`),
+        net.push(
+          `<line class="${l === 1 ? "ci-ui-accent-line" : "ci-ui-line"}" x1="${lx[l]}" y1="${a}" x2="${lx[l + 1]}" y2="${b}"/>`,
+        ),
       ),
     );
   }
   layers.forEach((layer, l) =>
-    layer.forEach((v) => net.push(`<circle class="${l === 2 ? "ci-ui-node ci-ui-node--accent" : "ci-ui-node"}" cx="${lx[l]}" cy="${v}" r="${l === 2 ? 4.5 : 3.2}"/>`)),
+    layer.forEach((v) =>
+      net.push(
+        `<circle class="${l === 2 ? "ci-ui-node ci-ui-node--accent" : "ci-ui-node"}" cx="${lx[l]}" cy="${v}" r="${l === 2 ? 4.5 : 3.2}"/>`,
+      ),
+    ),
   );
   return [
     floor(),
-    iso.pipe([[-55, -52, 0], [-44, -52, 0], [-44, -12, 0], [-30, -12, 0]], "ci-pipe--accent"),
-    iso.pipe([[30, -14, 0], [64, -14, 0]], "ci-pipe--accent"),
-    iso.pipe([[-8, 30, 0], [-8, 56, 0], [-50, 56, 0]]),
-    iso.pipe([[14, 30, 0], [14, 70, 0], [40, 70, 0]]),
+    iso.pipe(
+      [
+        [-55, -52, 0],
+        [-44, -52, 0],
+        [-44, -12, 0],
+        [-30, -12, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [30, -14, 0],
+        [64, -14, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe([
+      [-8, 30, 0],
+      [-8, 56, 0],
+      [-50, 56, 0],
+    ]),
+    iso.pipe([
+      [14, 30, 0],
+      [14, 70, 0],
+      [40, 70, 0],
+    ]),
     iso.box(-96, -72, 0, 40, 40, 16),
     iso.disc(-76, -52, 16, 15, "ci-glow"),
     `<g class="ci-float">`,
@@ -191,11 +247,24 @@ function forecasting() {
       .reverse()
       .map(([x, , z], i, arr) => [x, 0, z - 8 - (arr.length - 1 - i) * 6] as P),
   ];
-  const ticks = [-70, -48, -26, -4, 18, 40, 62].map((x, i) => iso.box(x, 34, 4, 12, 12, i >= 4 ? 4 : 8, i >= 4 ? "ci-ghost" : ""));
+  const ticks = [-70, -48, -26, -4, 18, 40, 62].map((x, i) =>
+    iso.box(x, 34, 4, 12, 12, i >= 4 ? 4 : 8, i >= 4 ? "ci-ghost" : ""),
+  );
   return [
     floor(),
-    iso.pipe([[-56, 60, 0], [-56, 74, 0], [-74, 74, 0]]),
-    iso.pipe([[86, 20, 0], [112, 20, 0], [112, 52, 0]], "ci-pipe--accent"),
+    iso.pipe([
+      [-56, 60, 0],
+      [-56, 74, 0],
+      [-74, 74, 0],
+    ]),
+    iso.pipe(
+      [
+        [86, 20, 0],
+        [112, 20, 0],
+        [112, 52, 0],
+      ],
+      "ci-pipe--accent",
+    ),
     pad(-86, -50, 172, 110, 4),
     iso.poly(
       [
@@ -235,11 +304,43 @@ function mlops() {
   return [
     floor(),
     iso.line([-6, -84, 46], [-6, -84, 0], "ci-pipe ci-pipe--drop"),
-    iso.pipe([[-6, -84, 0], [-6, -14, 0]], "ci-pipe--accent"),
-    iso.pipe([[-74, 6, 0], [-22, 6, 0]], "ci-pipe--accent"),
-    iso.pipe([[22, 6, 0], [62, 6, 0]], "ci-pipe--accent"),
-    iso.pipe([[64, 30, 0], [64, 66, 0], [46, 66, 0]], "ci-pipe--accent"),
-    iso.pipe([[14, 66, 0], [0, 66, 0], [0, 26, 0]], "ci-pipe--accent"),
+    iso.pipe(
+      [
+        [-6, -84, 0],
+        [-6, -14, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [-74, 6, 0],
+        [-22, 6, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [22, 6, 0],
+        [62, 6, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [64, 30, 0],
+        [64, 66, 0],
+        [46, 66, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [14, 66, 0],
+        [0, 66, 0],
+        [0, 26, 0],
+      ],
+      "ci-pipe--accent",
+    ),
     `<g class="ci-float">`,
     iso.cloud([-6, -84, 50], 74, 14),
     `</g>`,
@@ -268,13 +369,53 @@ function dataEngineering() {
   return [
     floor(),
     iso.line([-124, -56, 44], [-124, -56, 0], "ci-pipe ci-pipe--drop"),
-    iso.pipe([[-124, -56, 0], [-46, -56, 0], [-46, -26, 0]]),
-    iso.pipe([[22, -88, 0], [22, -44, 0], [-10, -44, 0]]),
-    iso.pipe([[-82, 34, 0], [-62, 34, 0], [-62, 0, 0], [-50, 0, 0]]),
-    iso.pipe([[10, -6, 0], [44, -6, 0]], "ci-pipe--accent"),
-    iso.pipe([[60, 26, 0], [60, 46, 0], [-20, 46, 0], [-20, 70, 0]], "ci-pipe--accent"),
-    iso.pipe([[60, 46, 0], [92, 46, 0], [92, 62, 0]], "ci-pipe--accent"),
-    iso.pipe([[34, 46, 0], [34, 72, 0]], "ci-pipe--accent"),
+    iso.pipe([
+      [-124, -56, 0],
+      [-46, -56, 0],
+      [-46, -26, 0],
+    ]),
+    iso.pipe([
+      [22, -88, 0],
+      [22, -44, 0],
+      [-10, -44, 0],
+    ]),
+    iso.pipe([
+      [-82, 34, 0],
+      [-62, 34, 0],
+      [-62, 0, 0],
+      [-50, 0, 0],
+    ]),
+    iso.pipe(
+      [
+        [10, -6, 0],
+        [44, -6, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [60, 26, 0],
+        [60, 46, 0],
+        [-20, 46, 0],
+        [-20, 70, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [60, 46, 0],
+        [92, 46, 0],
+        [92, 62, 0],
+      ],
+      "ci-pipe--accent",
+    ),
+    iso.pipe(
+      [
+        [34, 46, 0],
+        [34, 72, 0],
+      ],
+      "ci-pipe--accent",
+    ),
     ...assets,
     `<g class="ci-float">`,
     iso.cloud([-124, -56, 48], 62, 14),

@@ -9,15 +9,7 @@
  */
 
 export type CoverKind =
-  | "churn"
-  | "forecast"
-  | "clusters"
-  | "pipeline"
-  | "lifecycle"
-  | "semantic"
-  | "benchmark"
-  | "medallion"
-  | "odontogram";
+  "churn" | "forecast" | "clusters" | "pipeline" | "lifecycle" | "semantic" | "benchmark" | "medallion" | "odontogram";
 
 export interface CoverColors {
   ink: string;
@@ -128,7 +120,7 @@ function drawFlowParticle(
   tailSteps = 5,
 ) {
   for (let i = 0; i < tailSteps; i++) {
-    const uu = ((u - i * 0.035) % 1 + 1) % 1;
+    const uu = (((u - i * 0.035) % 1) + 1) % 1;
     const x = ax + (bx - ax) * uu;
     const y = ay + (by - ay) * uu;
     const a = alpha * (1 - i / tailSteps) * (0.35 + 0.65 * Math.sin(uu * Math.PI));
@@ -638,7 +630,7 @@ const lifecycleKind: CoverKindDef<LifecycleState> = {
     // Hover: a comet trail of fading arcs behind the moving head, instead of one hard segment.
     const trailSteps = hov ? 5 : 1;
     for (let i = 0; i < trailSteps; i++) {
-      const hh = ((head - i * 0.028) % 1 + 1) % 1;
+      const hh = (((head - i * 0.028) % 1) + 1) % 1;
       ctx.globalAlpha = ease(prog) * (i === 0 ? 0.95 : 0.95 * (1 - i / trailSteps));
       ctx.strokeStyle = C.accent;
       ctx.lineWidth = i === 0 ? 1.4 : 1.4 * (1 - i / (trailSteps * 1.4));
@@ -652,7 +644,7 @@ const lifecycleKind: CoverKindDef<LifecycleState> = {
       const y = cy + Math.sin(a) * R;
       const ap = ease(clamp01((prog - i * 0.09) / 0.28));
       if (ap <= 0) return;
-      const near = Math.abs((((head - i / st.stages.length) + 1) % 1)) < 0.1;
+      const near = Math.abs((head - i / st.stages.length + 1) % 1) < 0.1;
       ctx.globalAlpha = ap;
       ctx.fillStyle = C.panel;
       roundRect(ctx, x - 11, y - 11, 22, 22, 7);
@@ -669,7 +661,16 @@ const lifecycleKind: CoverKindDef<LifecycleState> = {
       const lx = cx + Math.cos(a) * (R + out);
       const ly = Math.max(11, Math.min(h - 11, cy + Math.sin(a) * (R + out)));
       ctx.globalAlpha = ap * (near ? 1 : 0.72);
-      txt(ctx, s, lx, ly, 9.5, near ? C.ink : C.ink3, Math.abs(Math.cos(a)) < 0.3 ? "center" : Math.cos(a) > 0 ? "left" : "right", 600);
+      txt(
+        ctx,
+        s,
+        lx,
+        ly,
+        9.5,
+        near ? C.ink : C.ink3,
+        Math.abs(Math.cos(a)) < 0.3 ? "center" : Math.cos(a) > 0 ? "left" : "right",
+        600,
+      );
     });
     ctx.globalAlpha = 0.8;
     txt(ctx, "CONTINUOUS LIFECYCLE", w * 0.045, 14, 9, C.ink3);
@@ -1184,10 +1185,34 @@ const odontogramKind: CoverKindDef<{ teeth: (0 | 1 | 2)[][]; phase: number; last
         const p = 2;
         const surf = [
           () => ctx.rect(ox, oy, c, c),
-          () => (ctx.moveTo(xi + p, y + p), ctx.lineTo(xi + s - p, y + p), ctx.lineTo(ox + c, oy), ctx.lineTo(ox, oy), ctx.closePath()),
-          () => (ctx.moveTo(xi + s - p, y + p), ctx.lineTo(xi + s - p, y + s - p), ctx.lineTo(ox + c, oy + c), ctx.lineTo(ox + c, oy), ctx.closePath()),
-          () => (ctx.moveTo(xi + s - p, y + s - p), ctx.lineTo(xi + p, y + s - p), ctx.lineTo(ox, oy + c), ctx.lineTo(ox + c, oy + c), ctx.closePath()),
-          () => (ctx.moveTo(xi + p, y + s - p), ctx.lineTo(xi + p, y + p), ctx.lineTo(ox, oy), ctx.lineTo(ox, oy + c), ctx.closePath()),
+          () => (
+            ctx.moveTo(xi + p, y + p),
+            ctx.lineTo(xi + s - p, y + p),
+            ctx.lineTo(ox + c, oy),
+            ctx.lineTo(ox, oy),
+            ctx.closePath()
+          ),
+          () => (
+            ctx.moveTo(xi + s - p, y + p),
+            ctx.lineTo(xi + s - p, y + s - p),
+            ctx.lineTo(ox + c, oy + c),
+            ctx.lineTo(ox + c, oy),
+            ctx.closePath()
+          ),
+          () => (
+            ctx.moveTo(xi + s - p, y + s - p),
+            ctx.lineTo(xi + p, y + s - p),
+            ctx.lineTo(ox, oy + c),
+            ctx.lineTo(ox + c, oy + c),
+            ctx.closePath()
+          ),
+          () => (
+            ctx.moveTo(xi + p, y + s - p),
+            ctx.lineTo(xi + p, y + p),
+            ctx.lineTo(ox, oy),
+            ctx.lineTo(ox, oy + c),
+            ctx.closePath()
+          ),
         ];
         st.teeth[row * n + i].forEach((m, si) => {
           ctx.beginPath();
@@ -1203,13 +1228,27 @@ const odontogramKind: CoverKindDef<{ teeth: (0 | 1 | 2)[][]; phase: number; last
           ctx.stroke();
         });
         ctx.globalAlpha = a * 0.8;
-        txt(ctx, num(row, i), xi + s / 2, row === 0 ? y - 7 * k : y + s + 8 * k, 6.5 * f, inScan ? C.ink : C.ink3, "center", 600);
+        txt(
+          ctx,
+          num(row, i),
+          xi + s / 2,
+          row === 0 ? y - 7 * k : y + s + 8 * k,
+          6.5 * f,
+          inScan ? C.ink : C.ink3,
+          "center",
+          600,
+        );
       }
     }
     ctx.globalAlpha = 0.9;
     txt(ctx, "ODONTOGRAM · FDI", w * 0.045, 15 * k, 9 * f, C.ink2, "left", 600);
     let lx = w * 0.955;
-    ([["treated", sky], ["diagnosis", C.accent]] as const).forEach(([label, col]) => {
+    (
+      [
+        ["treated", sky],
+        ["diagnosis", C.accent],
+      ] as const
+    ).forEach(([label, col]) => {
       ctx.font = `500 ${8 * f}px "Satoshi", "JetBrains Mono", ui-sans-serif, sans-serif`;
       lx -= ctx.measureText(label).width;
       txt(ctx, label, lx, 15 * k, 8 * f, C.ink3);

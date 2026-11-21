@@ -69,7 +69,7 @@ npm run generate:og    # regenerar las og:image (manual, se commitean)
 - Si ves un camino técnico claramente mejor que lo que pidió, dilo con el porqué antes de
   ejecutar; no lo sigas ni lo cambies en silencio.
 - **No sumes cambios que no pidió**, aunque sean técnicamente necesarios: plantéalos como
-  pregunta *antes* de escribir el código.
+  pregunta _antes_ de escribir el código.
 - **Bocetos y "tal cual" se siguen al pie de la letra.** Si lo literal choca con algo técnico,
   nombra el conflicto y pregunta ofreciendo primero la versión literal. Antes de un cambio de
   diseño, resume lo que entendiste.

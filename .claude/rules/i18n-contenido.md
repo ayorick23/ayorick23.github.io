@@ -38,7 +38,7 @@ Contexto: [ADR 0002](../../docs/decisions/0002-ingles-en-la-raiz-espanol-en-es.m
 - `LanguageSwitcher.astro` calcula la ruta equivalente con `getAlternatePath`
   (`src/lib/i18n.ts`). El botón muestra solo el código del idioma destino (`EN`/`ES`).
 - **No tocar este orden**: al hacer clic, `src/scripts/language.ts` guarda el idioma destino
-  en `localStorage` *antes* de navegar. Si no, el auto-redirect de `/` (que respeta la
+  en `localStorage` _antes_ de navegar. Si no, el auto-redirect de `/` (que respeta la
   preferencia guardada) rebota al idioma anterior. Hay un e2e para esta regresión.
 
 ## Página 404

@@ -3,17 +3,7 @@ title: "OdontoTrack FOUEES"
 category: "Desarrollo de software · Full-stack"
 shortDescription: "Banco digital de pacientes para la Facultad de Odontología de la Universidad Evangélica de El Salvador: registro de pacientes, asignación de casos a estudiantes, expediente clínico con odontograma y dashboards por rol. Proyecto de servicio social."
 description: "Plataforma web que digitaliza el banco de pacientes de la Facultad de Odontología de la Universidad Evangélica de El Salvador (FOUEES), para facilitar las prácticas clínicas de los estudiantes. Recepción registra a los pacientes, se asignan como casos a estudiantes, los docentes supervisan y validan diagnósticos, y cada rol tiene su propio dashboard. Es parte de mi servicio social en la universidad donde estudio. En un equipo de 3 personas, soy el desarrollador principal y líder técnico del proyecto, con un backend en Django REST Framework y un frontend en React con TypeScript."
-technologies:
-  [
-    "Django",
-    "Django REST Framework",
-    "React",
-    "TypeScript",
-    "PostgreSQL",
-    "Docker",
-    "Vite",
-    "Tailwind CSS",
-  ]
+technologies: ["Django", "Django REST Framework", "React", "TypeScript", "PostgreSQL", "Docker", "Vite", "Tailwind CSS"]
 githubUrl: "https://github.com/ayorick23/odontotrack-fouees"
 disciplines: []
 track: "software"

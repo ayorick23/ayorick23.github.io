@@ -49,33 +49,27 @@ export const es: UICopy = {
     constellation: {
       machineLearning: {
         label: "Machine Learning",
-        description:
-          "Construyo modelos predictivos que apoyan decisiones reales.",
+        description: "Construyo modelos predictivos que apoyan decisiones reales.",
       },
       dataScience: {
         label: "Data Science",
-        description:
-          "Convierto preguntas en evidencia mediante datos, estadística y modelado.",
+        description: "Convierto preguntas en evidencia mediante datos, estadística y modelado.",
       },
       dataAnalytics: {
         label: "Data Analytics",
-        description:
-          "Encuentro patrones que ayudan a entender qué está ocurriendo.",
+        description: "Encuentro patrones que ayudan a entender qué está ocurriendo.",
       },
       mlops: {
         label: "MLOps",
-        description:
-          "Hago que el Machine Learning sea reproducible, mantenible y preparado para producción.",
+        description: "Hago que el Machine Learning sea reproducible, mantenible y preparado para producción.",
       },
       peopleAnalytics: {
         label: "People Analytics",
-        description:
-          "Transformando datos del talento humano en información estratégica para tomar mejores decisiones.",
+        description: "Transformando datos del talento humano en información estratégica para tomar mejores decisiones.",
       },
       python: {
         label: "Python",
-        description:
-          "Mi principal herramienta para explorar datos y construir soluciones.",
+        description: "Mi principal herramienta para explorar datos y construir soluciones.",
       },
     },
     constellationPanel: {
@@ -100,11 +94,31 @@ export const es: UICopy = {
     filterAll: "Todo",
     groups: {
       data: { name: "Datos y análisis", short: "Datos", description: "Limpiar, explorar y modelar datos con código." },
-      bi: { name: "BI y visualización", short: "BI", description: "Convertir el análisis en algo que la gente lee y usa." },
-      de: { name: "Ingeniería de datos", short: "Ingeniería de datos", description: "Almacenamiento, transformación y orquestación." },
-      ml: { name: "Machine Learning y MLOps", short: "Machine Learning", description: "Entrenar, registrar, versionar y servir modelos." },
-      eng: { name: "Prácticas de ingeniería", short: "Prácticas de ingeniería", description: "Control de versiones, testing, CI y contenedores." },
-      ai: { name: "Desarrollo con agentes de IA", short: "Agentes de IA", description: "Agentes, contexto y herramientas conectadas para desarrollar y aprender más rápido." },
+      bi: {
+        name: "BI y visualización",
+        short: "BI",
+        description: "Convertir el análisis en algo que la gente lee y usa.",
+      },
+      de: {
+        name: "Ingeniería de datos",
+        short: "Ingeniería de datos",
+        description: "Almacenamiento, transformación y orquestación.",
+      },
+      ml: {
+        name: "Machine Learning y MLOps",
+        short: "Machine Learning",
+        description: "Entrenar, registrar, versionar y servir modelos.",
+      },
+      eng: {
+        name: "Prácticas de ingeniería",
+        short: "Prácticas de ingeniería",
+        description: "Control de versiones, testing, CI y contenedores.",
+      },
+      ai: {
+        name: "Desarrollo con agentes de IA",
+        short: "Agentes de IA",
+        description: "Agentes, contexto y herramientas conectadas para desarrollar y aprender más rápido.",
+      },
     },
     exploringLabel: "Explorando ahora",
   },
@@ -207,7 +221,8 @@ export const es: UICopy = {
       preparedFor: "Preparación para",
       preparedBy: "Preparada con",
       descriptions: {
-        "platzi-fundamentos-ingenieria-datos": "Pipelines de datos, procesos ETL/ELT y arquitecturas de almacenamiento.",
+        "platzi-fundamentos-ingenieria-datos":
+          "Pipelines de datos, procesos ETL/ELT y arquitecturas de almacenamiento.",
         "platzi-docker-fundamentos": "Contenedores, imágenes, volúmenes y redes en Docker.",
         "platzi-python-ciencia-datos": "NumPy y Pandas para limpiar, transformar y explorar datos.",
         "platzi-regresion-lineal":
@@ -230,7 +245,8 @@ export const es: UICopy = {
         "udemy-power-bi": "Power Query, modelado de datos, DAX y reportes de inteligencia de negocios.",
         "certiport-it-specialist-databases":
           "Certificación oficial por examen: diseño de bases de datos relacionales, SQL y manipulación de datos.",
-        "academia-europea-bases-de-datos": "Curso de preparación de 36 horas para la certificación IT Specialist – Databases.",
+        "academia-europea-bases-de-datos":
+          "Curso de preparación de 36 horas para la certificación IT Specialist – Databases.",
         "a2-sql": "Consultas, joins, agregaciones y subconsultas en SQL.",
       },
     },
