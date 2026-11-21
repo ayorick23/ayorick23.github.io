@@ -17,6 +17,12 @@ paths:
   reales. **Si un test de contenido falla tras un cambio intencional, se arregla el dato, no
   el test**, salvo que la regla haya cambiado (y entonces se le pregunta a Dereck).
 - `tests/claude/`: el hook `guardia-git` de `.claude/hooks/`.
+- `tests/e2e/a11y.spec.ts`: axe (WCAG 2.1 AA) en cada página, ambos temas e idiomas, con
+  `reducedMotion: "reduce"` para medir el contraste con los colores finales y no a mitad de una
+  animación. Las excepciones van en `EXCLUDED` con su motivo y solo si Dereck las decide; un color
+  nuevo debe cumplir 4,5:1 (texto chico) o el test falla.
+- Para diagnosticar muchas fallas de axe a la vez conviene agruparlas por par de colores: casi
+  siempre las causa un solo token de `global.css`.
 - `tests/e2e/` (Playwright, desktop + Pixel 7): todas las rutas EN/ES responden 200 sin
   errores de JS, 404 en ambos idiomas, switcher de idioma (incluye la regresión del rebote a
   `/es/`), tema claro sobreviviendo a las View Transitions y menú móvil. Corre contra

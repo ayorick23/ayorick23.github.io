@@ -87,8 +87,8 @@ const personSchema = {
       (function () {
         function applyStoredTheme() {
           try {
-            var stored = localStorage.getItem("theme");
-            var theme =
+            const stored = localStorage.getItem("theme");
+            const theme =
               stored === "light" || stored === "dark"
                 ? stored
                 : window.matchMedia("(prefers-color-scheme: light)").matches
@@ -99,7 +99,9 @@ const personSchema = {
             } else {
               document.documentElement.removeAttribute("data-theme");
             }
-          } catch (e) {}
+          } catch {
+            // localStorage blocked (private mode, disabled storage): keep the default.
+          }
         }
         // Re-apply on every client-side transition too — the server-rendered
         // <html> tag never carries data-theme, so without this a page swap
@@ -111,12 +113,14 @@ const personSchema = {
     {locale === "en" && Astro.url.pathname === "/" && <script is:inline>
       (function () {
         try {
-          var stored = localStorage.getItem("lang");
-          var preferred = stored || (navigator.language || "").slice(0, 2);
+          const stored = localStorage.getItem("lang");
+          const preferred = stored || (navigator.language || "").slice(0, 2);
           if (preferred === "es") {
             window.location.replace("/es/");
           }
-        } catch (e) {}
+        } catch {
+          // localStorage blocked (private mode, disabled storage): keep the default.
+        }
       })();
     </script>}
   </head>

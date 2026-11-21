@@ -23,7 +23,11 @@ npm run dev            # localhost:4321 (queda en background: `npx astro dev sto
 npm run build          # build de producción a ./dist/
 npm test               # Vitest: unitarios, contenido y hook de git (< 1 s)
 npm run test:e2e       # Playwright contra el build (correr `npm run build` antes)
-npm run verify         # todo: astro check + Vitest + build + Playwright
+npm run lint           # ESLint
+npm run format         # Prettier (format:check solo revisa)
+npm run links          # links internos y anclas del build
+npm run lighthouse     # Lighthouse CI sobre el build (mismo umbral que el CI)
+npm run verify         # todo: check + lint + formato + Vitest + build + links + Playwright (incluye axe)
 npm run audit:ci       # filtro de seguridad del CI (audit-allowlist.json)
 npm run generate:og    # regenerar las og:image (manual, se commitean)
 ```

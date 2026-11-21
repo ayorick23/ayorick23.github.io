@@ -327,7 +327,8 @@ const forecastKind: CoverKindDef<ForecastState> = {
       const lastH = Math.floor(nowI * hp);
       for (let i = 0; i <= lastH; i++) {
         const y = Y(pts[i] + wobble);
-        i ? ctx.lineTo(X(i), y) : ctx.moveTo(X(i), y);
+        if (i) ctx.lineTo(X(i), y);
+        else ctx.moveTo(X(i), y);
       }
       ctx.stroke();
       if (fp > 0) {
@@ -350,7 +351,8 @@ const forecastKind: CoverKindDef<ForecastState> = {
       for (let i = nowI; i <= 60; i++) {
         const sp = ((i - nowI) / (60 - nowI)) * 0.13;
         const y = Y(p0[i] + sp);
-        i === nowI ? ctx.moveTo(X(i), y) : ctx.lineTo(X(i), y);
+        if (i === nowI) ctx.moveTo(X(i), y);
+        else ctx.lineTo(X(i), y);
       }
       for (let i = 60; i >= nowI; i--) {
         const sp = ((i - nowI) / (60 - nowI)) * 0.13;
@@ -1262,6 +1264,8 @@ const odontogramKind: CoverKindDef<{ teeth: (0 | 1 | 2)[][]; phase: number; last
   },
 };
 
+// Each kind has its own state shape; the registry only needs to hold them side by side.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const COVER_KINDS: Record<CoverKind, CoverKindDef<any>> = {
   churn: churnKind,
   forecast: forecastKind,

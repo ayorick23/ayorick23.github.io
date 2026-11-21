@@ -40,19 +40,21 @@ const en = getUI("en");
   -->
   <script is:inline>
     (function () {
-      var lang = "en";
+      let lang = "en";
       if (/^\/es(\/|$)/.test(location.pathname)) {
         lang = "es";
       } else {
         try {
-          var stored = localStorage.getItem("lang");
-          var preferred = stored || (navigator.language || "").slice(0, 2);
+          const stored = localStorage.getItem("lang");
+          const preferred = stored || (navigator.language || "").slice(0, 2);
           if (preferred === "es") lang = "es";
-        } catch (e) {}
+        } catch {
+          // localStorage blocked (private mode, disabled storage): keep the default.
+        }
       }
       if (lang === "en") return;
       document.querySelectorAll("[data-404-lang]").forEach(function (el) {
-        var active = el.getAttribute("data-404-lang") === lang;
+        const active = el.getAttribute("data-404-lang") === lang;
         el.hidden = !active;
         if (active) document.title = document.title.replace(/^[^·]+/, el.getAttribute("data-title") + " ");
       });
