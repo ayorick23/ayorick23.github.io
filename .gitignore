@@ -29,3 +29,7 @@ pnpm-debug.log*
 
 # reference
 desing_reference/
+
+# Claude Code (ADR 0014): lo personal no se versiona; .claude/settings.json sí
+CLAUDE.local.md
+.claude/settings.local.json

@@ -1,138 +1,90 @@
-# ayorick23.github.io — Portfolio de Dereck Mendez
+# CLAUDE.md
 
-Portfolio personal construido con **Astro + TypeScript + Tailwind CSS v4**, desplegado en GitHub Pages vía GitHub Actions. Reemplazó por completo un prototipo estático de un solo `index.html`.
+## Proyecto
 
-**Posicionamiento (desde 2026-11-14)**: el sitio presenta a Dereck como **analista de datos** (Data Analytics · BI · Machine Learning) — es el rol al que aplica. ML, MLOps e ingeniería de datos se muestran como diferenciales, no como titular. Mantener ese tono en textos nuevos (hero, meta, contacto, "Sobre mí").
+Portafolio personal de Dereck Mendez en `dereckmendez.com`: **Astro + TypeScript + Tailwind
+CSS v4**, estático, bilingüe (inglés en la raíz, español en `/es/`), desplegado en GitHub
+Pages con GitHub Actions.
 
-Dereck no es desarrollador frontend — su fondo es negocio/HR → analítica → Data Science/ML/MLOps. Al tomar decisiones de arquitectura o UI, explica el porqué en términos simples; no asumas que conoce jerga frontend.
+El sitio presenta a Dereck como **analista de datos** (Data Analytics · BI · Machine
+Learning), el rol al que aplica. ML, MLOps e ingeniería de datos son diferenciales, no el
+titular ([ADR 0009](docs/decisions/0009-posicionamiento-analista-de-datos.md)).
+
+**Fuente de verdad** (léela antes de retomar trabajo, o usa `/retomar`):
+
+- `docs/roadmap.md`: qué falta.
+- `docs/decisions/`: las decisiones de arquitectura y diseño (ADRs) con su porqué.
 
 ## Comandos
 
 ```bash
-npm install          # instalar dependencias
-npm run dev           # servidor local en localhost:4321
+npm install            # dependencias
+npm run dev            # localhost:4321 (queda en background: `npx astro dev stop`)
 npm run build          # build de producción a ./dist/
-npm run preview        # previsualizar el build
-npx astro check         # type-check completo (correr antes de dar algo por terminado)
-npx astro dev stop       # detener el dev server (queda corriendo en background aunque el comando "termine")
-npm test                # tests unitarios + de contenido (Vitest, < 1 s)
-npm run test:e2e         # tests en navegador real (Playwright) contra el build: correr `npm run build` antes
-npm run verify           # todo junto: check + Vitest + build + Playwright
-npm run audit:ci         # filtro de seguridad del CI (ver audit-allowlist.json)
+npm test               # Vitest: unitarios, contenido y hook de git (< 1 s)
+npm run test:e2e       # Playwright contra el build (correr `npm run build` antes)
+npm run verify         # todo: astro check + Vitest + build + Playwright
+npm run audit:ci       # filtro de seguridad del CI (audit-allowlist.json)
+npm run generate:og    # regenerar las og:image (manual, se commitean)
 ```
 
-Node no viene preinstalado en esta máquina por defecto — si `node`/`npm` no están en PATH, ya se instaló vía `winget install OpenJS.NodeJS.LTS`; puede que haga falta anteponer `$env:Path += ";C:\Program Files\nodejs"` en PowerShell si la sesión es nueva.
+## Mapa del código
 
-**Gotcha importante**: `astro-icon` (los íconos locales de `src/assets/icons/`) escanea la carpeta y cachea el contenido de cada SVG **una sola vez, al arrancar** el dev server. Si agregas, renombras o editas el contenido de un ícono local mientras el servidor ya está corriendo, no vas a ver el cambio hasta hacer `npx astro dev stop` + `npm run dev` de nuevo — un simple refresh del navegador no alcanza.
+- `src/pages/` (y `src/pages/es/`): wrappers delgados que envuelven una View en `BaseLayout`.
+- `src/components/views/`: el contenido real de cada página (`HomeView`, `AboutView`,
+  `ExperienceView`, `ProjectsIndexView`).
+- `src/content/i18n/{en,es}.ts`: **todo** el copy. `src/content/projects/{en,es}/*.md`: casos
+  de estudio.
+- `src/data/`: datos sin idioma (nav, redes, herramientas, disciplinas, constelación,
+  certificados, educación).
+- `src/lib/`: helpers puros (con tests en `tests/unit/`). `src/scripts/`: TypeScript plano de
+  la interactividad, sin framework ([ADR 0001](docs/decisions/0001-astro-typescript-tailwind-sin-framework-ui.md)).
+- `src/styles/global.css`: tokens de diseño y tema.
 
-## Tests
+## Reglas
 
-- `tests/unit/`: funciones de `src/lib/` (fechas, rutas i18n, duraciones de experiencia, `renderBody`, íconos).
-- `tests/content/`: integridad del contenido. Paridad en/es de los diccionarios (estructura, largo de arrays, textos traducidos en un solo idioma; vacío en ambos = oculto a propósito), proyectos en ambos idiomas con los mismos campos estructurales (tecnologías, estado, orden, imágenes…), archivos referenciados que existen en `public/`, certificados con PDF + JPG + descripción en ambos idiomas, timeline sin solapes y más reciente primero, nodos de la constelación con herramientas/proyectos reales. Si un test de contenido falla tras un cambio intencional, arreglar el dato, no relajar el test, salvo que la regla haya cambiado.
-- `tests/e2e/` (Playwright, desktop + móvil Pixel 7): todas las rutas EN/ES responden 200 sin errores de JS, la 404 en ambos idiomas, el switcher de idioma (incluye la regresión del rebote a `/es/`), el tema claro sobreviviendo a las View Transitions y el menú móvil. Corre contra `astro preview` en el puerto 4329; si choca con otro preview abierto: `npx astro preview stop`.
-- `scripts/audit.mjs` + `audit-allowlist.json`: el CI bloquea alertas altas/críticas de dependencias de producción salvo las listadas con motivo y `reviewBy`; una excepción vencida también falla.
-- El job del CI se llama "Check, audit & build" aunque ahora corre tests: es el nombre requerido por la protección de `main`, no renombrarlo.
+- **Contenido real o nada**: nunca inventar empresas, métricas, URLs, capturas ni
+  descripciones. Si falta un dato, el elemento no se renderiza y se avisa qué falta y dónde va
+  ([ADR 0004](docs/decisions/0004-contenido-real-o-nada.md)).
+- **Nada de texto hardcodeado** en componentes: campo en `src/content/i18n/types.ts`, después en
+  `en.ts` y `es.ts`.
+- **Comentarios** solo cuando hay una razón no obvia; el código ya dice qué hace.
+- **Verificar antes de dar algo por terminado**: `npm run verify` limpio y, si es visual,
+  probado en el navegador (`/verificar`).
+- **Git**: cada trabajo en una rama `feat/`, `fix/`, `chore/`, `test/` o `docs/`; nunca commit,
+  merge ni push sobre `main`. **Commit y push solo cuando Dereck lo pide explícitamente.** El
+  merge lo hace él en GitHub, así que antes de empezar hay que hacer fetch y mirar
+  `origin/main`. Los commits llevan la línea `Co-Authored-By`. El hook
+  `.claude/hooks/guardia-git.mjs` lo hace cumplir: si te bloquea, corrige el comando, no lo
+  esquives.
+- **Tests de contenido**: si fallan tras un cambio intencional, se arregla el dato, no el test.
 
-## Arquitectura
+## Cómo colaborar con Dereck
 
-- `src/pages/` — rutas en inglés (locale por defecto, sin prefijo). `src/pages/es/` refleja cada ruta en español.
-- `src/components/views/` — el contenido real de cada página (`HomeView`, `AboutView`, `ExperienceView`, `ProjectsIndexView`). Los archivos en `src/pages/` son wrappers delgados que solo envuelven la View en `BaseLayout`, así EN/ES nunca duplican markup.
-- `src/content/projects/{en,es}/*.md` — casos de estudio de proyectos (Astro content collection, schema en `src/content.config.ts`). Cada proyecto necesita un `.md` en ambos idiomas con el mismo slug de archivo.
-- `src/content/i18n/{en,es}.ts` — **todo** el copy de la interfaz. Los componentes nunca deben tener texto hardcodeado; si agregas un texto nuevo, añade el campo a `src/content/i18n/types.ts` primero y luego a ambos `en.ts`/`es.ts`.
-- `src/data/` — datos estructurales sin idioma: `nav.ts`, `social-links.ts` (links reales de GitHub/LinkedIn/email — los íconos de GitHub/LinkedIn son SVGs locales propios, email usa `lucide:mail`), `constellation.ts` (los 6 nodos de la esfera del hero: latitud/longitud, herramientas y proyectos relacionados), `tools.ts` (herramientas por categoría con sus íconos, más `projectTechIcons`/`projectTechGroups` para tecnologías de proyectos que no están en la sección de herramientas), `disciplines.ts` (las 6 disciplinas — ver "Disciplinas" abajo).
-- `src/lib/` — helpers: `i18n.ts` (resolución de locale, rutas alternas), `projects.ts` (fetch de la content collection), `cv.ts` (detecta si existe el PDF del CV para ese idioma), `experience.ts` (fechas/duraciones de puestos y qué estudios/certificados caen dentro de cada uno), `tech-icons.ts` (`techIcon()`/`techGroup()` por nombre de tecnología), `iso.ts` (kit de dibujo isométrico de las ilustraciones de Capacidades).
-- `src/scripts/` — TypeScript plano que se importa desde `<script>` en los `.astro` (nada de framework — ni React ni Vue). `theme.ts`, `language.ts`, `nav.ts`, `reveal.ts`, `constellation.ts` (esfera del hero), `gantt.ts`, `experience-branches.ts`, `tools.ts`, `projects-filter.ts`, `metrics.ts`, `capabilities.ts`, `nebula.ts` (shader WebGL de contacto).
-- `src/styles/global.css` — tokens de diseño (dark por defecto, override en `[data-theme="light"]`) y el mapeo a Tailwind v4 vía `@theme inline`.
-- **Flechas**: todas las flechas de botones/enlaces usan `Arrow.astro` (íconos Lucide, mismo estilo que la flecha diagonal junto a GitHub) con `dir` right/left/up-right. Al hacer hover la flecha sale en su dirección y vuelve a entrar desde el lado contrario (CSS en `global.css`, `.dm-arrow`). En tarjetas que son enlace completo (`.group`) usar `<Arrow group />`. Esos botones no llevan el efecto de levantarse.
-- **Tipografía**: títulos y cuerpo en Manrope (Dereck quiere conservar la fórmula fina + **negrita** + color de los títulos). Etiquetas, fechas, años y números usan **Satoshi** a través de la clase/variable `font-mono` (el nombre se conservó para no tocar 80 usos; ya no es monoespaciada — Dereck la sentía "de plantilla IA"), en peso regular, con el punto de color y espaciado reducido. Satoshi se carga desde la API de Fontshare en `BaseLayout.astro` (igual que OdontoTrack): su licencia no permite commitear los archivos en un repo público. `@fontsource/jetbrains-mono` sigue instalado solo para `scripts/generate-og-images.mjs`.
-- **Acento**: Carmesí (`#ef4d56` oscuro / `#d42a35` claro), `--accent-2` coral. `BaseLayout` lleva `<meta name="darkreader-lock">`: Dereck usa Dark Reader y repintaba los colores del sitio.
+- Responder **en español**. El código y sus comentarios, en inglés.
+- Su fondo es negocio/HR → analítica → Data Science/ML/MLOps; **no es desarrollador frontend**.
+  Explica las decisiones técnicas en términos simples y por su efecto visible.
+- **Recomienda**: una opción justificada, no un menú neutro. Él corrige si no está de acuerdo.
+  Las preguntas de opción múltiple quedan solo para lo que es decisión exclusivamente suya.
+- Si ves un camino técnico claramente mejor que lo que pidió, dilo con el porqué antes de
+  ejecutar; no lo sigas ni lo cambies en silencio.
+- **No sumes cambios que no pidió**, aunque sean técnicamente necesarios: plantéalos como
+  pregunta *antes* de escribir el código.
+- **Bocetos y "tal cual" se siguen al pie de la letra.** Si lo literal choca con algo técnico,
+  nombra el conflicto y pregunta ofreciendo primero la versión literal. Antes de un cambio de
+  diseño, resume lo que entendiste.
+- Usa sus propios assets (íconos, fotos, CV) antes que genéricos: pregunta dónde están.
+- Ritmo: itera sin pedir permiso a mitad de tarea, verifica en el navegador, muestra el
+  resultado y espera su revisión.
 
-## i18n
+## Dónde vive el resto del contexto ([ADR 0014](docs/decisions/0014-contexto-de-claude-versionado-en-el-repo.md))
 
-- Inglés vive en la raíz (`/`, `/about`, `/projects/...`), español bajo `/es/...`. Configurado en `astro.config.mjs` (`i18n.routing.prefixDefaultLocale: false`).
-- El selector de idioma (`LanguageSwitcher.astro`) calcula la ruta equivalente en el otro idioma con `getAlternatePath` (`src/lib/i18n.ts`). El texto del botón es solo el código corto del idioma destino (`EN`/`ES`), no el nombre completo.
-- **Importante**: al hacer clic en el switcher, `src/scripts/language.ts` guarda el idioma destino en `localStorage` *antes* de navegar — si no fuera así, el script de auto-redirect en `/` (que respeta la preferencia guardada) rebota de vuelta al idioma anterior. No tocar ese orden sin entender por qué existe.
-
-## Content collection de proyectos
-
-Schema en `src/content.config.ts`. Campos relevantes: `title`, `category`, `shortDescription`, `description`, `technologies[]`, `disciplines[]`, `githubUrl?`, `demoUrl?`, `metrics[]`, `sections[]` (bloques tipo Contexto/Enfoque/Resultado), `featured`, `status` (`placeholder | draft | published`), `coverImage?`, `ogImage?`.
-
-- `disciplines[]` es lo que usa el filtro de `/projects` (ver "Disciplinas"). `category` sigue siendo texto libre solo para mostrar — no filtrar por él.
-
-- Si `githubUrl` no está definido, el botón de GitHub de la tarjeta simplemente no se renderiza (no hay estado "roto"). Mismo patrón para `demoUrl`.
-- Si `coverImage` no está definido, la tarjeta muestra el placeholder con el patrón diagonal y el texto "portada pendiente" en vez de asumir que hay imagen.
-- `status: "placeholder"` solo controla el badge "Ejemplo/Placeholder" en la página del caso de estudio — no lo uses para decidir si mostrar la portada (eso es cosa de `coverImage`).
-- `ogImage?` es la portada social (og:image / twitter:image) de ese caso de estudio específico — independiente de `coverImage`. Si no se define, `BaseLayout.astro` usa la tarjeta de marca por defecto en `public/og/site-{locale}.png`. Los 4 proyectos actuales ya tienen `ogImage` propio, uno por idioma (`public/og/{slug}-{locale}.png`).
-
-### Portadas para redes sociales (og:image)
-
-- `scripts/generate-og-images.mjs` es un generador de assets *manual*, no parte del build de Astro — se corre a mano con `npm run generate:og` cada vez que cambie la bio, la foto, el texto de un proyecto o sus métricas, y el resultado (`public/og/*.png`) se commitea como asset estático.
-- La tarjeta de marca por defecto (`site-en.png` / `site-es.png`) se dibuja con `@napi-rs/canvas` (Manrope real vía `@fontsource/manrope`, no la variable — los pesos de una fuente variable no se aplican bien vía `ctx.font` en canvas) más el recorte circular de `src/assets/images/dereck-mendez-cutout.png` (tiene canal alfa real, no es solo fondo blanco) y una mini-constelación decorativa inspirada en `src/data/constellation.ts`.
-- **Las portadas por proyecto siguen la misma estética de marca, no son screenshots.** El panel de la derecha renderiza en frío (`prog=1`, sin animación) la misma función `draw()` de `src/lib/project-cover-kinds.ts` que ya anima la portada del proyecto en vivo en la web — es decir, la portada social y la portada on-page son literalmente el mismo dibujo, solo que una se congela en un frame. La izquierda repite el patrón de la tarjeta de marca: categoría, título, tagline (recortada del `shortDescription` real, nunca reescrita), y abajo las primeras 3 métricas reales del proyecto (o los chips de tecnologías + badge "en desarrollo" si todavía no hay métricas).
-- Node 24 puede importar `project-cover-kinds.ts` directamente (`import { COVER_KINDS } from "../src/lib/project-cover-kinds.ts"`) sin transpilar — el archivo no tiene imports externos ni sintaxis TS no borrable, así que el "type stripping" nativo de Node alcanza. No dupliques esa lógica de dibujo a mano en el script.
-- **Gotcha ya resuelto**: mi propio `roundRectPath(ctx, x, y, w, h, r)` (a diferencia del `roundRect` nativo del canvas) no clampea `r` — pasarle un radio mayor a `w/2`/`h/2` (como hice para simular una píldora con `r: 999`) hace que la curva se salga del cuadro y cruce todo el canvas. La función ya clampea `r = Math.min(r, w/2, h/2)` al inicio; no lo quites.
-- Para agregar una portada nueva (proyecto nuevo o `coverKind` nuevo): agregar la entrada al `CoverKind` union + `COVER_KINDS` en `project-cover-kinds.ts`, al enum de `coverKind` en `content.config.ts`, y una llamada a `renderProjectCard()` en el script — no hace falta ninguna captura real.
-
-## Disciplinas
-
-`src/data/disciplines.ts` define 6 ids (`data-analysis`, `data-visualization`, `machine-learning`, `forecasting`, `mlops`, `data-engineering`). Son a la vez las 6 Capacidades de la landing (`capabilities.items[].id` en i18n, de donde salen los nombres) y la taxonomía `disciplines[]` de los proyectos. Si se renombra o agrega una disciplina, tocar las tres cosas juntas: `disciplines.ts`, `capabilities.items` en `en.ts`/`es.ts`, y su ilustración en `CapabilityIllustration.astro`.
-
-## Diseño / interacciones no obvias
-
-- **Theming**: dark es el modo primario. Toggle es un switch horizontal (`ThemeToggle.astro`, `role="switch"`), no un botón con ícono. El estado vive en `localStorage("theme")` + atributo `data-theme` en `<html>`. El `color-scheme` de `<html>` se sincroniza con `:root[data-theme="light"]` en `global.css` — si algún día "el modo claro se ve raro en scrollbars/inputs nativos", es lo primero a revisar (ya hubo un bug real acá: un selector `:has()` mal escrito nunca hacía match).
-- **Página 404** (`src/pages/404.astro`): GitHub Pages sirve un único `404.html` para toda URL inexistente (también `/es/...`), así que la página renderiza ambos idiomas y un script inline elige cuál mostrar por la ruta (`/es/`) o la preferencia guardada. El nav queda en inglés (limitación aceptada). Usa `noindex` de `BaseLayout`, que además omite canonical/hreflang.
-- **View Transitions**: el sitio usa `<ClientRouter />` de Astro (`astro:transitions`) para las transiciones entre páginas. Esto tiene una trampa: el `<html>` que genera el servidor **nunca** incluye `data-theme` (lo agrega solo el script inline del cliente), así que en cada swap de página Astro puede borrar ese atributo. Por eso el script de tema en `BaseLayout.astro` corre tanto al cargar como en el evento `astro:after-swap` — si tocas ese script, no rompas ese doble-enganche o el tema se resetea a oscuro al navegar.
-- **Desplazamiento y transiciones** (no reintroducir): no poner `scroll-behavior: smooth` global en `html` — Astro restaura el scroll con `scrollTo()` al navegar/atrás/adelante y el CSS lo convertía en un barrido visible de toda la página. El scroll suave de anclas vive en `scripts/anchor-scroll.ts` (centra el contenido de la sección bajo el nav, o pega su inicio bajo el nav si no cabe; escucha en fase de captura para adelantarse al router). Tampoco poner `transition:animate` en `<main>`: la View Transition fotografía el elemento nombrado **completo** (~5.400 px en la home) y congelaba ~650 ms al volver al inicio; el fundido por defecto de la raíz alcanza. La nebulosa de contacto arranca en `requestIdleCallback` con compilación de shader en paralelo, porque crear el contexto WebGL dentro de la transición congelaba ~1 s.
-- Componentes con `transition:persist` (Nav, Footer) no se re-montan entre páginas — cualquier script que los inicialice debe ser **idempotente** (usa el patrón `if (el.dataset.initialized) return; el.dataset.initialized = "true";` que ya está en `theme.ts`, `nav.ts`, `language.ts`) o vas a duplicar listeners en cada navegación.
-- **Nav**: layout de 3 columnas con flex-basis igual (`flex-1` a ambos lados del bloque de links) para que los links queden centrados de verdad, sin importar que el cluster derecho (idioma + CV + toggle) sea más ancho que el logo. El botón de CV lleva un ícono (`lucide:download`) para ocupar menos espacio en vez de un texto largo.
-- **Esfera del hero** (`Constellation.astro` + `scripts/constellation.ts`): esfera 3D de ~350 estrellas conectadas (estilo del póster TEDx Tokyo en `desing_reference/isometrics/descarga (4).jpg`), dibujada en canvas 2D con una proyección 3D propia — sin Three.js, a propósito, por peso. Los 6 nodos son botones DOM reales posicionados encima en cada frame (accesibles con teclado). Gira sola (`AUTO_SPIN`), se arrastra con inercia (en touch solo horizontal, porque el vertical hace scroll — `touch-pan-y`), y el clic en un nodo lo rota al frente, atenúa el resto y abre un panel con descripción + herramientas + proyectos (definidos por nodo en `src/data/constellation.ts`, textos del panel en `hero.constellationPanel`). Ya no hay física de resorte por nodo. Respeta `prefers-reduced-motion` (sin giro automático). Los íconos de GitHub/LinkedIn del Hero usan una animación de brillo pulsante (`dm-star-glow` en `global.css`).
-- **Trayectoria profesional**: landing y `/experience` muestran cosas distintas a propósito. Cada `TimelineEntry` necesita `start`/`end` (`YYYY-MM`, sin `end` = puesto actual) además de `period` (solo texto), `summary` (~3 líneas, para el tooltip) y `description`.
-  - **Landing — Gantt** (`ExperienceGantt.astro` + `scripts/gantt.ts`, referencia `desing_reference/elements/descarga (7).jpg`): una barra por puesto (más antiguo arriba), carril de Formación con dos barras (Técnico e Ingeniería, ambas desde ene 2025, de `studyPrograms` en `lib/experience.ts`; parte hecha sólida, planificada rayada) y carril de Certificaciones (puntos agrupados por trimestre, porque un mes son ~8px). Cada carril lleva su título con una línea horizontal completa debajo. Línea "Hoy" recalculada en el cliente. Tooltip estilo Power BI: con mouse la tarjeta sigue al cursor (y se voltea cerca de los bordes); clic deja la barra seleccionada (las demás atenuadas) hasta un clic fuera de las barras o en otra barra; con teclado/toque aparece anclada a la barra. Cada puesto se dibuja hasta el inicio del siguiente (`drawTo`): sin huecos ni solapes, Dereck nunca tuvo dos trabajos a la vez. Las rayas de las barras de Educación se desplazan de izquierda a derecha. El nombre va dentro de la barra si cabe; puestos de menos de 18 meses (`SHORT_ROLE_MONTHS`) siempre lo llevan afuera (Dereck lo pidió para "Vendedor de Pinturas"). En < 640px no hay scroll horizontal: barras delgadas con el nombre encima, posicionado por JS.
-  - **`/experience` — ramas + contenedores** (`ExperienceBranches.astro` + `scripts/experience-branches.ts`). **La referencia que manda es el borrador de Dereck: `desing_reference/elements/Captura de pantalla 2026-11-14 175625.png`** — no reinterpretarlo (ya hubo dos rondas rechazadas: ramas en cascada y ramas en escuadra/escalera). La línea principal azul pasa *por dentro* de los paneles de trabajo (`--main` desde su borde izquierdo), con el nodo a la izquierda del título. Encima de cada puesto van sus contenedores de rama: Certificaciones arriba (sangría `--indent-certs`) y Educación justo encima del puesto (`--indent-study`). Todos los contenedores tienen el nodo a la misma distancia del borde (`--dot`) y el texto a la misma (`--text`); el contenedor de Educación empieza a la derecha de la línea principal (`--indent-study > --dot`, Dereck no quiere que la atraviese) y los títulos de trabajo empiezan después del carril más externo (`--text-work > --indent-certs + --dot`), así ninguna línea toca texto. Valores más chicos en móvil. Los contenedores de rama no llevan título tipo "CERTIFICACIONES"/"EDUCACIÓN" (lo dice la leyenda). Cada nodo se centra en título + subtítulo (puesto y empresa), medido con `offsetTop` y no con `getBoundingClientRect` — este último incluía el `translateY` de la animación de entrada y dejaba los puntos ~10px abajo. Las ramas son la curva de la primera versión, reflejada a la derecha: salen del nodo del puesto con una curva suave (`BRANCH_RISE`) y suben rectas hasta el nodo del contenedor, atravesando lo que haya en medio — sin escuadras. Estilos: Educación = línea sólida clara + nodo relleno + borde sólido; Certificaciones = línea a trazos + nodo hueco + borde a trazos; los paneles de trabajo tienen borde neutro. Fechas a la izquierda solo en puestos de trabajo ("HOY"/"INICIO" en los extremos). Certificaciones muestra máximo 5 + "Ver los N restantes en Sobre mí". Descripción a la izquierda, Periodo/Empresa/Duración en columna angosta a la derecha. Etiquetas = rango de años ("2026 – Actualidad"). Animación de una sola vez (~1,5 s, `RISE_DURATION`): la línea sube de "Inicio" a "Hoy", rellena cada nodo y revela su panel; las ramas crecen (vía `<mask>`, para que la de trazos también anime) cuando su nodo de origen se rellena.
-- **Capacidades** (`HomeView.astro` + `scripts/capabilities.ts`): acordeón horizontal estilo "Selected work" de dataconale.com — el panel en hover crece (`flex-grow`), los demás quedan como título vertical; en móvil es acordeón vertical por toque. Cada panel lleva una ilustración isométrica en SVG generada por código (`CapabilityIllustration.astro` + `src/lib/iso.ts`): caras con `color-mix` de `currentColor` para que sigan el tema, íconos de Lucide proyectados sobre las caras con `onPlane()`, racks, nubes extruidas, tuberías punteadas animadas. Cada escena tiene un `viewBox` recortado a sus límites medidos (mapa `bounds`) — si se mueve algo en una escena, volver a medir o puede cortarse.
-- **Filtro de proyectos** (`ProjectsIndexView.astro` + `scripts/projects-filter.ts`, solo en `/projects`): disciplina y estado como pestañas con píldora deslizante (reusa las clases `dm-tools-*` de la sección de herramientas), tecnologías como menú desplegable agrupado con las categorías de `toolGroups` (las que no están ahí se asignan en `projectTechGroups`). Varias tecnologías combinan con "cualquiera de" (OR), no "todas".
-- **Métricas de cada proyecto** (`ProjectLayout.astro` + `scripts/metrics.ts`): cards con resplandor, conteo de números y blur-in al entrar en pantalla. El conteo anima solo el primer número del texto y conserva prefijos/sufijos (`+84%`, `85,088`, `0.99`).
-- **Nebulosa de contacto** (`scripts/nebula.ts`): shader WebGL (ruido fbm con domain warping) con aspecto de humo que sube; el cursor deja una estela que arrastra y arremolina el gas. Se dibuja a resolución reducida (`RENDER_SCALE`) y solo mientras la tarjeta está en pantalla. En modo oscuro el gas es "emisivo" (`uOpacity` bajo: suma luz en vez de tapar el fondo); en claro usa la paleta de aurora. En móvil baja a la parte inferior de la tarjeta para no tapar el texto. Si se ve "como agua", lo causan crestas duras / warping fuerte — ver comentarios en el shader.
-- **Marquee de herramientas** (sección "Herramientas y tecnologías" en `HomeView.astro`): cinta infinita en CSS puro (keyframe `dm-marquee`, `translateX(-50%)` sobre una lista duplicada), sin JS. Se pausa en hover/focus y respeta `prefers-reduced-motion`. El tooltip con el nombre de la herramienta necesita que el contenedor use `overflow-x-hidden` (no `overflow-hidden` a secas) más padding vertical generoso, o el tooltip queda recortado.
-  - **Íconos raster dentro del marquee**: algunos íconos (`XGBoost`, `Pandera`, `Seaborn`) no son SVGs vectoriales limpios — se resuelven como PNG vía `mask-image` + `background-color: currentColor` (mismo mecanismo que un ícono SVG con `fill="currentColor"`, pero para bitmaps). Ver `rasterSrc()` en `HomeView.astro` y el flag `raster: true` en `src/data/tools.ts`. El SVG original de Seaborn (`devicon-plain--seaborn`) era un trazado auto-vectorizado con miles de segmentos que causaba un stutter visible al entrar en pantalla dentro del marquee (el navegador lo re-rasteriza por tile de compositor, `will-change: transform` solo no alcanza) — por eso se convirtió a PNG.
-  - **Íconos de color con "degradado" adaptado al tema**: cuando un ícono viene originalmente a color con gradientes fijos (ej. el logo oficial de Power BI), no se puede usar tal cual porque no se adapta a `currentColor`. La técnica usada es aplanar a `currentColor` pero variar `fill-opacity` por capa (ej. Power BI: 1 / .7 / .45 en sus tres barras, mismo patrón que Excel) — así se logra una sensación de profundidad/degradado tonal que sigue siendo monocromo y responde al tema.
-- **Íconos de tecnologías**: son SVGs propios de Dereck en `src/assets/icons/`, cargados como set local de `astro-icon` (`iconDir: 'src/assets/icons'` en `astro.config.mjs`). Se usan por nombre de archivo sin extensión y sin prefijo, ej. `<Icon name="devicon-plain--pandas" />`. Todos usan `fill="currentColor"` (o el mecanismo de `mask-image` para los raster), así heredan el color de texto del tema automáticamente — no hace falta invertir ni tocar opacidad manualmente salvo para el efecto de degradado descrito arriba. El paquete `@iconify-json/logos` también está instalado, así que íconos de marca full-color están disponibles vía `logos:nombre-del-icono` si algún día hace falta la versión a color real (sin aplanar).
-- **Certificados en "Sobre mí"** (`Certificates.astro` + `scripts/certificates.ts`, datos en `src/data/certificates.ts`): carrusel vertical tipo "caja de vinilos" (referencia: pin de Pinterest LE:MA, solo los primeros 5 s). Las tarjetas se inclinan **hacia adelante** (`rotateX` negativo, borde superior hacia el espectador) — no hacia atrás, Dereck ya lo corrigió una vez. Escenario de altura fija con ~7 tarjetas visibles; la posición de cada tarjeta se calcula por cuadro en JS como función de su distancia `d` al índice enfocado (continuo, con resorte): hay un "lugar del medio" fijo (2 tarjetas arriba, el resto abajo acercándose a la cámara) que es el mismo en ambos modos: al abrir, la tarjeta pasa al medio y se endereza/crece; al cerrar se queda en el medio (Dereck lo pidió así — no devolverla arriba). Animaciones deliberadamente lentas (easing por cuadro corregido por tiempo real, ver `ease()`). El panel solo se mueve de contenedor si cambia de host: reinsertarlo reinicia su animación y parpadeaba. Se recorre con rueda (solo dentro del escenario; en los extremos la rueda vuelve a desplazar la página), arrastre, flechas del teclado o botones ↑↓; estando abierto, recorrer cambia el certificado abierto y su panel. `perspective` debe ir en `.dm-stage__list` (padre directo de las tarjetas) o el 3D no se aplica. El panel vive en la columna izquierda (escritorio) o el script lo mueve bajo el escenario (móvil). Orden: más reciente arriba.
-  - Los PDFs viven en `public/certificates/{id}.pdf` (nombres sin espacios ni tildes). Las imágenes de la pila salen de `python scripts/render-certificates.py` (requiere `pip install pymupdf`) hacia `src/assets/certificates/{id}.jpg` — correrlo al agregar/cambiar un PDF. El `id` del certificado = nombre del archivo.
-  - `title` es `{ es, en }`: `es` tal cual aparece en el diploma, `en` traducción para la web en inglés; descripciones "lo que aprendí" en `about.certificates.descriptions` de cada i18n. `verifyUrl` solo donde hay link real (Platzi, Udemy, Credly); `related` enlaza preparación ↔ certificación.
-- **Educación** (`Education.astro` + `src/data/education.ts`): barra de progreso de la carrera; el punto "Hoy" se recalcula en el cliente para no quedar congelado entre deploys.
-
-- **Rendimiento en móvil** (no reintroducir): el vidrio esmerilado (`backdrop-blur`) de tarjetas grandes va con prefijo `lg:` — detrás está `.ambient-wash` fijo, así que en scroll el celular re-desenfocaba cada tarjeta en cada cuadro. Las portadas de proyectos (`scripts/project-covers.ts`) leen los colores del tema una vez (se refrescan al cambiar `data-theme`) y el ciclo de animación duerme si ninguna portada está en pantalla. Los chips de herramientas no animan `blur` en pantallas < 1024px. Las ilustraciones de Capacidades pausan sus animaciones (`animation-play-state`) si su panel está cerrado o la sección fuera de pantalla (`.is-offscreen`). La nebulosa de contacto, en pantallas < 1024px, se dibuja a 0.55 de la resolución CSS (no según `devicePixelRatio`) y a 30 fps: era la causa real del tirón al final de Capacidades, porque arranca justo cuando la tarjeta de contacto asoma.
-
-## Deploy
-
-`.github/workflows/deploy.yml` hace build y publica `dist/` en cada push a `main`. **Ya configurado y funcionando** — en Settings → Pages del repo, el source ya está en "GitHub Actions" (no "Deploy from a branch").
-
-- `.github/workflows/ci.yml` corre en cada PR hacia `main`: `astro check`, `npm audit --omit=dev --audit-level=high`, build y verificación de que existan las páginas clave en `dist/` (si se agrega o renombra una ruta principal, actualizar esa lista). `deploy.yml` también corre `astro check` antes del build.
-- `.github/dependabot.yml`: npm semanal (menores/parches agrupados en un solo PR) y GitHub Actions mensual.
-
-### Dominio propio: `dereckmendez.com`
-
-- Registrado en **Cloudflare Registrar** (DNS también en Cloudflare). El sitio sigue alojado en GitHub Pages; Cloudflare solo resuelve el nombre.
-- Registros DNS: 4 `A` en `@` (`185.199.108–111.153`), 4 `AAAA` en `@` (`2606:50c0:8000–8003::153`), `CNAME www → ayorick23.github.io` y un `TXT _github-pages-challenge-ayorick23` (verificación del dominio en la cuenta de GitHub, evita que otro lo "secuestre"). **Todos con la nube gris ("DNS only")** — con la nube naranja (proxy) GitHub no puede emitir el certificado HTTPS.
-- El dominio se configura en Settings → Pages → Custom domain del repo. Como el deploy es por GitHub Actions, **no** hace falta (ni sirve) un archivo `public/CNAME`.
-- `ayorick23.github.io` redirige solo al dominio nuevo, así que links viejos no se rompen.
-- La URL del sitio está escrita en: `site` de `astro.config.mjs` (de ahí salen sitemap, canonical y URLs absolutas de og:image), `public/robots.txt`, el pie de las portadas en `scripts/generate-og-images.mjs` (regenerar con `npm run generate:og` si cambia) y `README.md`. Si algún día cambia el dominio, tocar esos cuatro.
-
-## Pendientes / contenido por completar
-
-- **Próximas tareas de rediseño** (referencias en `desing_reference/`):
-  - "Sobre mí" (`AboutView.astro`): ya tiene Educación y Certificados. Pendiente: fotos (Dereck aún no las elige), mejorar las descripciones de "lo que aprendí" (las actuales son borrador basado en el título del curso, salvo Cisco que sale del diploma), y confirmar el nombre oficial del título técnico (provisional: "Técnico en Desarrollo de Software y Ciencia de Datos", en `about.education.milestones.technician`).
-- Hay 3 proyectos reales: `data-ai-compensation-benchmark` y `telco-churn-mlops` (`status: "published"`, en/es en paridad completa) y `ecommerce-medallion-pipeline` (`status: "draft"`, todavía en desarrollo — arquitectura Medallion Bronze/Silver/Gold con Polars, DuckDB y Airflow, sin contenido detallado todavía porque el desarrollo no ha llegado ahí). Los proyectos plantilla/de ejemplo (`customer-segmentation`, `mlops-platform`, `nlp-llm-projects`) y los duplicados/genéricos obsoletos (`operational-analytics-bi`, `operational-demand-forecasting`) se eliminaron de la content collection — ya no deben reaparecer.
-- Portadas (2026-11-16, estilo "A reforzada" con `stage()` y tinte por proyecto en `COVER_TINTS`): `medallion` = registros crudos (Bronze) → tabla tipada (Silver) → star schema con las tablas reales de Gold (`fct_pedidos` + `dim_*`); `odontogram` (OdontoTrack) = odontograma FDI con un barrido que corre siempre (más rápido en hover). Los colores bronce/plata/oro y el modo claro se deducen de `C.glow`, no del DOM, porque el generador de og:image corre en Node.
-- Ningún proyecto tiene `coverImage` real todavía (la tarjeta sigue mostrando el placeholder de portada) — no confundir con `ogImage`, que sí está seteado en los 3 proyectos (ver sección de portadas para redes sociales arriba).
-- `exploringTools` en `src/data/tools.ts` está vacío a propósito ("Explorando ahora" no se muestra hasta que haya algo que poner ahí).
-- `simple-icons--n8n.svg` está en `src/assets/icons/` pero **intencionalmente sin usar** — Dereck pidió no agregarlo a la lista de herramientas todavía.
-
-## Convenciones
-
-- No inventar contenido: nombres de empresas, métricas, URLs de repos, capturas de pantalla. Si falta un dato real, se deja oculto/placeholder y se avisa — nunca se rellena con algo inventado.
-- Nada de comentarios explicando qué hace el código (el código ya lo dice); solo comentarios cuando hay una razón no obvia (como el del `astro:after-swap` arriba).
-- Responder a Dereck en español en este proyecto.
-- Antes de dar por terminado un cambio: `npm run verify` limpio; si es visual, además probarlo en el navegador (no basta con que compile).
-- Si el cambio toca íconos locales (`src/assets/icons/`), reiniciar el dev server antes de verificar en el navegador (ver gotcha de `astro-icon` arriba).
+- `.claude/rules/`: el detalle de cada área, que se carga solo al tocar sus archivos
+  (`i18n-contenido`, `proyectos`, `portadas`, `experiencia`, `hero`, `about`,
+  `herramientas-iconos`, `capacidades`, `estilos-y-transiciones`, `ci-deploy`, `tests`).
+- `.claude/skills/`: procedimientos (`/retomar`, `/verificar`, `/nuevo-proyecto`,
+  `/nuevo-certificado`, `/nueva-adr`).
+- `.claude/settings.json`: permisos compartidos y hooks. Lo personal va en
+  `.claude/settings.local.json` o `CLAUDE.local.md` (fuera de git).
+- La memoria automática de Claude es una caché personal: lo que el proyecto necesita saber se
+  escribe aquí, en una regla, en el roadmap o en una ADR.
