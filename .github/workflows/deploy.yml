@@ -33,6 +33,9 @@ jobs:
       - name: Type-check (astro check)
         run: npx astro check
 
+      - name: Unit & content tests (Vitest)
+        run: npm test
+
       - name: Build
         run: npm run build
 

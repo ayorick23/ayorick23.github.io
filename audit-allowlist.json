@@ -1,0 +1,8 @@
+[
+  {
+    "id": "GHSA-fc5q-39xc-vjpf",
+    "package": "picomatch",
+    "reason": "ReDoS with crafted glob patterns. picomatch only runs at build time inside Astro/Vite, matching patterns written in this repo — never visitor input. No patched version exists yet (<= 4.0.7 affected).",
+    "reviewBy": "2027-01-17"
+  }
+]

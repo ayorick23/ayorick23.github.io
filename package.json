@@ -10,7 +10,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "generate:og": "node scripts/generate-og-images.mjs"
+    "generate:og": "node scripts/generate-og-images.mjs",
+    "audit:ci": "node scripts/audit.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "verify": "astro check && vitest run && astro build && playwright test"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
@@ -32,6 +37,9 @@
     "@astrojs/check": "^0.9.10",
     "@fontsource/manrope": "^5.3.0",
     "@napi-rs/canvas": "^1.0.9",
-    "typescript": "^6.0.3"
+    "@playwright/test": "^1.65.1",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0",
+    "yaml": "^2.9.1"
   }
 }
