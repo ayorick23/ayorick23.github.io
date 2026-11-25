@@ -31,11 +31,14 @@ jobs:
         run: npm run build
 
       # LinkedIn answers 999 to any bot and some verifiers rate-limit (429): those aren't broken links.
+      # --base-url turns root-relative links (/projects, /#about) into site URLs, which the exclude below
+      # skips: lychee can't resolve them in local files, and `npm run links` already checks them.
       - name: Check links with lychee
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
             --no-progress
+            --base-url https://dereckmendez.com
             --scheme https --scheme http
             --exclude-path dist/_astro
             --exclude "^https?://(www\.)?dereckmendez\.com"
