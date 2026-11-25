@@ -10,4 +10,4 @@ export const socialLinks = [
 
 export type SocialLinkId = (typeof socialLinks)[number]["id"];
 
-export const siteRepoUrl = "https://github.com/ayorick23/ayorick23.github.io";
+export const siteRepoUrl = "https://github.com/ayorick23/dereckmendez.com";
