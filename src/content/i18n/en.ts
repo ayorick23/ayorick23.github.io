@@ -275,6 +275,7 @@ export const en: UICopy = {
       certificates: "certificates",
       viewAllCertificates: "See all in About",
       moreCertificates: "See the other {n} in About",
+      toggleBranches: "Show or hide education and certifications for {role}",
       units: { year: "year", years: "years", month: "month", months: "months" },
     },
     timeline: [

@@ -37,7 +37,7 @@ type Item =
   | { kind: "certs"; level: number; certs: Certificate[]; from: number; to: number }
   | { kind: "study"; level: number };
 
-const MAX_CERTS = 5;
+const MAX_CERTS = 3;
 /* Indent of each branch container: education is the second level of the hierarchy,
    certificates the third. */
 const LEVEL = { study: 1, certs: 2 } as const;
@@ -90,8 +90,12 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
     {items.map((item, i) => {
       const id = `dm-br-${i}`;
       const level = item.level;
+      // Branch rows sit right above their role, so a role's branches are the run of non-work rows before it.
+      const branchIds: string[] = [];
+      for (let j = i - 1; j >= 0 && items[j].kind !== "work"; j--) branchIds.push(`dm-br-${j}`);
       return (
         <li
+          id={id}
           data-br-row
           data-kind={item.kind}
           data-level={level}
@@ -99,6 +103,16 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
           data-current={item.kind === "work" && item.role.isCurrent ? "" : undefined}
           class="dm-br__row"
         >
+          {item.kind === "work" && branchIds.length > 0 && (
+            <button
+              type="button"
+              data-br-fold
+              aria-expanded="true"
+              aria-controls={branchIds.join(" ")}
+              aria-label={chart.toggleBranches.replace("{role}", item.role.role)}
+              class="dm-br__fold"
+            />
+          )}
           <div class="dm-br__date">
             {item.kind === "work" && (
               <>
@@ -386,6 +400,50 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
   .dm-br[data-anim] .dm-br__terminal:not(.is-reached) > * {
     opacity: 0;
     transform: translateY(10px);
+  }
+
+  /* Clicking a role's dot folds its branch rows away; the height is animated from JS. */
+  .dm-br__row.is-folding {
+    overflow: hidden;
+    transition:
+      height 0.45s cubic-bezier(0.2, 0.7, 0.3, 1),
+      padding 0.45s cubic-bezier(0.2, 0.7, 0.3, 1),
+      opacity 0.3s ease;
+  }
+  .dm-br__row.is-folded {
+    height: 0;
+    padding-block: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .dm-br__row.is-folding.is-folded {
+    visibility: visible;
+  }
+  /* Hit area over the role's dot (placed by JS); the dot itself is drawn in the SVG. */
+  .dm-br__fold {
+    position: absolute;
+    z-index: 2;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+  .dm-br__fold:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: var(--accent-soft);
+  }
+  /* Folded: a dashed ring stays around the dot, a hint that there is more inside. */
+  .dm-br__fold[aria-expanded="false"] {
+    border: 1px dashed color-mix(in srgb, var(--ink-2) 70%, transparent);
+  }
+  .dm-br__fold:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   .dm-br__date {
@@ -732,6 +790,9 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
     stroke-width: 2;
     stroke-linecap: round;
   }
+  .dm-br :global(.dm-br__node.is-folded) {
+    opacity: 0;
+  }
   .dm-br :global(.dm-br__branch) {
     fill: none;
     stroke-width: 1.6;
@@ -763,7 +824,8 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
     stroke-width: 2;
     transition:
       fill 0.35s ease,
-      stroke 0.35s ease;
+      stroke 0.35s ease,
+      opacity 0.3s ease;
   }
   .dm-br :global(.dm-br__node.is-on) {
     fill: var(--accent);
@@ -789,6 +851,7 @@ const studyTo = Math.max(...studyPrograms.map((p) => p.to));
   @media (prefers-reduced-motion: reduce) {
     .dm-br__body,
     .dm-br__chevron,
+    .dm-br__row.is-folding,
     .dm-br :global(.dm-br__grow),
     .dm-br__row > *,
     .dm-br__terminal > * {

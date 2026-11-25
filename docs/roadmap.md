@@ -24,7 +24,7 @@ Plan de 5 fases acordado el 2026-11-17.
 - [x] ESLint + Prettier, axe (WCAG 2.1 AA), Lighthouse CI y verificador de links internos +
       externos semanal ([ADR 0015](decisions/0015-calidad-automatica-lint-formato-accesibilidad-links.md)).
 - [ ] Rendimiento de la home en celular: Lighthouse ~67–79 (bloqueo del procesador ~1 s al
-      arrancar la esfera, las portadas y la nebulosa; el resto de páginas da 91–96). Mirarlo junto
+      arrancar la esfera y las portadas; el resto de páginas da 91–96). Mirarlo junto
       con el rediseño del hero, que reemplaza la esfera.
 
 ### Fase 4: observabilidad
@@ -77,9 +77,16 @@ Plan de 5 fases acordado el 2026-11-17.
 
 ### Contacto
 
-- [ ] Reemplazar la nebulosa WebGL (se ve distinta según la máquina). Evaluar alternativas.
+- [x] La nebulosa WebGL se reemplazó por un grafo de conexiones estilo Obsidian (opción A).
 
 ## Contenido
+
+- [ ] **OdontoTrack:** capturas que quedaron fuera (originales en
+      `desing_reference/odontotrack-capturas-originales/`): el directorio de pacientes muestra un DUI y
+      un teléfono que no tienen formato de prueba (fila "Henry Méndez") y el registro de cuenta usa
+      como ejemplo un correo con formato de carnet real. Usarlas solo si Dereck confirma que son
+      ficticios o tras difuminar esos datos. Falta también confirmar si el sistema ya está en uso o en
+      piloto (el caso de estudio dice "en desarrollo activo").
 
 - [ ] **Medallion:** el README de ese repo dice que Gold (star schema en dbt, 97 tests) ya
       está construido y que falta Airflow; el caso de estudio todavía dice que Gold no se

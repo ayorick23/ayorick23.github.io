@@ -776,211 +776,219 @@ const semanticKind: CoverKindDef<SemanticState> = {
 };
 
 // ---------------------------------------------------------------------------
-// benchmark — salary boxplot by experience level, Junior → Senior highlighted
+// benchmark — nominal salary (bars) vs. PPP-adjusted salary (line) by country.
+// Real averages from the project's PPP comparison (USD); India is highlighted
+// because adjusting for purchasing power moves it from last to first. On hover
+// the countries re-sort by adjusted salary, so India visibly jumps to first.
 // ---------------------------------------------------------------------------
 
-interface BoxCategory {
-  label: string;
-  median: number;
-  q1: number;
-  q3: number;
-  whiskerLow: number;
-  whiskerHigh: number;
-  outliers: number[];
-  highlight?: "start" | "end";
+interface CountryPay {
+  code: string;
+  nominal: number;
+  ppp: number;
 }
 interface BenchmarkState {
-  categories: BoxCategory[];
+  countries: CountryPay[];
+  /** Slot each country takes when sorted by PPP salary (0 = first). */
+  pppSlot: number[];
+  /** 0 = nominal order, 1 = PPP order; eased toward the hover state. */
+  order: number;
+  lastT: number;
 }
 
-const BENCHMARK_DOMAIN_MAX = 420000;
+const BENCHMARK_DOMAIN_MAX = 235000;
+
+/** "#rrggbb" + alpha → rgba(), for the bar gradients (theme tokens and tints are 6-digit hex). */
+function withAlpha(hex: string, a: number) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+}
 
 const benchmarkKind: CoverKindDef<BenchmarkState> = {
   init() {
-    const r = seeded(71);
-    const mkOutliers = (from: number, count: number, spread: number) =>
-      Array.from({ length: count }, () => from + spread * Math.pow(r(), 1.6));
-    const categories: BoxCategory[] = [
-      {
-        label: "JUNIOR",
-        median: 85000,
-        q1: 62000,
-        q3: 122000,
-        whiskerLow: 15000,
-        whiskerHigh: 210000,
-        outliers: mkOutliers(210000, 5, 220000),
-        highlight: "start",
-      },
-      {
-        label: "MID",
-        median: 121600,
-        q1: 90000,
-        q3: 165000,
-        whiskerLow: 15000,
-        whiskerHigh: 285000,
-        outliers: mkOutliers(285000, 6, 210000),
-      },
-      {
-        label: "SENIOR",
-        median: 156400,
-        q1: 120000,
-        q3: 197000,
-        whiskerLow: 15000,
-        whiskerHigh: 325000,
-        outliers: mkOutliers(325000, 7, 160000),
-        highlight: "end",
-      },
-      {
-        label: "EXECUTIVE",
-        median: 188400,
-        q1: 148000,
-        q3: 238000,
-        whiskerLow: 15000,
-        whiskerHigh: 375000,
-        outliers: mkOutliers(375000, 4, 110000),
-      },
+    // Sorted by nominal salary, so the PPP line breaking upward reads as "the ranking changes".
+    const countries = [
+      { code: "US", nominal: 156000, ppp: 156000 },
+      { code: "CH", nominal: 126453, ppp: 112950 },
+      { code: "DE", nominal: 102000, ppp: 127000 },
+      { code: "GB", nominal: 87000, ppp: 98000 },
+      { code: "BR", nominal: 67000, ppp: 146000 },
+      { code: "IN", nominal: 48553, ppp: 211065 },
     ];
-    return { categories };
+    const byPpp = countries.map((_, i) => i).sort((a, b) => countries[b].ppp - countries[a].ppp);
+    const pppSlot = countries.map((_, i) => byPpp.indexOf(i));
+    return { countries, pppSlot, order: 0, lastT: -1 };
   },
   draw(ctx, st, w, h, t, prog, hov, C) {
     const { x0, sw, k, f, lw } = stage(w, h, 2.4);
-    const top = 70 * k;
+    const top = 58 * k;
     const bot = h - 28 * k;
     const H = bot - top;
     const Y = (v: number) => bot - Math.min(1, v / BENCHMARK_DOMAIN_MAX) * H;
-    const xs = [0.14, 0.39, 0.64, 0.89];
-    const bw = Math.min(62 * k, sw * 0.11);
+    const n = st.countries.length;
+    const dt = st.lastT < 0 ? 0 : Math.min(0.05, Math.max(0, t - st.lastT));
+    st.lastT = t;
+    const goal = hov && prog >= 1 ? 1 : 0;
+    st.order += (goal - st.order) * Math.min(1, dt * 2.2);
+    const mix = ease(clamp01(st.order));
+    const X = (i: number) => {
+      const slot = i + (st.pppSlot[i] - i) * mix;
+      return x0 + sw * (0.1 + (slot / (n - 1)) * 0.8);
+    };
+    const bw = Math.min(44 * k, sw * 0.075);
+    const hi = n - 1;
+    const lineCol = C.accent;
+    const barCol = COVER_TINTS.benchmark!;
 
-    st.categories.forEach((cat, i) => {
-      const cx = x0 + xs[i] * sw;
-      const grow = ease(clamp01((prog - i * 0.08) / 0.5));
-      if (grow <= 0) return;
-      const detail = clamp01((prog - i * 0.08 - 0.32) / 0.35);
-
-      const q1Y = Y(cat.q1);
-      const q3Y = Y(cat.q3);
-      const curQ3Y = q1Y + (q3Y - q1Y) * grow;
-      const medY = Y(cat.median);
-      const isHi = !!cat.highlight;
-      const boxCol = cat.highlight === "start" ? C.accent : cat.highlight === "end" ? C.green : C.ink3;
-
-      if (detail > 0) {
-        const whHighY = Y(cat.whiskerHigh);
-        const whLowY = Y(cat.whiskerLow);
-        ctx.globalAlpha = detail * 0.55;
-        ctx.strokeStyle = C.line2;
-        ctx.lineWidth = lw * 0.8;
-        ctx.beginPath();
-        ctx.moveTo(cx, whHighY);
-        ctx.lineTo(cx, q3Y);
-        ctx.moveTo(cx, q1Y);
-        ctx.lineTo(cx, whLowY);
-        const capW = bw * 0.4;
-        ctx.moveTo(cx - capW / 2, whHighY);
-        ctx.lineTo(cx + capW / 2, whHighY);
-        ctx.moveTo(cx - capW / 2, whLowY);
-        ctx.lineTo(cx + capW / 2, whLowY);
-        ctx.stroke();
-
-        cat.outliers.forEach((v, oi) => {
-          const oa = clamp01(detail - oi * 0.05);
-          if (oa <= 0) return;
-          const amp = hov ? 2.6 : 0.7;
-          const floatY = Math.sin(t * (hov ? 1.15 : 0.5) + i * 1.7 + oi * 0.9) * amp;
-          const dx = (oi % 2 === 0 ? -1 : 1) * bw * 0.22;
-          ctx.globalAlpha = oa * (hov ? 0.75 : 0.4);
-          ctx.fillStyle = C.ink3;
-          ctx.beginPath();
-          ctx.arc(cx + dx, Y(v) + floatY, 1.7 * k, 0, TAU);
-          ctx.fill();
-        });
-      }
-
-      if (isHi && hov) {
-        const gcy = (curQ3Y + q1Y) / 2;
-        const gr = bw * 2.1;
-        const g = ctx.createRadialGradient(cx, gcy, 0, cx, gcy, gr);
-        g.addColorStop(0, boxCol);
-        g.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.globalAlpha = C.glow * 0.4 * grow;
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(cx, gcy, gr, 0, TAU);
-        ctx.fill();
-      }
-
-      ctx.globalAlpha = grow * (isHi ? 0.24 : 0.85);
-      ctx.fillStyle = isHi ? boxCol : C.panel;
-      roundRect(ctx, cx - bw / 2, curQ3Y, bw, Math.max(1, q1Y - curQ3Y), 5 * k);
-      ctx.fill();
-      ctx.globalAlpha = grow * (hov && isHi ? 1 : 0.75);
-      ctx.strokeStyle = isHi ? boxCol : C.line2;
-      ctx.lineWidth = (isHi && hov ? 1.7 : 1) * lw * 0.8;
-      roundRect(ctx, cx - bw / 2, curQ3Y, bw, Math.max(1, q1Y - curQ3Y), 5 * k);
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = C.line;
+    ctx.lineWidth = k * 0.8;
+    ctx.setLineDash([2 * k, 4 * k]);
+    for (const v of [50000, 100000, 150000, 200000]) {
+      ctx.beginPath();
+      ctx.moveTo(x0 + sw * 0.04, Y(v));
+      ctx.lineTo(x0 + sw * 0.96, Y(v));
       ctx.stroke();
+    }
+    ctx.setLineDash([]);
 
-      if (grow > 0.55) {
-        const medAlpha = clamp01((grow - 0.55) / 0.45);
-        const pulse = hov && isHi ? 0.7 + 0.3 * Math.sin(t * 3 + i) : 1;
-        ctx.globalAlpha = medAlpha * pulse;
-        ctx.strokeStyle = isHi ? boxCol : C.ink2;
-        ctx.lineWidth = (isHi ? 2.2 : 1.4) * lw * 0.8;
-        ctx.beginPath();
-        ctx.moveTo(cx - bw / 2, medY);
-        ctx.lineTo(cx + bw / 2, medY);
-        ctx.stroke();
-      }
-
+    st.countries.forEach((c, i) => {
+      const grow = ease(clamp01((prog - i * 0.06) / 0.45));
+      if (grow <= 0) return;
+      const cx = X(i);
+      const yTop = bot - (bot - Y(c.nominal)) * grow;
+      const isHi = i === hi;
+      const col = isHi ? lineCol : barCol;
+      const fill = ctx.createLinearGradient(0, yTop, 0, bot);
+      fill.addColorStop(0, withAlpha(col, isHi ? 0.7 : 0.6));
+      fill.addColorStop(1, withAlpha(col, 0.12));
+      ctx.globalAlpha = grow;
+      ctx.fillStyle = fill;
+      roundRect(ctx, cx - bw / 2, yTop, bw, Math.max(1, bot - yTop), 4 * k);
+      ctx.fill();
+      ctx.globalAlpha = grow * (isHi ? 0.95 : 0.7);
+      ctx.strokeStyle = col;
+      ctx.lineWidth = lw * 0.6;
+      roundRect(ctx, cx - bw / 2, yTop, bw, Math.max(1, bot - yTop), 4 * k);
+      ctx.stroke();
       ctx.globalAlpha = grow * 0.85;
-      txt(ctx, cat.label, cx, bot + 14 * k, 8.6 * f, isHi ? boxCol : C.ink2, "center", isHi ? 700 : 500);
+      txt(ctx, c.code, cx, bot + 14 * k, 8.6 * f, isHi ? lineCol : C.ink2, "center", isHi ? 700 : 500);
     });
 
-    const startI = st.categories.findIndex((c) => c.highlight === "start");
-    const endI = st.categories.findIndex((c) => c.highlight === "end");
-    if (startI >= 0 && endI >= 0) {
-      const reveal = ease(clamp01((prog - 0.55) / 0.4));
-      if (reveal > 0) {
-        const bx0 = x0 + xs[startI] * sw;
-        const bx1 = x0 + xs[endI] * sw;
-        const bracketY = top - 12 * k;
-        ctx.globalAlpha = reveal * (hov ? 0.95 : 0.5);
-        ctx.strokeStyle = C.green;
-        ctx.lineWidth = (hov ? 1.4 : 1) * lw * 0.8;
-        ctx.setLineDash([3 * k, 3 * k]);
-        ctx.lineDashOffset = -((t * (hov ? 46 : 16)) % 6);
-        ctx.beginPath();
-        ctx.moveTo(bx0, bracketY + 10 * k);
-        ctx.lineTo(bx0, bracketY);
-        ctx.lineTo(bx1, bracketY);
-        ctx.lineTo(bx1, bracketY + 10 * k);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.lineDashOffset = 0;
+    // The adjusted line draws itself left to right once the bars are up.
+    const draw = clamp01((prog - 0.4) / 0.45);
+    if (draw > 0) {
+      // Points follow the bars' current left-to-right order; the third value keeps the country index.
+      const pts = st.countries.map((c, i) => [X(i), Y(c.ppp), i] as const).sort((a, b) => a[0] - b[0]);
+      const upto = draw * (n - 1);
+      const last = Math.floor(upto);
+      const frac = upto - last;
+      const tip =
+        last >= n - 1
+          ? pts[n - 1]
+          : ([
+              pts[last][0] + (pts[last + 1][0] - pts[last][0]) * frac,
+              pts[last][1] + (pts[last + 1][1] - pts[last][1]) * frac,
+            ] as const);
 
-        const pbw = Math.min(156 * k, sw * 0.42);
-        const pbh = 42 * k;
-        const pbx = (bx0 + bx1) / 2 - pbw / 2;
-        const pby = 12 * k;
-        ctx.globalAlpha = reveal * (hov ? 1 : 0.85);
-        ctx.fillStyle = C.panel;
-        roundRect(ctx, pbx, pby, pbw, pbh, 8 * k);
-        ctx.fill();
-        ctx.strokeStyle = C.line2;
-        ctx.lineWidth = k;
+      if (hov) {
+        ctx.globalAlpha = C.glow * 0.5;
+        ctx.strokeStyle = lineCol;
+        ctx.lineWidth = lw * 3.2;
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        pts.slice(0, last + 1).forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+        ctx.lineTo(tip[0], tip[1]);
         ctx.stroke();
-        txt(ctx, "JUNIOR → SENIOR", pbx + pbw / 2, pby + 14 * k, 8.3 * f, C.ink2, "center");
-        txt(ctx, "+84% median", pbx + pbw / 2, pby + 29 * k, 12 * f, C.green, "center", 700);
       }
+      ctx.globalAlpha = 0.95;
+      ctx.strokeStyle = lineCol;
+      ctx.lineWidth = lw * (hov ? 1.25 : 1);
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      pts.slice(0, last + 1).forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+      ctx.lineTo(tip[0], tip[1]);
+      ctx.stroke();
+
+      pts.forEach(([x, y, ci], i) => {
+        const shown = clamp01((upto - i) * 3 + 1);
+        if (i > last + (frac > 0.85 ? 1 : 0) || shown <= 0) return;
+        const pulse = hov && ci === hi ? 1 + 0.25 * Math.sin(t * 4) : 1;
+        ctx.globalAlpha = shown;
+        ctx.fillStyle = ci === hi ? lineCol : C.panel;
+        ctx.strokeStyle = lineCol;
+        ctx.lineWidth = lw * 0.8;
+        ctx.beginPath();
+        ctx.arc(x, y, (ci === hi ? 3.6 : 2.6) * k * pulse, 0, TAU);
+        ctx.fill();
+        ctx.stroke();
+      });
     }
 
-    // Only where it fits left of the +84% panel (the wide banner); on cards it
-    // would collide with the panel or the card number.
-    const label = "SALARY BY EXPERIENCE";
-    ctx.font = `600 ${9 * f}px "Satoshi", "JetBrains Mono", ui-sans-serif, sans-serif`;
-    const panelLeft = x0 + ((xs[0] + xs[2]) / 2) * sw - Math.min(156 * k, sw * 0.42) / 2;
-    if (w * 0.045 + ctx.measureText(label).width + 16 * k < panelLeft) {
+    // India: dashed jump from its nominal bar to its adjusted point, plus the callout.
+    const reveal = ease(clamp01((prog - 0.82) / 0.18));
+    if (reveal > 0) {
+      const c = st.countries[hi];
+      const cx = X(hi);
+      ctx.globalAlpha = reveal * (hov ? 0.9 : 0.55);
+      ctx.strokeStyle = lineCol;
+      ctx.lineWidth = lw * 0.6;
+      ctx.setLineDash([3 * k, 3 * k]);
+      ctx.lineDashOffset = -((t * (hov ? 40 : 14)) % 6);
+      ctx.beginPath();
+      ctx.moveTo(cx, Y(c.nominal) - 4 * k);
+      ctx.lineTo(cx, Y(c.ppp) + 6 * k);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.lineDashOffset = 0;
+
+      const pbw = Math.min(150 * k, sw * 0.4);
+      const pbh = 40 * k;
+      const pbx = x0 + sw * 0.5 - pbw / 2;
+      const pby = 10 * k;
+      ctx.globalAlpha = reveal * (hov ? 1 : 0.88);
+      ctx.fillStyle = C.panel;
+      roundRect(ctx, pbx, pby, pbw, pbh, 8 * k);
+      ctx.fill();
+      ctx.strokeStyle = C.line2;
+      ctx.lineWidth = k;
+      ctx.stroke();
+      txt(ctx, "INDIA · NOMINAL → PPP", pbx + pbw / 2, pby + 13 * k, 8 * f, C.ink2, "center");
+      txt(
+        ctx,
+        `$${Math.round(c.nominal / 1000)}k → $${Math.round(c.ppp / 1000)}k`,
+        pbx + pbw / 2,
+        pby + 28 * k,
+        12 * f,
+        lineCol,
+        "center",
+        700,
+      );
+    }
+
+    // Legend only where it fits left of the callout (wide banner); on cards it would collide.
+    ctx.font = `600 ${8.6 * f}px "Satoshi", "JetBrains Mono", ui-sans-serif, sans-serif`;
+    const legendW = ctx.measureText("NOMINAL").width + ctx.measureText("PPP").width + 46 * k;
+    const calloutLeft = x0 + sw * 0.5 - Math.min(150 * k, sw * 0.4) / 2;
+    if (w * 0.045 + legendW + 16 * k < calloutLeft) {
+      const lx = w * 0.045;
+      const ly = 18 * k;
       ctx.globalAlpha = 0.9;
-      txt(ctx, label, w * 0.045, 16 * k, 9 * f, C.ink2, "left", 600);
+      ctx.fillStyle = C.panel;
+      ctx.strokeStyle = C.line2;
+      ctx.lineWidth = k;
+      roundRect(ctx, lx, ly - 4 * k, 8 * k, 8 * k, 2 * k);
+      ctx.fill();
+      ctx.stroke();
+      txt(ctx, "NOMINAL", lx + 13 * k, ly, 8.6 * f, C.ink2, "left", 600);
+      const lx2 = lx + 13 * k + ctx.measureText("NOMINAL").width + 14 * k;
+      ctx.strokeStyle = lineCol;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.moveTo(lx2, ly);
+      ctx.lineTo(lx2 + 12 * k, ly);
+      ctx.stroke();
+      txt(ctx, "PPP", lx2 + 17 * k, ly, 8.6 * f, C.ink2, "left", 600);
     }
     ctx.globalAlpha = 1;
   },
@@ -1154,15 +1162,33 @@ const odontogramKind: CoverKindDef<{ teeth: (0 | 1 | 2)[][]; phase: number; last
       const sx = left + scan * totalW;
       const y0 = rowsY[0] - 16 * k;
       const y1 = rowsY[1] + size + 14 * k;
-      const grad = ctx.createLinearGradient(sx - 26 * k, 0, sx + 26 * k, 0);
-      grad.addColorStop(0, "rgba(0,0,0,0)");
-      grad.addColorStop(0.5, sky);
-      grad.addColorStop(1, "rgba(0,0,0,0)");
+      // Both the glow and the line fade out toward their ends (same hue with falling alpha, so the
+      // edge never darkens): no hard cut at the top or bottom of the arches.
+      const tone = (a: number) => {
+        const v = parseInt(sky.slice(1), 16);
+        return `rgba(${(v >> 16) & 255},${(v >> 8) & 255},${v & 255},${a})`;
+      };
+      const half = (y1 - y0) / 2;
+      const cy = y0 + half;
+      const glowR = 26 * k;
+      ctx.save();
+      ctx.translate(sx, cy);
+      ctx.scale(1, half / glowR);
+      const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, glowR);
+      glow.addColorStop(0, tone(1));
+      glow.addColorStop(0.55, tone(0.35));
+      glow.addColorStop(1, tone(0));
       ctx.globalAlpha = sa * (hov ? 0.22 : 0.14);
-      ctx.fillStyle = grad;
-      ctx.fillRect(sx - 26 * k, y0, 52 * k, y1 - y0);
+      ctx.fillStyle = glow;
+      ctx.fillRect(-glowR, -glowR, glowR * 2, glowR * 2);
+      ctx.restore();
+      const fade = ctx.createLinearGradient(0, y0, 0, y1);
+      fade.addColorStop(0, tone(0));
+      fade.addColorStop(0.25, tone(1));
+      fade.addColorStop(0.75, tone(1));
+      fade.addColorStop(1, tone(0));
       ctx.globalAlpha = sa * (hov ? 0.9 : 0.6);
-      ctx.strokeStyle = sky;
+      ctx.strokeStyle = fade;
       ctx.lineWidth = 0.8 * lw;
       ctx.beginPath();
       ctx.moveTo(sx, y0);

@@ -61,6 +61,10 @@ están ahí se asignan en `projectTechGroups`). Varias tecnologías combinan con
   `.section-body` (los `<style>` con scope no alcanzan HTML inyectado).
 - Cada imagen de sección necesita su propio `alt`/`caption`: ya pasó que se copiaron iguales
   en todas.
+- Capturas de pantalla: recortar la barra del navegador (pestañas personales, foto de perfil,
+  `localhost`), convertir a WebP de ~1600px de ancho con `sharp` y guardar los originales en
+  `desing_reference/` (no se versiona). Antes de publicar, revisar que no haya datos personales
+  reales: aunque Dereck diga que son de prueba, un DUI o teléfono con formato real se pregunta.
 - Lightbox (`lightbox.ts`): el zoom cambia el `width` real de la imagen, no `transform:
 scale` (con scale el contenedor no ganaba área de scroll).
 
