@@ -35,8 +35,9 @@ currentColor` (`raster: true` en `tools.ts`, `rasterSrc()`). El SVG de Seaborn t
 Herramientas por categoría (`toolGroups`) más `projectTechIcons`/`projectTechGroups` para
 tecnologías de proyectos que no están en la sección. `techIcon()`/`techGroup()` en
 `lib/tech-icons.ts`. `exploringTools` vacío a propósito ("Explorando ahora" no se muestra
-hasta que haya algo). El grupo `ai` muestra un solo chip "Claude" (Desktop + Design juntos,
-pedido de Dereck) y no incluye ChatGPT.
+hasta que haya algo). El grupo `ai` es solo de herramientas **para desarrollar**: Claude Code,
+Antigravity, MCP y Agent Skills. Claude (chat) y NotebookLM se quitaron el 2026-11-20 porque no son de
+desarrollo; no agregar otras salvo que Dereck las use para programar.
 
 ## Marquee (sección "Herramientas" de `HomeView.astro`)
 

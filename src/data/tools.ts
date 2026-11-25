@@ -147,10 +147,9 @@ export const toolGroups: ToolGroup[] = [
     key: "ai",
     tools: [
       { name: "Claude Code", icon: "simple-icons--claudecode", brand: "#d97757" },
+      { name: "Antigravity", icon: "simple-icons--antigravity", colorIcon: "logos--antigravity", brand: "#3186ff" },
       { name: "MCP", icon: "simple-icons--modelcontextprotocol", brand: "var(--ink)" },
       { name: "Agent Skills", icon: "simple-icons--agentskills", brand: "#d97757" },
-      { name: "Claude", icon: "simple-icons--claude", colorIcon: "logos--claude-icon", brand: "#d97757" },
-      { name: "NotebookLM", icon: "simple-icons--notebooklm", brand: "var(--ink)" },
     ],
   },
 ];
