@@ -12,7 +12,7 @@ paths:
   - "src/scripts/nav.ts"
   - "src/scripts/anchor-scroll.ts"
   - "src/scripts/reveal.ts"
-  - "src/scripts/nebula.ts"
+  - "src/scripts/contact-graph.ts"
 ---
 
 # Estilos, tema, navegación y transiciones
@@ -63,21 +63,27 @@ primero (hubo un bug real con un `:has()` mal escrito).
   su dirección y vuelven desde el lado contrario (`.dm-arrow`). En tarjetas-enlace (`.group`)
   usar `<Arrow group />`. Esos botones no llevan el efecto de levantarse.
 
-## Nebulosa de contacto (`nebula.ts`)
+## Grafo de contacto (`contact-graph.ts`)
 
-Shader WebGL (fbm con domain warping) con aspecto de humo que sube; el cursor deja una estela
-que arremolina el gas. Resolución reducida (`RENDER_SCALE`), solo mientras la tarjeta está en
-pantalla. Oscuro = gas emisivo (`uOpacity` bajo); claro = paleta de aurora. En móvil baja a la
-parte inferior de la tarjeta. Si se ve "como agua": crestas duras o warping fuerte (ver
-comentarios del shader). Arranca en `requestIdleCallback` con compilación de shader en
-paralelo (crear el contexto dentro de la transición congelaba ~1 s). Dereck quiere
-reemplazarla (`docs/roadmap.md`).
+Reemplazó a la nebulosa WebGL el 2026-11-20 (opción elegida por Dereck: se veía distinta en cada
+máquina). Grafo de nodos estilo Obsidian en canvas 2D: los nodos derivan y se enlazan con sus
+vecinos; el cursor es un nodo más (con una atracción suave); 5 nodos "hub" llevan herramientas
+reales del stack (SQL, Python, Power BI, Analytics, Machine Learning). Al pasar o enfocar un botón
+(Hablemos, GitHub, LinkedIn), los nodos más cercanos del lado del grafo mandan líneas **rectas** y
+tenues (20 %) al botón, con pulsos que viajan, en el color del botón: carmesí, color del texto para GitHub (negro en claro, blanco en oscuro: el negro no se veía en oscuro) y azul
+LinkedIn (#0a66c2). Dereck prefiere rectas tenues a las curvas que esquivaban el texto. Dentro de
+la tarjeta el cursor del sistema se oculta y lo reemplaza un punto carmesí de 12px
+(`[data-contact-cursor]`, movido en el mismo `pointermove`), solo con puntero fino. Los nodos se concentran donde no hay texto (derecha en escritorio, abajo en celular);
+en celular el canvas va al 60 % de opacidad y sin etiquetas. Lee los colores del tema una vez
+(refresca al cambiar `data-theme`), solo anima en pantalla, 30 fps y dpr 1 en < 1024px, y sin
+movimiento con `prefers-reduced-motion`. Los tokens `--nebula-cloud-*` siguen en `global.css`
+porque los usan las tarjetas de métricas.
 
 ## Rendimiento en móvil (no reintroducir)
 
 - `backdrop-blur` de tarjetas grandes solo con prefijo `lg:`: detrás está `.ambient-wash`
   fijo y el celular re-desenfocaba cada tarjeta en cada cuadro de scroll.
-- La nebulosa en < 1024px se dibuja a 0.55 de la resolución CSS (no según
-  `devicePixelRatio`) y a 30 fps: era el tirón real al final de Capacidades.
+- El grafo de contacto en < 1024px se dibuja a dpr 1 y a 30 fps (la nebulosa anterior, sin ese
+  límite, era el tirón real al final de Capacidades).
 - Si el sitio se siente lento solo en la máquina de Dereck, revisar primero que Chrome no haya
   caído a "Microsoft Basic Render Driver" (GPU apagada) antes de culpar al código.

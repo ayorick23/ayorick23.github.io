@@ -319,12 +319,13 @@ const toolFilters = [
 
 <section id="contact" data-reveal class="mx-auto max-w-[1240px] px-8 pt-[60px] pb-10 scroll-mt-[100px]">
   <div
-    class="shadow-elevated relative overflow-hidden rounded-[26px] border border-line bg-[image:var(--gradient-card)] p-[clamp(2.4rem,6vw,4.75rem)] lg:backdrop-blur-[24px]"
+    class="dm-contact-card shadow-elevated relative overflow-hidden rounded-[26px] border border-line bg-[image:var(--gradient-card)] p-[clamp(2.4rem,6vw,4.75rem)] lg:backdrop-blur-[24px]"
     style="box-shadow: var(--shadow-elevated);"
   >
-    <div data-nebula class="pointer-events-auto absolute inset-0">
-      <canvas data-nebula-canvas aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
+    <div data-contact-graph class="pointer-events-none absolute inset-0">
+      <canvas aria-hidden="true" class="absolute inset-0 h-full w-full"></canvas>
     </div>
+    <span data-contact-cursor aria-hidden="true" class="dm-contact-cursor"></span>
     <div class="relative max-w-[560px]">
       <div class="mb-[18px] flex items-center gap-[9px]">
         <span class="h-1 w-1 rounded-full bg-accent"></span>
@@ -360,16 +361,48 @@ const toolFilters = [
 
 <script>
   import { initConstellation } from "../../scripts/constellation";
-  import { initNebula } from "../../scripts/nebula";
+  import { initContactGraph } from "../../scripts/contact-graph";
   import { initToolsFilter } from "../../scripts/tools";
   import { initCapabilities } from "../../scripts/capabilities";
   document.addEventListener("astro:page-load", initConstellation);
-  document.addEventListener("astro:page-load", initNebula);
+  document.addEventListener("astro:page-load", initContactGraph);
   document.addEventListener("astro:page-load", initToolsFilter);
   document.addEventListener("astro:page-load", initCapabilities);
 </script>
 
 <style>
+  /* Inside the contact card the system cursor becomes a large accent dot (fine pointers only). */
+  @media (hover: hover) and (pointer: fine) {
+    .dm-contact-card,
+    .dm-contact-card :global(*) {
+      cursor: none;
+    }
+  }
+  .dm-contact-cursor {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    z-index: 2;
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      opacity 0.2s ease,
+      background-color 0.2s ease;
+  }
+  .dm-contact-cursor[data-visible="true"] {
+    opacity: 1;
+  }
+  @media not ((hover: hover) and (pointer: fine)) {
+    .dm-contact-cursor {
+      display: none;
+    }
+  }
+
   .hero-aurora {
     background: var(--gradient-aurora, none);
     filter: blur(50px);
