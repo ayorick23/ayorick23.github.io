@@ -4,6 +4,8 @@ const RISE_DURATION = 1500;
 /* Must match the .dm-br__grow stroke-dashoffset transition. */
 const BRANCH_DRAW = 400;
 const BRANCH_DELAY = 80;
+/* Must match the .dm-br__row.is-folding height transition. */
+const FOLD_DURATION = 450;
 /* How far above its role's dot a branch finishes curving into its own lane. */
 const BRANCH_RISE = 34;
 
@@ -131,6 +133,14 @@ function setupBranches(root: HTMLElement) {
     place(topNode, main, topY, 4);
     place(bottomNode, main, bottomY, 4);
 
+    rows.forEach((row, i) => {
+      const fold = row.querySelector<HTMLElement>(":scope > [data-br-fold]");
+      if (!fold) return;
+      const at = offsetIn(row);
+      fold.style.left = `${main - at.x}px`;
+      fold.style.top = `${ys[i] - at.y}px`;
+    });
+
     // Same curve as the very first version, mirrored to the right: out of the role's
     // dot, a smooth bend into the branch's lane, then straight up into its dot.
     branches.forEach((branch, i) => {
@@ -144,6 +154,76 @@ function setupBranches(root: HTMLElement) {
       branch.grow.setAttribute("d", d);
     });
   };
+
+  // A role's dot folds its branch rows (education, certificates) back into itself, or grows them
+  // out of it again with the same sequence as the opening animation: room opens, the branch
+  // grows from the role's dot, then its dot fills and its panel rises in. Folding plays it backwards.
+  const heightDone = new Map<number, (e: TransitionEvent) => void>();
+  const animateHeight = (j: number, folded: boolean) => {
+    const row = rows[j];
+    const natural = folded ? row.offsetHeight : Number(row.dataset.naturalHeight) || row.scrollHeight;
+    if (folded) row.dataset.naturalHeight = String(natural);
+    const previous = heightDone.get(j);
+    if (previous) row.removeEventListener("transitionend", previous);
+    row.style.height = `${folded ? natural : 0}px`;
+    row.classList.add("is-folding");
+    void row.offsetHeight;
+    row.classList.toggle("is-folded", folded);
+    row.style.height = `${folded ? 0 : natural}px`;
+    const done = (e: TransitionEvent) => {
+      if (e.target !== row || e.propertyName !== "height") return;
+      row.removeEventListener("transitionend", done);
+      heightDone.delete(j);
+      row.classList.remove("is-folding");
+      row.style.height = "";
+    };
+    heightDone.set(j, done);
+    row.addEventListener("transitionend", done);
+  };
+
+  const foldTimers = new Map<number, number[]>();
+  const setFolded = (j: number, folded: boolean) => {
+    const row = rows[j];
+    const branch = branches[j]!;
+    foldTimers.get(j)?.forEach(clearTimeout);
+    const pending: number[] = [];
+    foldTimers.set(j, pending);
+    const after = (fn: () => void, ms: number) => pending.push(window.setTimeout(fn, ms));
+    row.inert = folded;
+
+    if (reducedMotion) {
+      row.classList.toggle("is-folded", folded);
+      nodes[j].classList.toggle("is-folded", folded);
+      return;
+    }
+    if (folded) {
+      row.classList.remove("is-reached");
+      nodes[j].classList.remove("is-on");
+      branch.grow.classList.remove("is-drawn");
+      after(() => {
+        nodes[j].classList.add("is-folded");
+        animateHeight(j, true);
+      }, BRANCH_DRAW);
+    } else {
+      nodes[j].classList.remove("is-folded");
+      animateHeight(j, false);
+      after(() => branch.grow.classList.add("is-drawn"), FOLD_DURATION);
+      after(() => {
+        row.classList.add("is-reached");
+        nodes[j].classList.add("is-on");
+      }, FOLD_DURATION + BRANCH_DRAW);
+    }
+  };
+
+  rows.forEach((row, i) => {
+    const fold = row.querySelector<HTMLButtonElement>(":scope > [data-br-fold]");
+    if (!fold) return;
+    fold.addEventListener("click", () => {
+      const folded = fold.getAttribute("aria-expanded") === "true";
+      fold.setAttribute("aria-expanded", String(!folded));
+      for (let j = i - 1; j >= 0 && level(j); j--) setFolded(j, folded);
+    });
+  });
 
   const timers: number[] = [];
   const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));

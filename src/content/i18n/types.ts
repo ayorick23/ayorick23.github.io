@@ -180,6 +180,8 @@ export interface UICopy {
       viewAllCertificates: string;
       /** `{n}` is replaced with the number of certificates not listed. */
       moreCertificates: string;
+      /** Accessible name of a role's dot, which shows or hides its education and certificate branches. */
+      toggleBranches: string;
       units: { year: string; years: string; month: string; months: string };
     };
   };

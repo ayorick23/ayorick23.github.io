@@ -26,6 +26,11 @@ Referencia: `desing_reference/elements/descarga (7).jpg`.
   planificado rayado, rayas desplazándose de izquierda a derecha); carril de Certificaciones
   con puntos agrupados por trimestre (un mes son ~8px). Cada carril lleva título con una línea
   horizontal completa debajo. Línea "Hoy" recalculada en el cliente.
+- Estética de las barras (2026-11-22): igual que las barras de la portada del benchmark, su
+  propio color en degradado hacia abajo (100 % → 45 %) con contorno del mismo color, **sin
+  perder el color de siempre** (blanco en oscuro, negro en claro, carmesí el actual). Ya se
+  rechazó la versión de vidrio casi transparente: perdía peso visual. Los puntos de
+  certificaciones llevan el mismo tratamiento.
 - Cada puesto se dibuja hasta el inicio del siguiente (`drawTo`): sin huecos ni solapes.
 - Nombre dentro de la barra si cabe; puestos de menos de 18 meses (`SHORT_ROLE_MONTHS`)
   siempre afuera (pedido de Dereck por "Vendedor de Pinturas").
@@ -56,9 +61,16 @@ ya hubo rondas rechazadas (ramas en cascada y en escuadra/escalera).
 - Estilos: Educación = línea sólida clara + nodo relleno + borde sólido; Certificaciones =
   línea a trazos + nodo hueco + borde a trazos; paneles de trabajo con borde neutro.
 - Fechas a la izquierda solo en puestos ("HOY"/"INICIO" en los extremos). Certificaciones
-  muestra máximo 5 + "Ver los N restantes en Sobre mí". Descripción a la izquierda;
+  muestra máximo 3 + "Ver los N restantes en Sobre mí" (Dereck no quiere resaltarlos). Descripción a la izquierda;
   Periodo/Empresa/Duración en columna angosta a la derecha. Etiquetas = rango de años
   ("2026 – Actualidad").
 - Animación de una sola vez (~1,5 s, `RISE_DURATION`): la línea sube de "Inicio" a "Hoy",
   rellena cada nodo y revela su panel; las ramas crecen vía `<mask>` (para que la de trazos
   también anime) cuando su nodo de origen se rellena.
+- Plegar ramas: el nodo de cada puesto con ramas es un botón (`[data-br-fold]`, posicionado por
+  JS sobre el punto del SVG) que oculta o muestra su Educación y Certificaciones; por defecto
+  todo desplegado para que se vea la animación inicial. **No es un desvanecido**: al desplegar se
+  abre el espacio, la rama nace del nodo y después el panel sube (la misma secuencia de la
+  animación inicial); al plegar, al revés (el panel baja, la rama se recoge al nodo y se cierra
+  el espacio). Plegado deja un anillo punteado alrededor del nodo; las filas plegadas quedan
+  `inert`.
