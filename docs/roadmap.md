@@ -81,6 +81,13 @@ Plan de 5 fases acordado el 2026-11-17.
 
 ## Contenido
 
+- [ ] **OdontoTrack:** capturas que quedaron fuera (originales en
+      `desing_reference/odontotrack-capturas-originales/`): el directorio de pacientes muestra un DUI y
+      un teléfono que no tienen formato de prueba (fila "Henry Méndez") y el registro de cuenta usa
+      como ejemplo un correo con formato de carnet real. Usarlas solo si Dereck confirma que son
+      ficticios o tras difuminar esos datos. Falta también confirmar si el sistema ya está en uso o en
+      piloto (el caso de estudio dice "en desarrollo activo").
+
 - [ ] **Medallion:** el README de ese repo dice que Gold (star schema en dbt, 97 tests) ya
       está construido y que falta Airflow; el caso de estudio todavía dice que Gold no se
       alcanzó y la tarjeta muestra "GOLD pronto". Confirmar con Dereck y actualizar.
