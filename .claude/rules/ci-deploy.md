@@ -19,7 +19,7 @@ paths:
   en `dist/` y Playwright. Si se agrega o renombra una ruta principal, actualizar esa lista.
 - `main` está protegida por el ruleset **`main-secure`** (Settings → Rules → Rulesets, no la
   protección clásica: `gh api .../branches/main/protection` responde 404 aunque esté activa;
-  consultar `gh api repos/ayorick23/ayorick23.github.io/rulesets`). Exige el check, prohíbe
+  consultar `gh api repos/ayorick23/dereckmendez.com/rulesets`). Exige el check, prohíbe
   push forzado y borrar la rama; sin excepciones.
 - El job se llama **"Check, audit & build"** aunque corre más cosas: es el nombre que exige el
   ruleset. No renombrarlo
@@ -51,6 +51,9 @@ Ver [ADR 0008](../../docs/decisions/0008-dominio-propio-cloudflare-dns-only.md).
 - 4 `A` en `@` (`185.199.108–111.153`), 4 `AAAA` en `@` (`2606:50c0:8000–8003::153`),
   `CNAME www → ayorick23.github.io` y `TXT _github-pages-challenge-ayorick23`. **Todos con nube
   gris (DNS only)**: con proxy GitHub no puede emitir el certificado HTTPS.
+- El repo se llamaba `ayorick23.github.io` y se renombró a `dereckmendez.com` el 2026-11-25: desde
+  entonces `ayorick23.github.io` ya no redirige al dominio (da 404). El `CNAME www` sigue apuntando a
+  `ayorick23.github.io` porque es el host de Pages del usuario, no el nombre del repo.
 - Dominio configurado en Settings → Pages → Custom domain. Con deploy por Actions **no** hace
   falta (ni sirve) `public/CNAME`. "Enforce HTTPS" activado.
 - La URL está escrita en: `site` de `astro.config.mjs` (sitemap, canonical, og:image
