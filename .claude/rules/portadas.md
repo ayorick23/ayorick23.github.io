@@ -17,6 +17,11 @@ Contexto: [ADR 0006](../../docs/decisions/0006-portadas-dibujadas-por-codigo.md)
   canvas por `project-covers.ts`. Estilo actual ("A reforzada", 2026-11-16): helper `stage()`
   (escenario centrado con proporción tope) y tinte por proyecto en `COVER_TINTS`
   (churn teal, benchmark violeta, medallion bronce, odontogram celeste).
+- `benchmark` = barras con el salario nominal y línea con el ajustado por PPP de 6 países
+  reales del proyecto (ordenados por nominal, así la línea que se dispara en India cuenta que el
+  ranking cambia). Códigos de país (US, CH…) para que sirva en ambos idiomas.
+- `odontogram`: el barrido de escaneo se desvanece arriba y abajo (degradado del mismo color con
+  alfa, no hacia negro transparente) y su brillo es un óvalo radial: Dereck no quiere ver un corte.
 - `medallion` = registros crudos (Bronze) → tabla tipada (Silver) → star schema con las
   tablas reales de Gold (`fct_pedidos` + `dim_*`). `odontogram` = odontograma FDI con un
   barrido que corre siempre (más rápido en hover).

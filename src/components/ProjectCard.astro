@@ -27,7 +27,7 @@ const num = String(index + 1).padStart(2, "0");
   <a href={href} class="absolute inset-0 z-0" aria-label={project.data.title}></a>
   <div
     class:list={[
-      "project-cover relative h-[172px] border-b border-line",
+      "project-cover pointer-events-none relative h-[172px] border-b border-line",
       !project.data.coverKind && "project-cover--empty",
     ]}
   >
